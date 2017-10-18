@@ -57,6 +57,7 @@ public double getzData() {
 	return zData;
 }
 
+
 public void setzData(double zData) {
 	this.zData = zData;
 }

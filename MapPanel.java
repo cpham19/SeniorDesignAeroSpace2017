@@ -9,6 +9,15 @@ import javax.swing.JPanel;
 
 public class MapPanel extends JPanel
 {
+	
+	private JButton up;
+	private JButton left;
+	private JButton down;
+	private JButton right;
+	
+	private JButton roveMode;
+	private JButton manualMode;
+	
 	private int xLoc, yLoc;
 	private int width;
 	private int height;
