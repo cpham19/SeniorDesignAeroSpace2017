@@ -1,10 +1,12 @@
+package app;
+
 /*
  * This class will hold the information pertaining to the
- * mapping of the zone in which the car finds itself in. 
+ * mapping of the zone in which the car finds itself in.
  */
 public class AreaMap
 {
-// this will be the pixel grid to project 
+// this will be the pixel grid to project
 private int xSize;
 private int ySize;
 private int[][] grid;
@@ -23,7 +25,7 @@ public AreaMap(int xS, int yS, int step, int drawSize)
 	this.ySize = yS;
 	this.step = step;
 	this.drawSize = drawSize;
-	
+
 	grid = new int[xSize][ySize];
 }
 
@@ -43,15 +45,15 @@ public int getDrawSize()
 public int[] XYToPixelLocation(int x, int y)
 {
 	int[] ret = new int[2];
-	
+
 	int midX = xSize /2;
 	int midY = ySize /2;
 	int yAdd = y*8;
 	int xAdd = x*8;
-	
+
 	ret[0] = midX + xAdd;
 	ret[1] = midY + yAdd;
-	
+
 	return ret;
 }
 

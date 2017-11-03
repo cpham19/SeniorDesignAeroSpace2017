@@ -1,51 +1,52 @@
+package app;
+
+import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Main
 {
 	public static CarVector carLoc = new CarVector(0,0,0);
 	public static SerialIOController VCM_Communicator;
-	public static CSV_Controller Data_Controller;
+	public static DataController Data_Controller;
 	public static PyScriptRunner ScriptRunner;
-	public static GUIController Application;
 	private static int GUIWidth = 925;
 	private static int GUIHeight = 720;
+	public static GUIController GUI;
 	static final int X = 0;
 	static final int Y = 1;
 	static final int Z = 2;
-	
-	public static void main(String args[])
+
+	public static void main(String args[]) throws Exception
 	{
+		Data_Controller.clearCSV("Sample");
+		//Data_Controller.clearDatabase("aria_data");
+
+
 		// create a Communication controller
 		VCM_Communicator = new SerialIOController();
 		// create a GUI controller (Automatically opens itself
-		Application = new GUIController(GUIWidth,GUIHeight);
-		// create a CSV controller
-		Data_Controller = new CSV_Controller();
+		GUI = new GUIController(GUIWidth,GUIHeight, VCM_Communicator);
+		// create a CSV/Database controller
+		//Data_Controller = new DataController();
 		// create a new Python Script Runner
 		ScriptRunner = new PyScriptRunner();
-		
-		
-		
-		System.out.println("Started");
-	}
-	
-}
 
-/*
-// the following thread creation is only need while we don't also have a GUI or some other thread
-		// running and keeping this process alive.
-		Thread t=new Thread()
-		{
-			public void run() 
+		serialWriteSchedule();
+	}
+
+	public static void serialWriteSchedule()
+	{
+		// this creates a Timer schedule that will basically run every 60 milisecond starting at 1 second
+		Timer timer = new Timer ();
+		timer.schedule(new TimerTask(){
+			@Override
+			public void run()// randomly set pGrid
 			{
-				// lets just keep this app live for 1,000 seconds to try and read and
-				// write some data
-				try {Thread.sleep(1000000);} 
-				catch (InterruptedException ie) 
-				{
-					// no need to really worry if this is interuptted.
-				}
+				// pull messages from the IO and send them to the GUI
+				GUI.setCarSpeed(VCM_Communicator.getCarSpeed());
+				GUI.setServoAngle(VCM_Communicator.getServoAngle());
 			}
-		};
-		t.start();
-		System.out.println("Started");
-*/
+		}, 1,10);
+	}
+}

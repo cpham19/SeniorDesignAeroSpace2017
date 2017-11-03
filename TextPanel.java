@@ -1,3 +1,5 @@
+package app;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.TextField;
@@ -11,7 +13,7 @@ public class TextPanel extends JPanel
 {
 	// Storage location for the 5 text fields
 	private ArrayList<String> list;
-	
+
 	public TextPanel()// empty constructor just for the visuals
 	{
 		this.setLayout(null);
@@ -22,15 +24,15 @@ public class TextPanel extends JPanel
 		// paint the texts
 		this.setLayout(null);
 	}
-	
+
 	public void paintComponent(Graphics g)
 	{
 		g.setColor(Color.black);
-		
+
 		g.setColor(Color.blue);
 		g.fillRect(0, 0, 500, 200);
 	}
-	
+
 	public void drawListOfRecievedMessages(Graphics g, ArrayList<String> list)
 	{
 		if(list != null)
@@ -42,7 +44,7 @@ public class TextPanel extends JPanel
 				{
 					g.drawString(list.get(index), 0, i*20);
 				}
-			}	
+			}
 		}
 	}
 }

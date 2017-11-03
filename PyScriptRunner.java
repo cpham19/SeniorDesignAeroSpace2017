@@ -1,3 +1,4 @@
+package app;
 
 public class PyScriptRunner implements Runnable
 {
@@ -7,7 +8,7 @@ public PyScriptRunner()
 
 }
 
-public synchronized void runPyScript(String s)// pulls out the 
+public synchronized void runPyScript(String s)// pulls out the
 {
 	try
 	{
