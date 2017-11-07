@@ -12,6 +12,7 @@ import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
 
 import java.util.Enumeration;
+import java.util.TooManyListenersException;
 
 public class SerialIOController implements SerialPortEventListener
 {
@@ -59,13 +60,14 @@ public class SerialIOController implements SerialPortEventListener
 				boolean L2 = convertToBoolean(Integer.parseInt(inputLine[3]));
 				servoAngle = Integer.parseInt(inputLine[4]);
 				carSpeed = Integer.parseInt(inputLine[5]);
+				String state = inputLine[6];
 				// Format Time
 				double time = (double) (System.currentTimeMillis() - startingTime) / 1000;
 
-				System.out.println(count + ":" + "Ultrasonic: " + ultrasonic + " L0: " + L0 + " L1: " + L1 + " L2: " + L2 + " ServoAngle: " + servoAngle + " carSpeed: " + carSpeed);
+				System.out.println(count + ":" + "Ultrasonic: " + ultrasonic + " L0: " + L0 + " L1: " + L1 + " L2: " + L2 + " ServoAngle: " + servoAngle + " carSpeed: " + carSpeed + " State: " + state);
 
 				DataPacket packet = new DataPacket((double) time, DataController.getSensorValue(), DataController.getSensorValue(), DataController.getSensorValue(),
-						ultrasonic, L0, L1, L2);
+						ultrasonic, L0, L1, L2, state);
 
 				// Add DataPacket to CSV file
 				dc.writeToCSV("Sample", packet);
@@ -91,7 +93,7 @@ public class SerialIOController implements SerialPortEventListener
 	}
 
 
-	private void initialize()
+	public void initialize()
 	{
 		CommPortIdentifier portId = null;
 		Enumeration portEnum = CommPortIdentifier.getPortIdentifiers();

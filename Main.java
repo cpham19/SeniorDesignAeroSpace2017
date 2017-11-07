@@ -20,22 +20,19 @@ public class Main
 	public static void main(String args[]) throws Exception
 	{
 		Data_Controller.clearCSV("Sample");
-		//Data_Controller.clearDatabase("aria_data");
-
+		Data_Controller.clearDatabase("aria_data");
 
 		// create a Communication controller
 		VCM_Communicator = new SerialIOController();
 		// create a GUI controller (Automatically opens itself
 		GUI = new GUIController(GUIWidth,GUIHeight, VCM_Communicator);
-		// create a CSV/Database controller
-		//Data_Controller = new DataController();
 		// create a new Python Script Runner
 		ScriptRunner = new PyScriptRunner();
 
-		serialWriteSchedule();
+		updateInfoSchedule();
 	}
 
-	public static void serialWriteSchedule()
+	public static void updateInfoSchedule()
 	{
 		// this creates a Timer schedule that will basically run every 60 milisecond starting at 1 second
 		Timer timer = new Timer ();

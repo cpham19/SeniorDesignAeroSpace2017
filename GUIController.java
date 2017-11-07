@@ -13,6 +13,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.border.Border;
 
+import app.TextPanel;
+
 public class GUIController extends JFrame
 {
 	// this is for future lookup so that we can identify Anomaly zones,
@@ -27,7 +29,7 @@ public class GUIController extends JFrame
 	private int directionButtonSpacing = 50;
 	private int manualButtonX = 0;
 	private int manualButtonY = 570;
-	private char currentOutput = 0;
+	private String currentState;
 	private int carSpeed = 0;
 	private int servoAngle = 0;
 	SerialIOController sioc;
@@ -53,6 +55,8 @@ public class GUIController extends JFrame
 	private JButton rotateServoRight = new JButton();
 	private JButton autoPilotMode = new JButton("Autopilot");
 	private JButton manualMode = new JButton("Manual");
+	private JButton startRecording = new JButton("Record");
+	private JButton stopRecording = new JButton("Stop Record");
 
 	// public constructor
 	public GUIController(int width, int height, SerialIOController sioc)
@@ -79,6 +83,10 @@ public class GUIController extends JFrame
 		up.setBackground(Color.WHITE);
 		down.setBackground(Color.WHITE);
 		stop.setBackground(Color.RED);
+		autoPilotMode.setBackground(Color.WHITE);
+		manualMode.setBackground(Color.WHITE);
+		startRecording.setBackground(Color.WHITE);
+		stopRecording.setBackground(Color.WHITE);
 
 		decreaseCarSpeed.setLayout(new BorderLayout());
 		decreaseCarSpeed.add(BorderLayout.NORTH, new JLabel("Decrease"));
@@ -102,9 +110,6 @@ public class GUIController extends JFrame
 		rotateServoRight.add(BorderLayout.SOUTH, new JLabel("Right"));
 		rotateServoRight.setBackground(Color.WHITE);
 
-		autoPilotMode.setBackground(Color.WHITE);
-		manualMode.setBackground(Color.WHITE);
-
 		// set bounds of all Buttons
 		left.setBounds(directionButtonLeftXLoc, directionButtonLeftYLoc, directionButtonWidth, directionButtonHeight);
 		right.setBounds(directionButtonLeftXLoc + 200, left.getY(), directionButtonWidth, directionButtonHeight);
@@ -119,6 +124,8 @@ public class GUIController extends JFrame
 		rotateServoRight.setBounds(manualButtonX + 300, manualButtonY - 100, 100, 100);
 		manualMode.setBounds(manualButtonX, manualButtonY, 100, 100);
 		autoPilotMode.setBounds(manualButtonX + 100, manualButtonY, 100, 100);
+		startRecording.setBounds(manualButtonX + 200, manualButtonY, 100, 100);
+		stopRecording.setBounds(manualButtonX + 300, manualButtonY, 100, 100);
 
 		// set bound of all labels
 		carSpeedLabel.setBounds(manualButtonX, manualButtonY - 200, 200, 100);
@@ -142,13 +149,15 @@ public class GUIController extends JFrame
 		this.add(rotateServoRight);
 		this.add(manualMode);
 		this.add(autoPilotMode);
+		this.add(startRecording);
+		this.add(stopRecording);
 
 		// add action listeners to the buttons
 		left.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent arg0)
 			{
-				currentOutput = 'l';
+				currentState = "Left";
 				sioc.SerialWrite('l');
 			}
 		});
@@ -157,7 +166,7 @@ public class GUIController extends JFrame
 		{
 			public void actionPerformed(ActionEvent arg0)
 			{
-				currentOutput = 'r';
+				currentState = "Right";
 				sioc.SerialWrite('r');
 			}
 		});
@@ -166,7 +175,7 @@ public class GUIController extends JFrame
 		{
 			public void actionPerformed(ActionEvent arg0)
 			{
-				currentOutput = 'f';
+				currentState = "Forward";
 				sioc.SerialWrite('f');
 			}
 		});
@@ -175,7 +184,7 @@ public class GUIController extends JFrame
 		{
 			public void actionPerformed(ActionEvent arg0)
 			{
-				currentOutput = 'b';
+				currentState = "Back";
 				sioc.SerialWrite('b');
 			}
 		});
@@ -184,7 +193,7 @@ public class GUIController extends JFrame
 		{
 			public void actionPerformed(ActionEvent arg0)
 			{
-				currentOutput = 's';
+				currentState = "Stop";
 				sioc.SerialWrite('s');
 			}
 		});
@@ -193,7 +202,7 @@ public class GUIController extends JFrame
 		{
 			public void actionPerformed(ActionEvent arg0)
 			{
-				currentOutput = 'm';
+				currentState = "Manual Mode";
 				sioc.SerialWrite('m');
 			}
 		});
@@ -202,7 +211,7 @@ public class GUIController extends JFrame
 		{
 			public void actionPerformed(ActionEvent arg0)
 			{
-				currentOutput = 't';
+				currentState = "Autopilot Mode";
 				sioc.SerialWrite('t');
 			}
 		});
@@ -211,7 +220,7 @@ public class GUIController extends JFrame
 		{
 			public void actionPerformed(ActionEvent arg0)
 			{
-				currentOutput = 'd';
+				currentState = "Decreasing speed";
 				sioc.SerialWrite('d');
 			}
 		});
@@ -220,7 +229,7 @@ public class GUIController extends JFrame
 		{
 			public void actionPerformed(ActionEvent arg0)
 			{
-				currentOutput = 'i';
+				currentState = "Increasing speed";
 				sioc.SerialWrite('i');
 			}
 		});
@@ -229,7 +238,7 @@ public class GUIController extends JFrame
 		{
 			public void actionPerformed(ActionEvent arg0)
 			{
-				currentOutput = '1';
+				currentState = "Rotate Servo Left";
 				sioc.SerialWrite('1');
 			}
 		});
@@ -238,19 +247,36 @@ public class GUIController extends JFrame
 		{
 			public void actionPerformed(ActionEvent arg0)
 			{
-				currentOutput = '2';
+				currentState = "Rotate Servo Right";
 				sioc.SerialWrite('2');
 			}
 		});
 
+		startRecording.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent arg0)
+			{
+				currentState = "Recording";
+				sioc.initialize();
+			}
+		});
 
-	}// end init buttons
+		stopRecording.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent arg0)
+			{
+				currentState = "Stopped Recording";
+				sioc.close();
+			}
+		});
+	}
 
 	public void InitializeTextFields()
 	{
 		// set bounds of all textFields
 		// and add them to the Frame
 	}
+
 	public void InitializePanels()
 	{
 		// When adding things to the JFrame, you must set the bounds of it beforehand. ( Further
@@ -266,6 +292,7 @@ public class GUIController extends JFrame
 
 		// init buttons
 		InitializeButtons();
+
 		// init TextFields
 
 		// init Panels
@@ -304,9 +331,9 @@ public class GUIController extends JFrame
 		servoAngleLabel.setText("Servo angle: " + servoAngle);
 	}
 
-	public char getCurrentOutput()
+	public String getCurrentState()
 	{
-		return currentOutput;
+		return currentState;
 	}
 
 }

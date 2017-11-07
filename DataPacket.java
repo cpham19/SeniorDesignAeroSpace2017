@@ -12,10 +12,11 @@ public class DataPacket
 	private boolean L0;
 	private boolean L1;
 	private boolean L2;
+	private String state;
 	private String[] array;
 
 	public String[] toStringArray() {
-		return (time + "," + acceleration + "," + tilt + "," + direction + "," + ultrasonic + "," + L0 + "," + L1 + "," + L2).split(",");
+		return (time + "," + acceleration + "," + tilt + "," + direction + "," + ultrasonic + "," + L0 + "," + L1 + "," + L2 + "," + state).split(",");
 	}
 
 	public DataPacket()
@@ -23,7 +24,7 @@ public class DataPacket
 
 	}
 
-	public DataPacket(double time, double acceleration, double tilt, double direction, double ultrasonic, boolean L0, boolean L1, boolean L2)
+	public DataPacket(double time, double acceleration, double tilt, double direction, double ultrasonic, boolean L0, boolean L1, boolean L2, String state)
 	{
 		DecimalFormat df = new DecimalFormat("##.00");
 
@@ -35,6 +36,7 @@ public class DataPacket
 		this.L0 = L0;
 		this.L1 = L1;
 		this.L2 = L2;
+		this.state = state;
 	}
 
 	public double getTime()
@@ -116,6 +118,16 @@ public class DataPacket
 	public void setL2(boolean L2)
 	{
 		this.L2 = L2;
+	}
+
+	public String getState()
+	{
+		return state;
+	}
+
+	public void setState(String state)
+	{
+		this.state = state;
 	}
 
 }

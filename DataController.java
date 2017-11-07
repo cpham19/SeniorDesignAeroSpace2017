@@ -20,7 +20,7 @@ import java.util.TimerTask;
 
 public class DataController
 {
-	public static boolean columnsRow = true;
+	public static String columns = "Time,Acceleration,Tilt,Direction,UltraSonic,L0,L1,L2,State";
 
 	public DataController()
 	{
@@ -45,7 +45,7 @@ public class DataController
 			while ((element = reader.readNext()) != null)
 			{
 				//System.out.println("Data #" + count + " {Time:" + element[0] + ", Acceleration:" + element[1] + ", Tilt:" + element[2] + ", Direction:" + element[3] + ", UltraSonic:" + element[4] + ", L0: " + element[5] + ", L1:" + element[6] + ", L2:" + element[7] +"}");
-				DataPacket packet = new DataPacket(Double.valueOf(element[0]), Double.valueOf(element[1]), Double.valueOf(element[2]), Double.valueOf(element[3]), Double.valueOf(element[4]), Boolean.parseBoolean(element[5]), Boolean.parseBoolean(element[6]), Boolean.parseBoolean(element[7]));
+				DataPacket packet = new DataPacket(Double.valueOf(element[0]), Double.valueOf(element[1]), Double.valueOf(element[2]), Double.valueOf(element[3]), Double.valueOf(element[4]), Boolean.parseBoolean(element[5]), Boolean.parseBoolean(element[6]), Boolean.parseBoolean(element[7]), element[8] + "");
 				data.add(packet);
 			}
 		}
@@ -79,12 +79,6 @@ public class DataController
 			fw = new FileWriter(filename + ".csv", true);
 			cw = new CSVWriter(fw);
 
-			if (columnsRow) {
-				String columns = "Time,Acceleration,Tilt,Direction,UltraSonic,L0,L1,L2";
-				cw.writeNext(columns.split(","));
-				columnsRow = false;
-			}
-
 			cw.writeNext(packet.toStringArray());
 		}
 		catch (Exception e)
@@ -111,9 +105,12 @@ public class DataController
 	{
 		CSVWriter cw = new CSVWriter(new OutputStreamWriter(new FileOutputStream(filename + ".csv"), "UTF-8"));
 		cw.flush();
+
+		cw.writeNext(columns.split(","));
+
 		cw.close();
 
-		System.out.println(filename + ".csv has beeen cleared successfully.");
+		System.out.println(filename + ".csv has been cleared successfully.");
 	}
 
 	// Write the data from CSV to the database
@@ -128,7 +125,7 @@ public class DataController
 		{
 			c = DriverManager.getConnection(url, username, password);
 
-			String sql = "insert into " + tableName + " (time, acceleration, tilt, direction, ultrasonic, L0, L1, L2) values (?, ?, ?, ?, ?, ?, ?, ?)";
+			String sql = "insert into " + tableName + " (Time, Acceleration, Tilt, Direction, Ultrasonic, L0, L1, L2, State) values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 			PreparedStatement pstmt = c.prepareStatement(sql);
 
@@ -140,6 +137,7 @@ public class DataController
 			pstmt.setBoolean(6, packet.isL0());
 			pstmt.setBoolean(7, packet.isL1());
 			pstmt.setBoolean(8, packet.isL2());
+			pstmt.setString(9, packet.getState());
 			pstmt.executeUpdate();
 
 			c.close();
@@ -184,8 +182,8 @@ public class DataController
 
 			while (rs.next())
 			{
-				DataPacket packet = new DataPacket(rs.getDouble("time"), rs.getDouble("acceleration"), rs.getDouble("tilt"), rs.getDouble("direction"),
-						rs.getDouble("ultrasonic"), rs.getBoolean("L0"), rs.getBoolean("L1"), rs.getBoolean("L2"));
+				DataPacket packet = new DataPacket(rs.getDouble("Time"), rs.getDouble("Acceleration"), rs.getDouble("Tilt"), rs.getDouble("Direction"),
+						rs.getDouble("Ultrasonic"), rs.getBoolean("L0"), rs.getBoolean("L1"), rs.getBoolean("L2"), rs.getString("State"));
 
 				System.out.println(packet.isL0() + "," + packet.isL1() + "," + packet.isL2());
 
