@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.TooManyListenersException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -33,6 +34,7 @@ public class GUIController extends JFrame
 	private int carSpeed = 0;
 	private int servoAngle = 0;
 	SerialIOController sioc;
+	PyScriptRunner runner;
 
 	// Area Map for value recording
 	AreaMap grid = new AreaMap(AreaMapwidth, AreaMapheight, stepValue, drawLength);
@@ -55,11 +57,11 @@ public class GUIController extends JFrame
 	private JButton rotateServoRight = new JButton();
 	private JButton autoPilotMode = new JButton("Autopilot");
 	private JButton manualMode = new JButton("Manual");
-	private JButton startRecording = new JButton("Record");
-	private JButton stopRecording = new JButton("Stop Record");
+	private JButton trainingMode = new JButton("Training");
+	private JButton runScript = new JButton("Run Script");
 
 	// public constructor
-	public GUIController(int width, int height, SerialIOController sioc)
+	public GUIController(int width, int height, SerialIOController sioc, PyScriptRunner runner)
 	{
 		this.setLayout(null);
 		// INITIALIZE ANYTHING THAT NEEDS TO BE INTIALIZED
@@ -73,6 +75,7 @@ public class GUIController extends JFrame
 		this.setResizable(false);
 
 		this.sioc = sioc;
+		this.runner = runner;
 	}
 	//
 	public void InitializeButtons()
@@ -85,8 +88,8 @@ public class GUIController extends JFrame
 		stop.setBackground(Color.RED);
 		autoPilotMode.setBackground(Color.WHITE);
 		manualMode.setBackground(Color.WHITE);
-		startRecording.setBackground(Color.WHITE);
-		stopRecording.setBackground(Color.WHITE);
+		trainingMode.setBackground(Color.WHITE);
+		runScript.setBackground(Color.WHITE);
 
 		decreaseCarSpeed.setLayout(new BorderLayout());
 		decreaseCarSpeed.add(BorderLayout.NORTH, new JLabel("Decrease"));
@@ -124,8 +127,8 @@ public class GUIController extends JFrame
 		rotateServoRight.setBounds(manualButtonX + 300, manualButtonY - 100, 100, 100);
 		manualMode.setBounds(manualButtonX, manualButtonY, 100, 100);
 		autoPilotMode.setBounds(manualButtonX + 100, manualButtonY, 100, 100);
-		startRecording.setBounds(manualButtonX + 200, manualButtonY, 100, 100);
-		stopRecording.setBounds(manualButtonX + 300, manualButtonY, 100, 100);
+		trainingMode.setBounds(manualButtonX + 200, manualButtonY, 100, 100);
+		runScript.setBounds(manualButtonX + 300, manualButtonY, 100, 100);
 
 		// set bound of all labels
 		carSpeedLabel.setBounds(manualButtonX, manualButtonY - 200, 200, 100);
@@ -149,8 +152,8 @@ public class GUIController extends JFrame
 		this.add(rotateServoRight);
 		this.add(manualMode);
 		this.add(autoPilotMode);
-		this.add(startRecording);
-		this.add(stopRecording);
+		this.add(trainingMode);
+		this.add(runScript);
 
 		// add action listeners to the buttons
 		left.addActionListener(new ActionListener()
@@ -252,21 +255,41 @@ public class GUIController extends JFrame
 			}
 		});
 
-		startRecording.addActionListener(new ActionListener()
+		trainingMode.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent arg0)
 			{
-				currentState = "Recording";
-				sioc.initialize();
+				if (trainingMode.getText() == "Training") {
+					try {
+						sioc.listenData();;
+						trainingMode.setText("Stop Training");
+						trainingMode.setBackground(Color.RED);
+					} catch (TooManyListenersException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				else {
+					try
+					{
+						sioc.ignoreData();;
+						trainingMode.setText("Training");
+						trainingMode.setBackground(Color.WHITE);
+					}
+					catch (TooManyListenersException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 			}
 		});
 
-		stopRecording.addActionListener(new ActionListener()
+		runScript.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent arg0)
 			{
-				currentState = "Stopped Recording";
-				sioc.close();
+				runner.runPyScript();
 			}
 		});
 	}

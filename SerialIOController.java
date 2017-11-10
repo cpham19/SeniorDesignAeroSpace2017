@@ -20,7 +20,7 @@ public class SerialIOController implements SerialPortEventListener
 	private BufferedReader input;
 	private OutputStream output;
 	final int timeOut = 2000; // milliseconds
-	final int dataRate = 9600; // general Braud width
+	final int dataRate = 115200; // general Braud width
 	final long startingTime = System.currentTimeMillis();
 	private DataController dc = new DataController();
 	private int count = 0;
@@ -33,12 +33,11 @@ public class SerialIOController implements SerialPortEventListener
 			"/dev/ttyUSB0", // Linux
 			"COM4", // Windows
 	};
+
 	public SerialIOController()
 	{
-		// basic constructor
-		this.initialize();
+		initialize();
 	}
-
 
 	// Basically if there is Serial activity, this is run in Synchronization with
 	// whatever thread is currently running the port.
@@ -58,16 +57,26 @@ public class SerialIOController implements SerialPortEventListener
 				boolean L0 = convertToBoolean(Integer.parseInt(inputLine[1]));
 				boolean L1 = convertToBoolean(Integer.parseInt(inputLine[2]));
 				boolean L2 = convertToBoolean(Integer.parseInt(inputLine[3]));
-				servoAngle = Integer.parseInt(inputLine[4]);
-				carSpeed = Integer.parseInt(inputLine[5]);
-				String state = inputLine[6];
+				double xAccel = Double.parseDouble(inputLine[4]);
+				double yAccel = Double.parseDouble(inputLine[5]);
+				double zAccel = Double.parseDouble(inputLine[6]);
+				double xGyro = Double.parseDouble(inputLine[7]);
+				double yGyro = Double.parseDouble(inputLine[8]);
+				double zGyro = Double.parseDouble(inputLine[9]);
+				double xMag = Double.parseDouble(inputLine[10]);
+				double yMag = Double.parseDouble(inputLine[11]);
+				double zMag = Double.parseDouble(inputLine[12]);
+				String state = inputLine[13];
+				carSpeed = Integer.parseInt(inputLine[14]);
+				servoAngle = Integer.parseInt(inputLine[15]);
+
 				// Format Time
 				double time = (double) (System.currentTimeMillis() - startingTime) / 1000;
 
-				System.out.println(count + ":" + "Ultrasonic: " + ultrasonic + " L0: " + L0 + " L1: " + L1 + " L2: " + L2 + " ServoAngle: " + servoAngle + " carSpeed: " + carSpeed + " State: " + state);
+				DataPacket packet = new DataPacket(time, ultrasonic, L0, L1, L2, xAccel, yAccel, zAccel,
+						xGyro, yGyro, zGyro, xMag, yMag, zMag, state);
 
-				DataPacket packet = new DataPacket((double) time, DataController.getSensorValue(), DataController.getSensorValue(), DataController.getSensorValue(),
-						ultrasonic, L0, L1, L2, state);
+				//packet.toStringArray();
 
 				// Add DataPacket to CSV file
 				dc.writeToCSV("Sample", packet);
@@ -134,9 +143,22 @@ public class SerialIOController implements SerialPortEventListener
 
 			// add event listeners
 			serialPort.addEventListener(this);
-			serialPort.notifyOnDataAvailable(true);
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			System.err.println(e.toString());
+		}
+	}
+
+	public synchronized void listenData() throws TooManyListenersException {
+		if (serialPort != null) {
+			serialPort.notifyOnDataAvailable(true);
+		}
+	}
+
+	public synchronized void ignoreData() throws TooManyListenersException {
+		if (serialPort != null) {
+			serialPort.notifyOnDataAvailable(false);
 		}
 	}
 

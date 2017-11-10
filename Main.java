@@ -19,15 +19,18 @@ public class Main
 
 	public static void main(String args[]) throws Exception
 	{
+		// Create a new Python Script Runner
+		ScriptRunner = new PyScriptRunner();
+		ScriptRunner.makeDirectory();
+
 		Data_Controller.clearCSV("Sample");
-		Data_Controller.clearDatabase("aria_data");
+		//Data_Controller.clearDatabase("aria_data");
 
 		// create a Communication controller
 		VCM_Communicator = new SerialIOController();
+
 		// create a GUI controller (Automatically opens itself
-		GUI = new GUIController(GUIWidth,GUIHeight, VCM_Communicator);
-		// create a new Python Script Runner
-		ScriptRunner = new PyScriptRunner();
+		GUI = new GUIController(GUIWidth,GUIHeight, VCM_Communicator, ScriptRunner);
 
 		updateInfoSchedule();
 	}

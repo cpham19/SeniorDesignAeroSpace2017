@@ -4,19 +4,30 @@ import java.text.DecimalFormat;
 
 public class DataPacket
 {
-	private double time;
-	private double acceleration;
-	private double tilt;
-	private double direction;
-	private double ultrasonic;
-	private boolean L0;
-	private boolean L1;
-	private boolean L2;
-	private String state;
-	private String[] array;
+	public double time;
+	public double ultrasonic;
+	public boolean L0;
+	public boolean L1;
+	public boolean L2;
+	public double xAccel;
+	public double yAccel;
+	public double zAccel;
+	public double xGyro;
+	public double yGyro;
+	public double zGyro;
+	public double xMag;
+	public double yMag;
+	public double zMag;
+	public String state;
+	public String[] array;
 
 	public String[] toStringArray() {
-		return (time + "," + acceleration + "," + tilt + "," + direction + "," + ultrasonic + "," + L0 + "," + L1 + "," + L2 + "," + state).split(",");
+
+		System.out.println(time + "," + ultrasonic + "," + L0 + "," + L1 + "," + L2 + "," + xAccel + "," + yAccel + "," + zAccel + "," +
+				xGyro + "," + yGyro + "," + zGyro + "," + xMag + "," + yMag + "," + zMag + "," + state);
+
+		return (time + "," + ultrasonic + "," + L0 + "," + L1 + "," + L2 + "," + xAccel + "," + yAccel + "," + zAccel + "," +
+				xGyro + "," + yGyro + "," + zGyro + "," + xMag + "," + yMag + "," + zMag + "," + state).split(",");
 	}
 
 	public DataPacket()
@@ -24,18 +35,25 @@ public class DataPacket
 
 	}
 
-	public DataPacket(double time, double acceleration, double tilt, double direction, double ultrasonic, boolean L0, boolean L1, boolean L2, String state)
+	public DataPacket(double time, double ultrasonic, boolean L0, boolean L1, boolean L2, double xAccel, double yAccel, double zAccel,
+					  double xGyro, double yGyro, double zGyro, double xMag, double yMag, double zMag, String state)
 	{
 		DecimalFormat df = new DecimalFormat("##.00");
 
 		this.time = Double.valueOf(df.format(time));
-		this.acceleration = Double.valueOf(df.format(acceleration));
-		this.tilt = Double.valueOf(df.format(tilt));
-		this.direction = Double.valueOf(df.format(direction));
 		this.ultrasonic = Double.valueOf(df.format(ultrasonic));
 		this.L0 = L0;
 		this.L1 = L1;
 		this.L2 = L2;
+		this.xAccel = Double.valueOf(df.format(xAccel));
+		this.yAccel = Double.valueOf(df.format(yAccel));
+		this.zAccel = Double.valueOf(df.format(zAccel));
+		this.xGyro = Double.valueOf(df.format(xGyro));
+		this.yGyro = Double.valueOf(df.format(yGyro));
+		this.zGyro = Double.valueOf(df.format(zGyro));
+		this.xMag = Double.valueOf(df.format(xMag));
+		this.yMag = Double.valueOf(df.format(yMag));
+		this.zMag = Double.valueOf(df.format(zMag));
 		this.state = state;
 	}
 
@@ -47,36 +65,6 @@ public class DataPacket
 	public void setTime(double time)
 	{
 		this.time = time;
-	}
-
-	public double getAcceleration()
-	{
-		return acceleration;
-	}
-
-	public void setAcceleration(double acceleration)
-	{
-		this.acceleration = acceleration;
-	}
-
-	public double getTilt()
-	{
-		return tilt;
-	}
-
-	public void setTilt(double tilt)
-	{
-		this.tilt = tilt;
-	}
-
-	public double getDirection()
-	{
-		return direction;
-	}
-
-	public void setDirection(double direction)
-	{
-		this.direction = direction;
 	}
 
 	public double getUltrasonic()
@@ -118,6 +106,97 @@ public class DataPacket
 	public void setL2(boolean L2)
 	{
 		this.L2 = L2;
+	}
+
+
+	public double getxAccel()
+	{
+		return xAccel;
+	}
+
+	public void setxAccel(double xAccel)
+	{
+		this.xAccel = xAccel;
+	}
+
+	public double getyAccel()
+	{
+		return yAccel;
+	}
+
+	public void setyAccel(double yAccel)
+	{
+		this.yAccel = yAccel;
+	}
+
+	public double getzAccel()
+	{
+		return zAccel;
+	}
+
+	public void setzAccel(double zAccel)
+	{
+		this.zAccel = zAccel;
+	}
+
+	public double getxGyro()
+	{
+		return xGyro;
+	}
+
+	public void setxGyro(double xGyro)
+	{
+		this.xGyro = xGyro;
+	}
+
+	public double getyGyro()
+	{
+		return yGyro;
+	}
+
+	public void setyGyro(double yGyro)
+	{
+		this.yGyro = yGyro;
+	}
+
+	public double getzGyro()
+	{
+		return zGyro;
+	}
+
+	public void setzGyro(double zGyro)
+	{
+		this.zGyro = zGyro;
+	}
+
+	public double getxMag()
+	{
+		return xMag;
+	}
+
+	public void setxMag(double xMag)
+	{
+		this.xMag = xMag;
+	}
+
+	public double getyMag()
+	{
+		return yMag;
+	}
+
+	public void setyMag(double yMag)
+	{
+		this.yMag = yMag;
+	}
+
+	public double getzMag()
+	{
+		return zMag;
+	}
+
+	public void setzMag(double zMag)
+	{
+		this.zMag = zMag;
 	}
 
 	public String getState()
