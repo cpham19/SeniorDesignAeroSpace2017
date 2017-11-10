@@ -19,8 +19,8 @@ import javax.script.SimpleScriptContext;
 
 public class PyScriptRunner
 {
-	private String nameOfScript = "Project.py";
-	private String pathToPythonScripts= "cd C:\\Users\\Calvin\\Documents\\Python Scripts & " + nameOfScript;
+	private String nameOfScript = "MLP.py";
+	private String pathToPythonScripts= "cd Files & " + nameOfScript;
 	String s = null;
 
 	public PyScriptRunner()
@@ -58,7 +58,7 @@ public class PyScriptRunner
 		}
 	}
 
-	public void runPyScript()// pulls out the
+	public void runPyScript()
 	{
 		try
 		{

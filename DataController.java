@@ -3,6 +3,7 @@ package app;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -119,14 +120,21 @@ public class DataController
 	// Clear the contents of CSV file
 	public static void clearCSV(String filename) throws Exception
 	{
-		CSVWriter cw = new CSVWriter(new OutputStreamWriter(new FileOutputStream("Files//" + filename + ".csv"), "UTF-8"));
-		cw.flush();
+		File file = new File("Files//" + filename + ".csv");
 
-		cw.writeNext(columns.split(","));
+		if (file.exists() && file.isFile()) {
+			CSVWriter cw = new CSVWriter(new OutputStreamWriter(new FileOutputStream("Files//" + filename + ".csv"), "UTF-8"));
+			cw.flush();
 
-		cw.close();
+			cw.writeNext(columns.split(","));
 
-		System.out.println(filename + ".csv has been cleared successfully.");
+			cw.close();
+
+			System.out.println(filename + ".csv has been cleared successfully.");
+		}
+		else {
+			System.out.println(filename + ".csv does not exist.");
+		}
 	}
 
 	// Write the data from CSV to the database
