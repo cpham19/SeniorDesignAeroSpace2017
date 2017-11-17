@@ -47,6 +47,6 @@ public class Main
 				GUI.setCarSpeed(VCM_Communicator.getCarSpeed());
 				GUI.setServoAngle(VCM_Communicator.getServoAngle());
 			}
-		}, 1,10);
+		}, 1,100);
 	}
 }

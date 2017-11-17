@@ -23,8 +23,8 @@ public class DataPacket
 
 	public String[] toStringArray() {
 
-		System.out.println(time + "," + ultrasonic + "," + L0 + "," + L1 + "," + L2 + "," + xAccel + "," + yAccel + "," + zAccel + "," +
-				xGyro + "," + yGyro + "," + zGyro + "," + xMag + "," + yMag + "," + zMag + "," + state);
+		System.out.println("Time: " + time + " Ulrasonic: " + ultrasonic + " L0: " + L0 + " L1: " + L1 + " L2: " + L2 + " xAccel: " + xAccel + " yAccel: " + yAccel + " zAccel: " + zAccel + " xGyro: " +
+				xGyro + " yGyro: " + yGyro + " zGyro: " + zGyro + " xMag: " + xMag + " yMag: " + yMag + " zMag: " + zMag + " State: " + state);
 
 		return (time + "," + ultrasonic + "," + L0 + "," + L1 + "," + L2 + "," + xAccel + "," + yAccel + "," + zAccel + "," +
 				xGyro + "," + yGyro + "," + zGyro + "," + xMag + "," + yMag + "," + zMag + "," + state).split(",");
