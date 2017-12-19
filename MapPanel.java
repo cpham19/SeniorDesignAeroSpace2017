@@ -50,7 +50,7 @@ public class MapPanel extends JPanel
 		this.grid = grid;
 		this.width = width;
 		this.height = height;
-		grid.setPositionValueToColorValue(0, 0, 1);
+		grid.setPositionValueToColorValue(5, 5, 1);
 	}
 
 	// this is where the panel will  be drawn (this is ran automatically)

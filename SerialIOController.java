@@ -75,20 +75,20 @@ public class SerialIOController implements SerialPortEventListener
 				// Format Time
 				double time = (double) (System.currentTimeMillis() - startingTime) / 1000;
 
-				if (!firstRecord) {
-					dc.writeToCSV("Sample", oldPacket);
-				}
+//				if (!firstRecord) {
+//					dc.writeToCSV("Sample", oldPacket);
+//				}
 
 				DataPacket packet = new DataPacket(time, ultrasonic, L0, L1, L2, xAccel, yAccel, zAccel,
-						xGyro, yGyro, zGyro, xMag, yMag, zMag, state);
+						xGyro, yGyro, zGyro, xMag, yMag, zMag, servoAngle, state);
 
 				// Add DataPacket to CSV file
 				dc.writeToCSV("Sample", packet);
 
-				oldPacket = packet;
-				if (firstRecord) {
-					firstRecord = false;
-				}
+//				oldPacket = packet;
+//				if (firstRecord) {
+//					firstRecord = false;
+//				}
 				//dc.writeToDatabase("aria_data", packet);
 
 				count++;

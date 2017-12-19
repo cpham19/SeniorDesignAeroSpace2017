@@ -7,6 +7,8 @@ import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.TooManyListenersException;
 
 import javax.swing.JButton;
@@ -31,9 +33,9 @@ public class GUIController extends JFrame
 	private int manualButtonX = 0;
 	private int manualButtonY = 570;
 	private String currentState;
-	private int carSpeed = 0;
-	private int servoAngle = 0;
-	SerialIOController sioc;
+	private static int carSpeed = 0;
+	private static int servoAngle = 0;
+	static SerialIOController sioc;
 	PyScriptRunner runner;
 
 	// Area Map for value recording
@@ -49,16 +51,16 @@ public class GUIController extends JFrame
 	private JButton down = new JButton("Backward");
 	private JButton right = new JButton("Right");
 	private JButton stop = new JButton("Stop");
-	private JLabel carSpeedLabel = new JLabel("CarSpeed: " + carSpeed);
-	private JLabel servoAngleLabel = new JLabel("Servo Angle: " + carSpeed);
+	private static JLabel carSpeedLabel = new JLabel("CarSpeed: " + carSpeed);
+	private static JLabel servoAngleLabel = new JLabel("Servo Angle: " + carSpeed);
 	private JButton decreaseCarSpeed = new JButton();
 	private JButton increaseCarSpeed = new JButton();
 	private JButton rotateServoLeft = new JButton();
 	private JButton rotateServoRight = new JButton();
 	private JButton autoPilotMode = new JButton("Autopilot");
 	private JButton manualMode = new JButton("Manual");
-	private JButton trainingMode = new JButton("Training");
-	private JButton runScript = new JButton("Run Script");
+	private JButton collectMode = new JButton("Collect Data");
+	private JButton trainingMode = new JButton();
 
 	// public constructor
 	public GUIController(int width, int height, SerialIOController sioc, PyScriptRunner runner)
@@ -76,6 +78,8 @@ public class GUIController extends JFrame
 
 		this.sioc = sioc;
 		this.runner = runner;
+
+		updateInfoSchedule();
 	}
 	//
 	public void InitializeButtons()
@@ -88,8 +92,9 @@ public class GUIController extends JFrame
 		stop.setBackground(Color.RED);
 		autoPilotMode.setBackground(Color.WHITE);
 		manualMode.setBackground(Color.WHITE);
+		collectMode.setFont(new Font("Dialog", Font.PLAIN, 10));
+		collectMode.setBackground(Color.WHITE);
 		trainingMode.setBackground(Color.WHITE);
-		runScript.setBackground(Color.WHITE);
 
 		decreaseCarSpeed.setLayout(new BorderLayout());
 		decreaseCarSpeed.add(BorderLayout.NORTH, new JLabel("Decrease"));
@@ -102,11 +107,17 @@ public class GUIController extends JFrame
 		increaseCarSpeed.add(BorderLayout.SOUTH, new JLabel("Speed"));
 		increaseCarSpeed.setBackground(Color.WHITE);
 
+		trainingMode.setLayout(new BorderLayout());
+		trainingMode.add(BorderLayout.NORTH, new JLabel("Training"));
+		trainingMode.add(BorderLayout.CENTER, new JLabel("Testing"));
+		trainingMode.setBackground(Color.WHITE);
+
 		rotateServoLeft.setLayout(new BorderLayout());
 		rotateServoLeft.add(BorderLayout.NORTH, new JLabel("Rotate"));
 		rotateServoLeft.add(BorderLayout.CENTER, new JLabel("Servo"));
 		rotateServoLeft.add(BorderLayout.SOUTH, new JLabel("Left"));
 		rotateServoLeft.setBackground(Color.WHITE);
+
 		rotateServoRight.setLayout(new BorderLayout());
 		rotateServoRight.add(BorderLayout.NORTH, new JLabel("Rotate"));
 		rotateServoRight.add(BorderLayout.CENTER, new JLabel("Servo"));
@@ -127,8 +138,8 @@ public class GUIController extends JFrame
 		rotateServoRight.setBounds(manualButtonX + 300, manualButtonY - 100, 100, 100);
 		manualMode.setBounds(manualButtonX, manualButtonY, 100, 100);
 		autoPilotMode.setBounds(manualButtonX + 100, manualButtonY, 100, 100);
-		trainingMode.setBounds(manualButtonX + 200, manualButtonY, 100, 100);
-		runScript.setBounds(manualButtonX + 300, manualButtonY, 100, 100);
+		collectMode.setBounds(manualButtonX + 200, manualButtonY, 100, 100);
+		trainingMode.setBounds(manualButtonX + 300, manualButtonY, 100, 100);
 
 		// set bound of all labels
 		carSpeedLabel.setBounds(manualButtonX, manualButtonY - 200, 200, 100);
@@ -152,8 +163,8 @@ public class GUIController extends JFrame
 		this.add(rotateServoRight);
 		this.add(manualMode);
 		this.add(autoPilotMode);
+		this.add(collectMode);
 		this.add(trainingMode);
-		this.add(runScript);
 
 		// add action listeners to the buttons
 		left.addActionListener(new ActionListener()
@@ -255,15 +266,15 @@ public class GUIController extends JFrame
 			}
 		});
 
-		trainingMode.addActionListener(new ActionListener()
+		collectMode.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent arg0)
 			{
-				if (trainingMode.getText() == "Training") {
+				if (collectMode.getText().equals("Collect Data")) {
 					try {
-						sioc.listenData();;
-						trainingMode.setText("Stop Training");
-						trainingMode.setBackground(Color.RED);
+						sioc.listenData();
+						collectMode.setText("Stop");
+						collectMode.setBackground(Color.RED);
 					} catch (TooManyListenersException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -272,9 +283,9 @@ public class GUIController extends JFrame
 				else {
 					try
 					{
-						sioc.ignoreData();;
-						trainingMode.setText("Training");
-						trainingMode.setBackground(Color.WHITE);
+						sioc.ignoreData();
+						collectMode.setText("Collect Data");
+						collectMode.setBackground(Color.WHITE);
 					}
 					catch (TooManyListenersException e)
 					{
@@ -285,7 +296,7 @@ public class GUIController extends JFrame
 			}
 		});
 
-		runScript.addActionListener(new ActionListener()
+		trainingMode.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent arg0)
 			{
@@ -344,13 +355,11 @@ public class GUIController extends JFrame
 	 * regarding the current button that has been chosen
 	 */
 
-	public void setCarSpeed(int carSpeed) {
-		this.carSpeed = carSpeed;
+	public static void setCarSpeed(int carSpeed) {
 		carSpeedLabel.setText("Car Speed: " + carSpeed);
 	}
 
-	public void setServoAngle(int servoAngle) {
-		this.servoAngle = servoAngle;
+	public static void setServoAngle(int servoAngle) {
 		servoAngleLabel.setText("Servo angle: " + servoAngle);
 	}
 
@@ -359,4 +368,18 @@ public class GUIController extends JFrame
 		return currentState;
 	}
 
+	public static void updateInfoSchedule()
+	{
+		// this creates a Timer schedule that will basically run every 60 milisecond starting at 1 second
+		Timer timer = new Timer ();
+		timer.schedule(new TimerTask(){
+			@Override
+			public void run()// randomly set pGrid
+			{
+				// pull messages from the IO and send them to the GUI
+				setCarSpeed(sioc.getCarSpeed());
+				setServoAngle(sioc.getServoAngle());
+			}
+		}, 1,100);
+	}
 }

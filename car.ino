@@ -366,6 +366,6 @@ void loop() {
     DataPacket packet(distance, left, middle, right, ax, ay, az, gx, gy, gz, mx, my, mz, state, carSpeed, servoAngle);
     packet.print();
   
-    delay(500);
+    delay(200);
 }
 

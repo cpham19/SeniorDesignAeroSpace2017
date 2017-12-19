@@ -31,22 +31,5 @@ public class Main
 
 		// create a GUI controller (Automatically opens itself
 		GUI = new GUIController(GUIWidth,GUIHeight, VCM_Communicator, ScriptRunner);
-
-		updateInfoSchedule();
-	}
-
-	public static void updateInfoSchedule()
-	{
-		// this creates a Timer schedule that will basically run every 60 milisecond starting at 1 second
-		Timer timer = new Timer ();
-		timer.schedule(new TimerTask(){
-			@Override
-			public void run()// randomly set pGrid
-			{
-				// pull messages from the IO and send them to the GUI
-				GUI.setCarSpeed(VCM_Communicator.getCarSpeed());
-				GUI.setServoAngle(VCM_Communicator.getServoAngle());
-			}
-		}, 1,100);
 	}
 }
