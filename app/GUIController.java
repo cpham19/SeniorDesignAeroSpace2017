@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import java.util.TooManyListenersException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.Border;
@@ -67,10 +69,12 @@ public class GUIController extends JFrame
 	// public constructor
 	public GUIController(int width, int height, SerialIOController sioc, PyScriptRunner runner)
 	{
+		// set size of self
+		this.setSize(width,height);
 		this.setLayout(null);
 		// INITIALIZE ANYTHING THAT NEEDS TO BE INTIALIZED
-		init(width, height);
-
+		initialize();
+		
 		// set Visible // and close on exit (To prevent memory leaks, etc )
 		this.setVisible(true);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -174,7 +178,7 @@ public class GUIController extends JFrame
 			{
 				currentState = "Left";
 				sioc.SerialWrite('l');
-				outputTextArea.append(getCurrentLocalDateTimeStamp() + "User pressed left button. \n");
+				outputTextArea.append(getCurrentLocalDateTimeStamp() + "User pressed left button.\n");
 			}
 		});
 
@@ -184,7 +188,7 @@ public class GUIController extends JFrame
 			{
 				currentState = "Right";
 				sioc.SerialWrite('r');
-				outputTextArea.append(getCurrentLocalDateTimeStamp() + "User pressed right button. \n");
+				outputTextArea.append(getCurrentLocalDateTimeStamp() + "User pressed right button.\n");
 			}
 		});
 
@@ -194,7 +198,7 @@ public class GUIController extends JFrame
 			{
 				currentState = "Forward";
 				sioc.SerialWrite('f');
-				outputTextArea.append(getCurrentLocalDateTimeStamp() + "User pressed forward button. \n");
+				outputTextArea.append(getCurrentLocalDateTimeStamp() + "User pressed forward button.\n");
 			}
 		});
 
@@ -202,9 +206,9 @@ public class GUIController extends JFrame
 		{
 			public void actionPerformed(ActionEvent arg0)
 			{
-				currentState = "Back";
+				currentState = "Backward";
 				sioc.SerialWrite('b');
-				outputTextArea.append(getCurrentLocalDateTimeStamp() + "User pressed backward button. \n");
+				outputTextArea.append(getCurrentLocalDateTimeStamp() + "User pressed backward button.\n");
 			}
 		});
 
@@ -214,7 +218,7 @@ public class GUIController extends JFrame
 			{
 				currentState = "Stop";
 				sioc.SerialWrite('s');
-				outputTextArea.append(getCurrentLocalDateTimeStamp() + "User pressed stop button. \n");
+				outputTextArea.append(getCurrentLocalDateTimeStamp() + "User pressed stop button.\n");
 			}
 		});
 
@@ -222,9 +226,33 @@ public class GUIController extends JFrame
 		{
 			public void actionPerformed(ActionEvent arg0)
 			{
-				currentState = "Manual Mode";
-				sioc.SerialWrite('m');
-				outputTextArea.append(getCurrentLocalDateTimeStamp() + "User pressed Manual button. \n");
+				up.setVisible(true);
+				up.setEnabled(true);
+				down.setVisible(true);
+				down.setEnabled(true);
+				left.setVisible(true);
+				left.setEnabled(true);
+				right.setVisible(true);
+				right.setEnabled(true);
+				stop.setVisible(true);
+				stop.setEnabled(true);
+				increaseCarSpeed.setVisible(true);
+				increaseCarSpeed.setEnabled(true);
+				decreaseCarSpeed.setVisible(true);
+				decreaseCarSpeed.setEnabled(true);
+				rotateServoLeft.setVisible(true);
+				rotateServoLeft.setEnabled(true);
+				rotateServoRight.setVisible(true);
+				rotateServoRight.setEnabled(true);
+				autoPilotMode.setVisible(true);
+				autoPilotMode.setEnabled(true);
+				collectMode.setVisible(true);
+				collectMode.setEnabled(true);
+				trainingMode.setVisible(true);
+				trainingMode.setEnabled(true);
+				sioc.initialize();
+				sioc.SerialWrite('s');
+				outputTextArea.append(getCurrentLocalDateTimeStamp() + "User pressed Manual button.\n");
 			}
 		});
 
@@ -232,9 +260,38 @@ public class GUIController extends JFrame
 		{
 			public void actionPerformed(ActionEvent arg0)
 			{
-				currentState = "Autopilot Mode";
-				sioc.SerialWrite('t');
-				outputTextArea.append(getCurrentLocalDateTimeStamp() + "User pressed Autopilot button. \n");
+				if (collectMode.getText().equals("Stop")) {
+					JOptionPane.showMessageDialog(null, "Stop collecting data if you want to use Autopilot mode.");
+				}
+				else {
+					up.setVisible(false);
+					up.setEnabled(false);
+					down.setVisible(false);
+					down.setEnabled(false);
+					left.setVisible(false);
+					left.setEnabled(false);
+					right.setVisible(false);
+					right.setEnabled(false);
+					stop.setVisible(false);
+					stop.setEnabled(false);
+					increaseCarSpeed.setVisible(false);
+					increaseCarSpeed.setEnabled(false);
+					decreaseCarSpeed.setVisible(false);
+					decreaseCarSpeed.setEnabled(false);
+					rotateServoLeft.setVisible(false);
+					rotateServoLeft.setEnabled(false);
+					rotateServoRight.setVisible(false);
+					rotateServoRight.setEnabled(false);
+					autoPilotMode.setVisible(false);
+					autoPilotMode.setEnabled(false);
+					collectMode.setVisible(false);
+					collectMode.setEnabled(false);
+					trainingMode.setVisible(false);
+					trainingMode.setEnabled(false);
+					sioc.SerialWrite('3');
+					sioc.close();
+					outputTextArea.append(getCurrentLocalDateTimeStamp() + "User pressed Autopilot button.\n");
+				}
 			}
 		});
 
@@ -242,9 +299,8 @@ public class GUIController extends JFrame
 		{
 			public void actionPerformed(ActionEvent arg0)
 			{
-				currentState = "Decreasing speed";
 				sioc.SerialWrite('d');
-				outputTextArea.append(getCurrentLocalDateTimeStamp() + "User pressed Decrease Car Speed button. \n");
+				outputTextArea.append(getCurrentLocalDateTimeStamp() + "User pressed Decrease Car Speed button.\n");
 			}
 		});
 
@@ -252,9 +308,8 @@ public class GUIController extends JFrame
 		{
 			public void actionPerformed(ActionEvent arg0)
 			{
-				currentState = "Increasing speed";
 				sioc.SerialWrite('i');
-				outputTextArea.append(getCurrentLocalDateTimeStamp() + "User pressed Increase Car Speed button. \n");
+				outputTextArea.append(getCurrentLocalDateTimeStamp() + "User pressed Increase Car Speed button.\n");
 			}
 		});
 
@@ -262,9 +317,8 @@ public class GUIController extends JFrame
 		{
 			public void actionPerformed(ActionEvent arg0)
 			{
-				currentState = "Rotate Servo Left";
 				sioc.SerialWrite('1');
-				outputTextArea.append(getCurrentLocalDateTimeStamp() + "User pressed Rotate Servo Left button. \n");
+				outputTextArea.append(getCurrentLocalDateTimeStamp() + "User pressed Rotate Servo Left button.\n");
 			}
 		});
 
@@ -272,9 +326,8 @@ public class GUIController extends JFrame
 		{
 			public void actionPerformed(ActionEvent arg0)
 			{
-				currentState = "Rotate Servo Right";
 				sioc.SerialWrite('2');
-				outputTextArea.append(getCurrentLocalDateTimeStamp() + "User pressed Rotate Servo Right button. \n");
+				outputTextArea.append(getCurrentLocalDateTimeStamp() + "User pressed Rotate Servo Right button.\n");
 			}
 		});
 
@@ -283,29 +336,16 @@ public class GUIController extends JFrame
 			public void actionPerformed(ActionEvent arg0)
 			{
 				if (collectMode.getText().equals("Collect Data")) {
-					try {
-						sioc.listenData();
-						collectMode.setText("Stop");
-						collectMode.setBackground(Color.RED);
-						outputTextArea.append(getCurrentLocalDateTimeStamp() + "User pressed Collect Data button. \n");
-					} catch (TooManyListenersException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					outputTextArea.append(getCurrentLocalDateTimeStamp() + "User pressed Collect Data button.\n");
+					sioc.SerialWrite('3');
+					collectMode.setText("Stop");
+					collectMode.setBackground(Color.RED);
 				}
 				else {
-					try
-					{
-						sioc.ignoreData();
-						collectMode.setText("Collect Data");
-						collectMode.setBackground(Color.WHITE);
-						outputTextArea.append(getCurrentLocalDateTimeStamp() + "User pressed Stop button. \n");
-					}
-					catch (TooManyListenersException e)
-					{
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					sioc.SerialWrite('3');
+					collectMode.setText("Collect Data");
+					collectMode.setBackground(Color.WHITE);
+					outputTextArea.append(getCurrentLocalDateTimeStamp() + "User pressed Stop button.\n");
 				}
 			}
 		});
@@ -314,8 +354,8 @@ public class GUIController extends JFrame
 		{
 			public void actionPerformed(ActionEvent arg0)
 			{
-				runner.runPyScript();
-				outputTextArea.append(getCurrentLocalDateTimeStamp() + "User pressed Training and Testing button. \n");
+				runner.runTrainingScript();
+				outputTextArea.append(getCurrentLocalDateTimeStamp() + "User pressed Training and Testing button.\n");
 			}
 		});
 	}
@@ -329,10 +369,8 @@ public class GUIController extends JFrame
 		DefaultCaret caret = (DefaultCaret) outputTextArea.getCaret();
 		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
 		scroll.setBounds(0, 600, 910, 180);
-
 		this.add(scroll);
 	}
 
@@ -344,20 +382,16 @@ public class GUIController extends JFrame
 		this.add(explorationMap);
 	}
 
-	public void init(int width, int height)
+	public void initialize()
 	{
-		// set size of self
-		this.setSize(width,height);
-
-		// init buttons
+		// initialize buttons
 		initializeButtons();
 
-		// init TextArea
+		// initialize TextArea
 		initializeTextArea();
 
-		// init Panels
+		// initialize Panels
 		initializePanels();
-		// init
 	}
 
 	/*
@@ -414,6 +448,6 @@ public class GUIController extends JFrame
 				setCarSpeed(sioc.getCarSpeed());
 				setServoAngle(sioc.getServoAngle());
 			}
-		}, 1,100);
+		}, 1,500);
 	}
 }

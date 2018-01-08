@@ -57,7 +57,7 @@ from sklearn.neural_network import MLPClassifier
 # a maximum of 1000 iterations (default = 200)
 # an alpha of 0.5 (default = 0.001)
 # and a random state of 42 (for reproducibility)
-mlp = MLPClassifier(max_iter=1000, alpha = 0.5,hidden_layer_sizes = (13,), random_state=42)
+mlp = MLPClassifier(max_iter=1000, alpha = 0.5,hidden_layer_sizes = (len(feature_cols),), random_state=42)
 print(mlp)
 
 
