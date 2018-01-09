@@ -13,13 +13,23 @@ sample_df = pd.read_csv('Sample.csv');
 sample_df[0::20]
 
 
-# In[11]:
-
-
-# Selected feature columns
+# In[11Selected feature columns
 feature_cols = list(sample_df.columns.values)
 feature_cols.remove('time')
 feature_cols.remove('state')
+#feature_cols.remove('xAccel')
+#feature_cols.remove('yAccel')
+#feature_cols.remove('zAccel')
+#feature_cols.remove('xGyro')
+#feature_cols.remove('yGyro')
+#feature_cols.remove('zGyro')
+#feature_cols.remove('xMag')
+#feature_cols.remove('yMag')
+#feature_cols.remove('zMag')
+#feature_cols.remove('L0')
+#feature_cols.remove('L1')
+#feature_cols.remove('L2')
+#feature_cols.remove('servoAngle')
 
 # Create a feature matrix to show data from these feature columns
 X = sample_df[feature_cols]
@@ -57,7 +67,7 @@ from sklearn.neural_network import MLPClassifier
 # a maximum of 1000 iterations (default = 200)
 # an alpha of 0.5 (default = 0.001)
 # and a random state of 42 (for reproducibility)
-mlp = MLPClassifier(max_iter=1000, alpha = 0.5,hidden_layer_sizes = (13,), random_state=42)
+mlp = MLPClassifier(max_iter=1000, alpha = 0.5,hidden_layer_sizes = (len(feature_cols)), random_state=42)
 print(mlp)
 
 

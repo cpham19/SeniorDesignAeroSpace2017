@@ -8,9 +8,9 @@ public class DataPacket
 {
 	public double time;
 	public double ultrasonic;
-	public boolean L0;
-	public boolean L1;
-	public boolean L2;
+	public int L0;
+	public int L1;
+	public int L2;
 	public double xAccel;
 	public double yAccel;
 	public double zAccel;
@@ -43,7 +43,7 @@ public class DataPacket
 
 	}
 
-	public DataPacket(double time, double ultrasonic, boolean L0, boolean L1, boolean L2, double xAccel, double yAccel, double zAccel,
+	public DataPacket(double time, double ultrasonic, int L0, int L1, int L2, double xAccel, double yAccel, double zAccel,
 			double xGyro, double yGyro, double zGyro, double xMag, double yMag, double zMag, int servoAngle, String state)
 	{
 		this.time = time;
@@ -84,33 +84,33 @@ public class DataPacket
 		this.ultrasonic = ultrasonic;
 	}
 
-	public boolean isL0() {
+	public int isL0() {
 		return L0;
 	}
 
-	public void setL0(boolean L0)
+	public void setL0(int L0)
 	{
 		this.L0 = L0;
 	}
 
 
-	public boolean isL1()
+	public int isL1()
 	{
 		return L1;
 	}
 
 
-	public void setL1(boolean L1)
+	public void setL1(int L1)
 	{
 		this.L1 = L1;
 	}
 
-	public boolean isL2()
+	public int isL2()
 	{
 		return L2;
 	}
 
-	public void setL2(boolean L2)
+	public void setL2(int L2)
 	{
 		this.L2 = L2;
 	}

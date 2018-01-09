@@ -36,20 +36,22 @@ int Echo = A4;
 int Trig = A5; 
 
 // For carspeed
-// 100 is enough to move the car forward and backward (BUT NOT LEFT AND RIGHT)
-// 180 is enough to move the car forward, backward, left, and right
-unsigned char carSpeed = 180; // initial speed of car >=0 to <=255
+// 85 is minimum to move the car forward and backward (BUT NOT LEFT AND RIGHT)
+// 140 is minimum to move the car forward, backward, left, and right
+unsigned char carSpeed = 85; // initial speed of car >=0 to <=255 (forward and backward)
+unsigned char carSpeed2 = 140; // car speed for left and right turns
 int servoAngle = 90;
 char getstr;
 char currentInput;
 String state = "Stop";
+boolean sendDataFlag = false;
 
 class DataPacket {
   private:
     int distance;
-    int left;
-    int middle;
-    int right;
+    String left;
+    String middle;
+    String right;
     double ax;
     double ay;
     double az;
@@ -64,7 +66,7 @@ class DataPacket {
     int servoAngle;
 
   public:
-    DataPacket(int distance1, int left1, int middle1, int right1, double ax1, double ay1, double az1, double gx1, double gy1, double gz1, double mx1, double my1, double mz1, String state1, unsigned char carSpeed1, int servoAngle1)
+    DataPacket(int distance1, int left1, int middle1, int right1, double ax1, double ay1, double az1, double gx1, double gy1, double gz1, double mx1, double my1, double mz1, unsigned char carSpeed1, int servoAngle1, String state1)
     {
         distance = distance1;
         left = left1;
@@ -79,11 +81,11 @@ class DataPacket {
         mx = mx1;
         my = my1;
         mz = mz1;
-        state = state1;
         carSpeed = carSpeed1;
         servoAngle = servoAngle1;
+        state = state1;
     }
-
+    
     void print() {
       // Separate the print values by commas for parsing in DAM
       Serial.print(distance);
@@ -112,11 +114,11 @@ class DataPacket {
       Serial.print(",");
       Serial.print(mz-700,DEC);
       Serial.print(",");
-      Serial.print(state);
-      Serial.print(",");
       Serial.print(carSpeed);
       Serial.print(",");
       Serial.print(servoAngle);
+      Serial.print(",");
+      Serial.print(state);
       Serial.println();
     }
 };
@@ -131,7 +133,6 @@ void forward(){
   digitalWrite(IN3,LOW);
   digitalWrite(IN4,HIGH);
   state = "Forward";
-  Serial.println("Forward");
 }
 
 void back(){
@@ -144,12 +145,11 @@ void back(){
   digitalWrite(IN3,HIGH);
   digitalWrite(IN4,LOW);
   state = "Backward";
-  Serial.println("Back");
 }
 
 void right(){
-  analogWrite(ENA,carSpeed);
-  analogWrite(ENB,carSpeed);
+  analogWrite(ENA,carSpeed2);
+  analogWrite(ENB,carSpeed2);
   //digitalWrite(ENA, HIGH);
   //digitalWrite(ENB,HIGH);
   digitalWrite(IN1,HIGH);
@@ -157,12 +157,11 @@ void right(){
   digitalWrite(IN3,LOW);
   digitalWrite(IN4,LOW);
   state = "Right";
-  Serial.println("Right");
 }
 
 void left(){
-  analogWrite(ENA,carSpeed);
-  analogWrite(ENB,carSpeed);
+  analogWrite(ENA,carSpeed2);
+  analogWrite(ENB,carSpeed2);
   //digitalWrite(ENA,HIGH);
   //digitalWrite(ENB,HIGH);
   digitalWrite(IN1,LOW);
@@ -170,14 +169,12 @@ void left(){
   digitalWrite(IN3,LOW);
   digitalWrite(IN4,HIGH);
   state = "Left";
-  Serial.println("Left");
 }
 
 void stop() {
   digitalWrite(ENA,LOW);
   digitalWrite(ENB,LOW);
   state = "Stop";
-  Serial.println("Stop!");
 }
 
 void rotateServoLeft() {
@@ -195,17 +192,26 @@ void rotateServoRight() {
 }
 
 void decreaseCarSpeed() {
-  if (carSpeed - 10 >= 100) {
-    carSpeed = carSpeed - 10;
+  if (carSpeed - 5 >= 85) {
+    carSpeed = carSpeed - 5;
   }
 }
 
 void increaseCarSpeed() {
-  if (carSpeed + 10 <= 250) {
-    carSpeed = carSpeed + 10;
+  if (carSpeed + 5 <= 250) {
+    carSpeed = carSpeed + 5;
   }
 }
 
+void sendData() {
+  if (sendDataFlag == false) {
+    sendDataFlag = true;
+  }
+  else {
+    sendDataFlag = false;
+  }
+}
+ 
 //Ultrasonic distance measurement Sub function
 int Distance_test() {
   digitalWrite(Trig, LOW);   
@@ -223,7 +229,6 @@ void readIncomingSerial()
   if(Serial.available()>0)
   {
     currentInput = Serial.read();
-    Serial.println("Received input");
     switch(currentInput){
      case 'f': forward(); break;
      case 'b': back();   break;
@@ -232,6 +237,7 @@ void readIncomingSerial()
      case 's': stop();   break;
      case '1': rotateServoLeft(); break;
      case '2': rotateServoRight(); break;
+     case '3': sendData(); break;
      case 'd': decreaseCarSpeed(); break;
      case 'i': increaseCarSpeed(); break;
      default:  break;
@@ -269,6 +275,8 @@ void I2CwriteByte(uint8_t Address, uint8_t Register, uint8_t Data)
 void setup() { 
   // Arduino initializations
   Wire.begin();
+
+  // USB Serial Port 0
   Serial.begin(115200);
 
   // attach servo on pin 3 to servo object
@@ -306,24 +314,28 @@ void setup() {
   I2CwriteByte(MAG_ADDRESS,0x0A,0x16);
   pinMode(13, OUTPUT);
 
+  // Turn Ultrasonic Sonic to 90 degrees
+  myservo.write(servoAngle);
+  
   stop();
 }
 
 void loop() {
-    // Turn Ultrasonic Sonic to 90 degrees
-    myservo.write(servoAngle);
-     
     // Method to read input from user from DAM for controlling car
     readIncomingSerial();
+
+    if (sendDataFlag == false) {
+      return;
+    }
     
     // Method that returns ultrasonic data in centimeters
     int distance = Distance_test();
   
-    // Line-tracking data returns 0's and 1's
+    // Line-tracking data returns 0's and 1's so we need to convert it to String
     int left = LT_L;
     int middle = LT_M;
     int right = LT_R;
-
+    
     // 9 degrees of freedom data
     
     // Read accelerometer and gyroscope
@@ -363,9 +375,9 @@ void loop() {
     int16_t mz=-(Mag[5]<<8 | Mag[4]);
 
     // Create a DataPacket object and print its data to the DAM
-    DataPacket packet(distance, left, middle, right, ax, ay, az, gx, gy, gz, mx, my, mz, state, carSpeed, servoAngle);
+    DataPacket packet(distance, left, middle, right, ax, ay, az, gx, gy, gz, mx, my, mz, carSpeed, servoAngle, state);
     packet.print();
   
-    delay(300);
+    delay(200);
 }
 

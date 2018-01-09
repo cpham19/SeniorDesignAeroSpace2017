@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -20,7 +21,7 @@ import javax.script.SimpleScriptContext;
 public class PyScriptRunner
 {
 	private String nameOfScript = "MLP.py";
-	private String pathToPythonScripts= "cd Files & " + nameOfScript;
+	private String pathToPythonScripts= "cd src/Files & " + nameOfScript;
 	String s = null;
 
 	public PyScriptRunner()
@@ -30,18 +31,18 @@ public class PyScriptRunner
 
 	public void makeDirectory() {
 		try {
-			Path path = Paths.get("Files");
+			Path path = Paths.get("src/Files");
 
 			if (Files.exists(path)) {
-			    System.out.println("Please put your Python scripts in \"Files\" in your project folder.");
-			    System.out.println("This is where CSV files and Python scripts should be located.");
+			    GUIController.outputTextArea.append("Please put your Python scripts in \"Files\" in your project's src folder.\n");
+			    GUIController.outputTextArea.append("This is where CSV files and Python scripts should be located.\n");
 			    return;
 			}
 
 			ArrayList<String> commands = new ArrayList<>();
 			commands.add("cmd.exe");
 			commands.add("/c");
-			commands.add("mkdir Files");
+			commands.add("mkdir src/Files");
 			commands.add("start");
 
 			ProcessBuilder pb = new ProcessBuilder(commands);
@@ -50,15 +51,15 @@ public class PyScriptRunner
 
 			Process p = pb.start();
 
-			System.out.println("Created a folder called \"Files\" in your project folder.");
-			System.out.println("This is where CSV files and Python scripts should be located.");
+			 GUIController.outputTextArea.append("Created a folder called \"Files\" in your project folder.\n");
+			 GUIController.outputTextArea.append("This is where CSV files and Python scripts should be located.\n");
 		}
 		catch (Exception e) {
-			System.err.println("CMD commands didn't run.");
+			 GUIController.outputTextArea.append("CMD commands didn't run.\n");
 		}
 	}
 
-	public void runPyScript()
+	public void runTrainingScript()
 	{
 		try
 		{
@@ -76,11 +77,11 @@ public class PyScriptRunner
 
 			Process p = pb.start();
 
-			System.out.println("Ran python script");
+			 GUIController.outputTextArea.append("Ran python script\n");
 		}
 		catch(Exception e)
 		{
-			System.err.println("Python script didn't run.");
+			 GUIController.outputTextArea.append("Python script didn't run.\n");
 		}
 	}
 }

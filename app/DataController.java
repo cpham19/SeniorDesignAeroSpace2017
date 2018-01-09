@@ -9,6 +9,8 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.StringWriter;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -31,7 +33,7 @@ public class DataController
 	// return an ArrayList of DataPackets from the file assume path is local
 	public static ArrayList<DataPacket> readFromCSV(String filename)
 	{
-		String filePath = System.getProperty("Files//" + filename + ".csv");
+		String filePath = System.getProperty("src/Files/" + filename + ".csv");
 		CSVReader reader = null;
 		ArrayList<DataPacket> data = new ArrayList<>();
 
@@ -47,9 +49,9 @@ public class DataController
 			{
 				double time = Double.parseDouble(element[0]);
 				double ultrasonic = Double.parseDouble(element[1]);
-				boolean L0 = Boolean.parseBoolean(element[2]);
-				boolean L1 = Boolean.parseBoolean(element[3]);
-				boolean L2 = Boolean.parseBoolean(element[4]);
+				int L0 = Integer.parseInt(element[2]);
+				int L1 = Integer.parseInt(element[3]);
+				int L2 = Integer.parseInt(element[4]);
 				double xAccel = Double.parseDouble(element[5]);
 				double yAccel = Double.parseDouble(element[6]);
 				double zAccel = Double.parseDouble(element[7]);
@@ -94,7 +96,7 @@ public class DataController
 
 		try
 		{
-			fw = new FileWriter("Files//" + filename + ".csv", true);
+			fw = new FileWriter("src/Files/" + filename + ".csv", true);
 			cw = new CSVWriter(fw);
 
 			cw.writeNext(packet.toStringArray());
@@ -121,20 +123,20 @@ public class DataController
 	// Clear the contents of CSV file
 	public static void clearCSV(String filename) throws Exception
 	{
-		File file = new File("Files//" + filename + ".csv");
+		File file = new File("src/Files/" + filename + ".csv");
 
 		if (file.exists() && file.isFile()) {
-			CSVWriter cw = new CSVWriter(new OutputStreamWriter(new FileOutputStream("Files//" + filename + ".csv"), "UTF-8"));
+			CSVWriter cw = new CSVWriter(new OutputStreamWriter(new FileOutputStream("src/Files/" + filename + ".csv"), "UTF-8"));
 			cw.flush();
 
 			cw.writeNext(columns.split(","));
 
 			cw.close();
 
-			System.out.println(filename + ".csv has been cleared successfully.");
+			 GUIController.outputTextArea.append(filename + ".csv has been cleared successfully.\n");
 		}
 		else {
-			System.out.println(filename + ".csv does not exist.");
+			 GUIController.outputTextArea.append(filename + ".csv does not exist.\n");
 		}
 	}
 
@@ -156,9 +158,9 @@ public class DataController
 
 			pstmt.setDouble(1, packet.getTime());
 			pstmt.setDouble(2, packet.getUltrasonic());
-			pstmt.setBoolean(3, packet.isL0());
-			pstmt.setBoolean(4, packet.isL1());
-			pstmt.setBoolean(5, packet.isL2());
+			pstmt.setInt(3, packet.isL0());
+			pstmt.setInt(4, packet.isL1());
+			pstmt.setInt(5, packet.isL2());
 			pstmt.setDouble(6, packet.getxAccel());
 			pstmt.setDouble(7, packet.getyAccel());
 			pstmt.setDouble(8, packet.getzAccel());
@@ -178,7 +180,7 @@ public class DataController
 		}
 		catch (Exception e)
 		{
-			System.out.println(e);
+			GUIController.outputTextArea.append(e.toString() + "\n");
 		}
 		finally
 		{
@@ -191,7 +193,7 @@ public class DataController
 			}
 			catch (Exception e)
 			{
-				System.out.println(e);
+				GUIController.outputTextArea.append(e.toString() + "\n");
 			}
 		}
 	}
@@ -216,20 +218,20 @@ public class DataController
 
 			while (rs.next())
 			{
-				DataPacket packet = new DataPacket(rs.getDouble("time"), rs.getDouble("ultrasonic"), rs.getBoolean("L0"), rs.getBoolean("L1"), rs.getBoolean("L2"),
+				DataPacket packet = new DataPacket(rs.getDouble("time"), rs.getDouble("ultrasonic"), rs.getInt("L0"), rs.getInt("L1"), rs.getInt("L2"),
 						rs.getDouble("xAccel"), rs.getDouble("yAccel"), rs.getDouble("zAccel"), rs.getDouble("xGyro"), rs.getDouble("yGyro"), rs.getDouble("zGyro"),
 						rs.getDouble("xMag"), rs.getDouble("yMag"), rs.getDouble("zMag"), rs.getInt("servoAngle"), rs.getString("state"));
 
 				data.add(packet);
 			}
 
-			System.out.println("Read from the database successfully.");
+			 GUIController.outputTextArea.append("Read from the database successfully.\n");
 
 			c.close();
 		}
 		catch (Exception e)
 		{
-			System.out.println(e);
+			GUIController.outputTextArea.append(e.toString() + "\n");
 		}
 		finally
 		{
@@ -242,7 +244,7 @@ public class DataController
 			}
 			catch (Exception e)
 			{
-				System.out.println(e);
+				GUIController.outputTextArea.append(e.toString() + "\n");
 			}
 		}
 
@@ -267,13 +269,13 @@ public class DataController
 
 			pstmt.executeUpdate();
 
-			System.out.println("TABLE " + tableName + " has been cleared.");
+			GUIController.outputTextArea.append("TABLE " + tableName + " has been cleared.\n");
 
 			c.close();
 		}
 		catch (Exception e)
 		{
-			System.out.println(e);
+			GUIController.outputTextArea.append(e.toString() + "\n");
 		}
 		finally
 		{
@@ -286,7 +288,7 @@ public class DataController
 			}
 			catch (Exception e)
 			{
-				System.out.println(e);
+				GUIController.outputTextArea.append(e.toString() + "\n");
 			}
 		}
 	}

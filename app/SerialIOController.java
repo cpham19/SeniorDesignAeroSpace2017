@@ -23,11 +23,9 @@ public class SerialIOController implements SerialPortEventListener
 	final int dataRate = 115200; // general Braud width
 	final long startingTime = System.currentTimeMillis();
 	private DataController dc = new DataController();
-	private int count = 0;
+	private int count = 1;
 	private int carSpeed = 0;
 	private int servoAngle = 0;
-	DataPacket oldPacket;
-	boolean firstRecord = true;
 
 	private static final String PORT_NAMES[] = {
 			"/dev/tty.usbserial-A9007UX1", // Mac OS X
@@ -56,9 +54,9 @@ public class SerialIOController implements SerialPortEventListener
 
 				// Parsing String messages (Sensor data) to double and Booleans
 				double ultrasonic = Double.parseDouble(inputLine[0]);
-				boolean L0 = convertToBoolean(Integer.parseInt(inputLine[1]));
-				boolean L1 = convertToBoolean(Integer.parseInt(inputLine[2]));
-				boolean L2 = convertToBoolean(Integer.parseInt(inputLine[3]));
+				Integer L0 = Integer.parseInt(inputLine[1]);
+				Integer L1 = Integer.parseInt(inputLine[2]);
+				Integer L2 = Integer.parseInt(inputLine[3]);
 				double xAccel = Double.parseDouble(inputLine[4]);
 				double yAccel = Double.parseDouble(inputLine[5]);
 				double zAccel = Double.parseDouble(inputLine[6]);
@@ -68,9 +66,9 @@ public class SerialIOController implements SerialPortEventListener
 				double xMag = Double.parseDouble(inputLine[10]);
 				double yMag = Double.parseDouble(inputLine[11]);
 				double zMag = Double.parseDouble(inputLine[12]);
-				String state = inputLine[13];
-				carSpeed = Integer.parseInt(inputLine[14]);
-				servoAngle = Integer.parseInt(inputLine[15]);
+				carSpeed = Integer.parseInt(inputLine[13]);
+				servoAngle = Integer.parseInt(inputLine[14]);
+				String state = inputLine[15];
 
 				// Format Time
 				double time = (double) (System.currentTimeMillis() - startingTime) / 1000;
@@ -78,7 +76,7 @@ public class SerialIOController implements SerialPortEventListener
 				DataPacket packet = new DataPacket(time, ultrasonic, L0, L1, L2, xAccel, yAccel, zAccel,
 						xGyro, yGyro, zGyro, xMag, yMag, zMag, servoAngle, state);
 
-				GUIController.outputTextArea.append(packet.toString() + "\n");
+				GUIController.outputTextArea.append(count + ") " + packet.toString() + "\n");
 
 				// Add DataPacket to CSV file
 				dc.writeToCSV("Sample", packet);
@@ -93,16 +91,6 @@ public class SerialIOController implements SerialPortEventListener
 			}
 		}
 	}
-
-	public boolean convertToBoolean(int number) {
-		if (number == 1) {
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-
 
 	public void initialize()
 	{
@@ -124,7 +112,7 @@ public class SerialIOController implements SerialPortEventListener
 		}
 		if (portId == null)
 		{
-			System.out.println("Could not find COM port.");
+			GUIController.outputTextArea.append("Could not find COM port.\n");
 			return;
 		}
 
@@ -145,22 +133,11 @@ public class SerialIOController implements SerialPortEventListener
 
 			// add event listeners
 			serialPort.addEventListener(this);
+			serialPort.notifyOnDataAvailable(true);
 		}
 		catch (Exception e)
 		{
-			System.err.println(e.toString());
-		}
-	}
-
-	public synchronized void listenData() throws TooManyListenersException {
-		if (serialPort != null) {
-			serialPort.notifyOnDataAvailable(true);
-		}
-	}
-
-	public synchronized void ignoreData() throws TooManyListenersException {
-		if (serialPort != null) {
-			serialPort.notifyOnDataAvailable(false);
+			GUIController.outputTextArea.append("The COM Port is being used by another application!");
 		}
 	}
 
@@ -187,7 +164,7 @@ public class SerialIOController implements SerialPortEventListener
 		}
 		catch(Exception e)
 		{
-			System.err.println(e.getMessage());
+			GUIController.outputTextArea.append(e.getMessage());
 		}
 	}
 }
