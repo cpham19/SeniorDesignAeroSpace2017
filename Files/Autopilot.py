@@ -15,7 +15,7 @@ import time
 print("Creating a trained model from the Sample.csv file...")
 
 # Creating a dataframe from the Sample.csv and displaying every 20th data from the dataframe
-sample_df = pd.read_csv('C:/Users/Calvin/Documents/JupNotebookStuff/Sample.csv');
+sample_df = pd.read_csv('Sample.csv');
 
 
 # In[ ]:
@@ -62,10 +62,8 @@ ser = serial.Serial(
     timeout=1
 )
 
-time.sleep(1)
-ser.write(bytes(b'3'))
-
-time.sleep(1)
+print("Serial port is opened.. Waiting three seconds for initialization")
+time.sleep(3)
 
 var = 1
 
@@ -79,15 +77,7 @@ while (1):
         
         modifiedInputLine = np.array(modifiedInputLine)
         modifiedInputLine = modifiedInputLine.astype(float)
-        modifiedInputLine = modifiedInputLine.reshape(1,-1)
-        
-        y_prediction = mlp.predict(modifiedInputLine)
-        
-        prediction = str(y_prediction[0])
-        print(prediction)
-        
-        modifiedInputLine = np.array(modifiedInputLine)
-        modifiedInputLine = modifiedInputLine.astype(float)
+        print(modifiedInputLine)
         modifiedInputLine = modifiedInputLine.reshape(1,-1)
         
         y_prediction = mlp.predict(modifiedInputLine)
@@ -97,22 +87,17 @@ while (1):
         
         if prediction == "Forward":
             ser.write(bytes(b'f'))
-        elif prediction[0] == "Backward":
+        elif prediction == "Backward":
             ser.write(bytes(b'b'))
-        elif prediction[0] == "Left":
+        elif prediction == "Left":
             ser.write(bytes(b'l'))
-        elif prediction[0] == "Right":
+        elif prediction == "Right":
             ser.write(bytes(b'r'))
-        elif prediction[0] == "Stop":
+        elif prediction == "Stop":
             ser.write(bytes(b's'))
-        
 
+        time.sleep(0.200)
+        
 ser.write(bytes(b's'))
 ser.flush()
 ser.close()
-
-
-# In[ ]:
-
-
-

@@ -20,8 +20,10 @@ import javax.script.SimpleScriptContext;
 
 public class PyScriptRunner
 {
-	private String nameOfScript = "MLP.py";
-	private String pathToPythonScripts= "cd src/Files & " + nameOfScript;
+	private String nameOfTrainingScript = "MLP.py";
+	private String pathToTrainingScript= "cd src/Files & " + nameOfTrainingScript;
+	private String nameOfAutopilotScript = "Autopilot.py";
+	private String pathToAutopilotScript= "cd src/Files & " + nameOfAutopilotScript;
 	String s = null;
 
 	public PyScriptRunner()
@@ -69,7 +71,7 @@ public class PyScriptRunner
 			commands.add("start");
 			commands.add("cmd.exe");
 			commands.add("/k");
-			commands.add(pathToPythonScripts);
+			commands.add(pathToTrainingScript);
 
 			ProcessBuilder pb = new ProcessBuilder(commands);
 
@@ -77,11 +79,37 @@ public class PyScriptRunner
 
 			Process p = pb.start();
 
-			 GUIController.outputTextArea.append("Ran python script\n");
+			 GUIController.outputTextArea.append(GUIController.getCurrentLocalDateTimeStamp() + "Ran python script.\n");
 		}
 		catch(Exception e)
 		{
-			 GUIController.outputTextArea.append("Python script didn't run.\n");
+			 GUIController.outputTextArea.append(GUIController.getCurrentLocalDateTimeStamp() + "Python script didn't run.\n");
+		}
+	}
+	
+	public void runAutomaticScript()
+	{
+		try
+		{
+			ArrayList<String> commands = new ArrayList<>();
+			commands.add("cmd");
+			commands.add("/c");
+			commands.add("start");
+			commands.add("cmd.exe");
+			commands.add("/k");
+			commands.add(pathToAutopilotScript);
+
+			ProcessBuilder pb = new ProcessBuilder(commands);
+
+			pb.redirectErrorStream(true);
+
+			Process p = pb.start();
+
+			 GUIController.outputTextArea.append(GUIController.getCurrentLocalDateTimeStamp() + "Ran python script.\n");
+		}
+		catch(Exception e)
+		{
+			 GUIController.outputTextArea.append(GUIController.getCurrentLocalDateTimeStamp() + "Python script didn't run.\n");
 		}
 	}
 }

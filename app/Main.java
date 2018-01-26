@@ -2,16 +2,12 @@ package app;
 
 public class Main
 {
-	public static CarVector carLoc = new CarVector(0,0,0);
 	public static SerialIOController VCM_Communicator;
 	public static DataController Data_Controller;
 	public static PyScriptRunner ScriptRunner;
 	private static int GUIWidth = 925;
 	private static int GUIHeight = 810;
 	public static GUIController GUI;
-	static final int X = 0;
-	static final int Y = 1;
-	static final int Z = 2;
 
 	public static void main(String args[]) throws Exception
 	{
@@ -19,7 +15,7 @@ public class Main
 		ScriptRunner = new PyScriptRunner();
 		ScriptRunner.makeDirectory();
 
-		Data_Controller.clearCSV("Sample");
+		//Data_Controller.clearCSV("Sample");
 		//Data_Controller.clearDatabase("aria_data");
 
 		// create a Communication controller

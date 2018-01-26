@@ -14,6 +14,8 @@ import gnu.io.SerialPortEventListener;
 import java.util.Enumeration;
 import java.util.TooManyListenersException;
 
+import javax.swing.JTextField;
+
 public class SerialIOController implements SerialPortEventListener
 {
 	SerialPort serialPort;
@@ -24,8 +26,7 @@ public class SerialIOController implements SerialPortEventListener
 	final long startingTime = System.currentTimeMillis();
 	private DataController dc = new DataController();
 	private int count = 1;
-	private int carSpeed = 0;
-	private int servoAngle = 0;
+	public static boolean collectData = false;
 
 	private static final String PORT_NAMES[] = {
 			"/dev/tty.usbserial-A9007UX1", // Mac OS X
@@ -66,8 +67,8 @@ public class SerialIOController implements SerialPortEventListener
 				double xMag = Double.parseDouble(inputLine[10]);
 				double yMag = Double.parseDouble(inputLine[11]);
 				double zMag = Double.parseDouble(inputLine[12]);
-				carSpeed = Integer.parseInt(inputLine[13]);
-				servoAngle = Integer.parseInt(inputLine[14]);
+				int carSpeed = Integer.parseInt(inputLine[13]);
+				int servoAngle = Integer.parseInt(inputLine[14]);
 				String state = inputLine[15];
 
 				// Format Time
@@ -75,15 +76,33 @@ public class SerialIOController implements SerialPortEventListener
 
 				DataPacket packet = new DataPacket(time, ultrasonic, L0, L1, L2, xAccel, yAccel, zAccel,
 						xGyro, yGyro, zGyro, xMag, yMag, zMag, servoAngle, state);
-
-				GUIController.outputTextArea.append(count + ") " + packet.toString() + "\n");
+				
+				GUIController.carSpeedTF.setText("Car Speed: " + carSpeed);
+				GUIController.servoAngleTF.setText("Servo Angle: " + servoAngle);
+				GUIController.stateTF.setText("State: " + state);
+				GUIController.ultraSonicTF.setText("Ult. Sonic: " + ultrasonic);
+				GUIController.L0TF.setText("L0: " + L0);
+				GUIController.L1TF.setText("L1: " + L1);
+				GUIController.L2TF.setText("L2: " + L2);
+				GUIController.xAccelTF.setText("xAccel: " + xAccel);
+				GUIController.yAccelTF.setText("yAccel: " + yAccel);
+				GUIController.zAccelTF.setText("zAccel: " + zAccel);
+				GUIController.xGyroTF.setText("xGyro: " + xGyro);
+				GUIController.yGyroTF.setText("yGyro: " + yGyro);
+				GUIController.zGyroTF.setText("zGyro: " + zGyro);
+				GUIController.xMagTF.setText("xMag: " + xMag);
+				GUIController.yMagTF.setText("yMag: " + yMag);
+				GUIController.zMagTF.setText("zMag: " + zMag);
+				
 
 				// Add DataPacket to CSV file
-				dc.writeToCSV("Sample", packet);
-
-				//dc.writeToDatabase("aria_data", packet);
-
-				count++;
+				
+				if (collectData == true) {
+					dc.writeToCSV("Sample", packet);
+					//dc.writeToDatabase("aria_data", packet);
+					GUIController.outputTextArea.append(count + ") " + packet.toString() + "\n");
+					count++;
+				}
 			}
 			catch (Exception e)
 			{
@@ -146,14 +165,6 @@ public class SerialIOController implements SerialPortEventListener
 			serialPort.removeEventListener();
 			serialPort.close();
 		}
-	}
-
-	public int getCarSpeed() {
-		return carSpeed;
-	}
-
-	public int getServoAngle() {
-		return servoAngle;
 	}
 
 	public synchronized void SerialWrite(char c)

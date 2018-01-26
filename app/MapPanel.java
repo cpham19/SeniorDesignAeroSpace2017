@@ -11,15 +11,6 @@ import javax.swing.JPanel;
 
 public class MapPanel extends JPanel
 {
-
-	private JButton up;
-	private JButton left;
-	private JButton down;
-	private JButton right;
-
-	private JButton roveMode;
-	private JButton manualMode;
-
 	private int xLoc, yLoc;
 	private int width;
 	private int height;
@@ -29,11 +20,6 @@ public class MapPanel extends JPanel
 	private int gridMinY = 10;
 	private int gridMaxX = 910;
 	private int gridMaxY = 510;
-
-	private int textMinX = 410;
-	private int textMinY = 520;
-	private int textMaxX = 910;
-	private int textMaxY = 700;
 
 	AreaMap grid;
 
@@ -61,7 +47,7 @@ public class MapPanel extends JPanel
 	{
 		//draw the black grid background
 		g.setColor(Color.black);
-		g.fillRect(gridMinX,gridMinY, 500, 500);
+		g.fillRect(gridMinX,gridMinY, 500, 390);
 		//draw the mapped grid points
 		paintGridPoints(g,grid);
 	}

@@ -66,6 +66,7 @@ public class DataController
 
 				DataPacket packet = new DataPacket(time, ultrasonic, L0, L1, L2, xAccel, yAccel, zAccel,
 						  xGyro, yGyro, zGyro, xMag, yMag, zMag, servoAngle, state);
+				
 				data.add(packet);
 			}
 		}
@@ -96,10 +97,18 @@ public class DataController
 
 		try
 		{
-			fw = new FileWriter("src/Files/" + filename + ".csv", true);
-			cw = new CSVWriter(fw);
-
-			cw.writeNext(packet.toStringArray());
+			File file = new File("src/Files/" + filename + ".csv");
+			if (!file.exists()) {
+				fw = new FileWriter("src/Files/" + filename + ".csv", true);
+				cw = new CSVWriter(fw);
+				cw.writeNext(columns.split(","));
+				cw.writeNext(packet.toStringArray());
+			}
+			else {
+				fw = new FileWriter("src/Files/" + filename + ".csv", true);
+				cw = new CSVWriter(fw);
+				cw.writeNext(packet.toStringArray());
+			}
 		}
 		catch (Exception e)
 		{
@@ -173,8 +182,6 @@ public class DataController
 			pstmt.setInt(15,  packet.getServoAngle());
 			pstmt.setString(16, packet.getState());
 			pstmt.executeUpdate();
-
-			packet.toStringArray();
 
 			c.close();
 		}

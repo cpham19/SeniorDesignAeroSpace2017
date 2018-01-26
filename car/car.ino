@@ -39,11 +39,11 @@ int Trig = A5;
 // 100 is enough to move the car forward and backward (BUT NOT LEFT AND RIGHT)
 // 180 is enough to move the car forward, backward, left, and right
 unsigned char carSpeed = 90; // initial speed of car >=0 to <=255
+unsigned char carSpeed2 = 150; // initial speed of car >=0 to <=255
 int servoAngle = 90;
 char getstr;
 char currentInput;
 String state = "Stop";
-boolean sendDataFlag = false;
 
 class DataPacket {
   private:
@@ -149,25 +149,25 @@ void back(){
 }
 
 void right(){
-  analogWrite(ENA,carSpeed);
-  analogWrite(ENB,carSpeed);
+  analogWrite(ENA,carSpeed2);
+  analogWrite(ENB,carSpeed2);
   //digitalWrite(ENA, HIGH);
   //digitalWrite(ENB,HIGH);
   digitalWrite(IN1,HIGH);
   digitalWrite(IN2,LOW);
-  digitalWrite(IN3,LOW);
+  digitalWrite(IN3,HIGH);
   digitalWrite(IN4,LOW);
   state = "Right";
   Serial.println("Right");
 }
 
 void left(){
-  analogWrite(ENA,carSpeed);
-  analogWrite(ENB,carSpeed);
+  analogWrite(ENA,carSpeed2);
+  analogWrite(ENB,carSpeed2);
   //digitalWrite(ENA,HIGH);
   //digitalWrite(ENB,HIGH);
   digitalWrite(IN1,LOW);
-  digitalWrite(IN2,LOW);
+  digitalWrite(IN2,HIGH);
   digitalWrite(IN3,LOW);
   digitalWrite(IN4,HIGH);
   state = "Left";
@@ -196,23 +196,14 @@ void rotateServoRight() {
 }
 
 void decreaseCarSpeed() {
-  if (carSpeed - 10 >= 100) {
-    carSpeed = carSpeed - 10;
+  if (carSpeed - 5 >= 90) {
+    carSpeed = carSpeed - 5;
   }
 }
 
 void increaseCarSpeed() {
-  if (carSpeed + 10 <= 250) {
-    carSpeed = carSpeed + 10;
-  }
-}
-
-void sendData() {
-  if (sendDataFlag == false) {
-    sendDataFlag = true;
-  }
-  else {
-    sendDataFlag = false;
+  if (carSpeed + 5 <= 250) {
+    carSpeed = carSpeed + 5;
   }
 }
  
@@ -241,7 +232,6 @@ void readIncomingSerial()
      case 's': stop();   break;
      case '1': rotateServoLeft(); break;
      case '2': rotateServoRight(); break;
-     case '3': sendData(); break;
      case 'd': decreaseCarSpeed(); break;
      case 'i': increaseCarSpeed(); break;
      default:  break;
@@ -328,10 +318,6 @@ void loop() {
     // Method to read input from user from DAM for controlling car
     readIncomingSerial();
 
-    if (sendDataFlag == false) {
-      return;
-    }
-    
     // Method that returns ultrasonic data in centimeters
     int distance = Distance_test();
   
@@ -382,6 +368,6 @@ void loop() {
     DataPacket packet(distance, left, middle, right, ax, ay, az, gx, gy, gz, mx, my, mz, carSpeed, servoAngle, state);
     packet.print();
   
-    delay(500);
+    delay(200);
 }
 

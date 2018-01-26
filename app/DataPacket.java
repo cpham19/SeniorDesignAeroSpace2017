@@ -25,10 +25,6 @@ public class DataPacket
 	public String[] array;
 
 	public String[] toStringArray() {
-
-		System.out.println("Time: " + time + " Ulrasonic: " + ultrasonic + " L0: " + L0 + " L1: " + L1 + " L2: " + L2 + " xAccel: " + xAccel + " yAccel: " + yAccel + " zAccel: " + zAccel + " xGyro: " +
-				xGyro + " yGyro: " + yGyro + " zGyro: " + zGyro + " xMag: " + xMag + " yMag: " + yMag + " zMag: " + zMag + " Servo Angle: " + servoAngle + " State: " + state);
-
 		return (time + "," + ultrasonic + "," + L0 + "," + L1 + "," + L2 + "," + xAccel + "," + yAccel + "," + zAccel + "," +
 				xGyro + "," + yGyro + "," + zGyro + "," + xMag + "," + yMag + "," + zMag + "," + servoAngle + "," + state).split(",");
 	}
