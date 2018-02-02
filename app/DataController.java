@@ -62,7 +62,7 @@ public class DataController
 				double yMag = Double.parseDouble(element[12]);
 				double zMag = Double.parseDouble(element[13]);
 				int servoAngle = Integer.parseInt(element[14]);
-				String state = element[15];
+				int state = Integer.parseInt(element[15]);
 
 				DataPacket packet = new DataPacket(time, ultrasonic, L0, L1, L2, xAccel, yAccel, zAccel,
 						  xGyro, yGyro, zGyro, xMag, yMag, zMag, servoAngle, state);
@@ -180,7 +180,7 @@ public class DataController
 			pstmt.setDouble(13, packet.getyMag());
 			pstmt.setDouble(14, packet.getzMag());
 			pstmt.setInt(15,  packet.getServoAngle());
-			pstmt.setString(16, packet.getState());
+			pstmt.setInt(16, packet.getState());
 			pstmt.executeUpdate();
 
 			c.close();
@@ -227,7 +227,7 @@ public class DataController
 			{
 				DataPacket packet = new DataPacket(rs.getDouble("time"), rs.getDouble("ultrasonic"), rs.getInt("L0"), rs.getInt("L1"), rs.getInt("L2"),
 						rs.getDouble("xAccel"), rs.getDouble("yAccel"), rs.getDouble("zAccel"), rs.getDouble("xGyro"), rs.getDouble("yGyro"), rs.getDouble("zGyro"),
-						rs.getDouble("xMag"), rs.getDouble("yMag"), rs.getDouble("zMag"), rs.getInt("servoAngle"), rs.getString("state"));
+						rs.getDouble("xMag"), rs.getDouble("yMag"), rs.getDouble("zMag"), rs.getInt("servoAngle"), rs.getInt("state"));
 
 				data.add(packet);
 			}

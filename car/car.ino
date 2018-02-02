@@ -41,9 +41,8 @@ int Trig = A5;
 unsigned char carSpeed = 90; // initial speed of car >=0 to <=255
 unsigned char carSpeed2 = 150; // initial speed of car >=0 to <=255
 int servoAngle = 90;
-char getstr;
 char currentInput;
-String state = "Stop";
+int state = 0;
 
 class DataPacket {
   private:
@@ -60,12 +59,12 @@ class DataPacket {
     double mx;
     double my;
     double mz;
-    String state;
+    int state;
     unsigned char carSpeed;
     int servoAngle;
 
   public:
-    DataPacket(int distance1, int left1, int middle1, int right1, double ax1, double ay1, double az1, double gx1, double gy1, double gz1, double mx1, double my1, double mz1, unsigned char carSpeed1, int servoAngle1, String state1)
+    DataPacket(int distance1, int left1, int middle1, int right1, double ax1, double ay1, double az1, double gx1, double gy1, double gz1, double mx1, double my1, double mz1, unsigned char carSpeed1, int servoAngle1, int state1)
     {
         distance = distance1;
         left = left1;
@@ -131,8 +130,7 @@ void forward(){
   digitalWrite(IN2,LOW);
   digitalWrite(IN3,LOW);
   digitalWrite(IN4,HIGH);
-  state = "Forward";
-  Serial.println("Forward");
+  state = 1;
 }
 
 void back(){
@@ -144,8 +142,7 @@ void back(){
   digitalWrite(IN2,HIGH);
   digitalWrite(IN3,HIGH);
   digitalWrite(IN4,LOW);
-  state = "Backward";
-  Serial.println("Backward");
+  state = 2;
 }
 
 void right(){
@@ -157,8 +154,7 @@ void right(){
   digitalWrite(IN2,LOW);
   digitalWrite(IN3,HIGH);
   digitalWrite(IN4,LOW);
-  state = "Right";
-  Serial.println("Right");
+  state = 3;
 }
 
 void left(){
@@ -170,15 +166,13 @@ void left(){
   digitalWrite(IN2,HIGH);
   digitalWrite(IN3,LOW);
   digitalWrite(IN4,HIGH);
-  state = "Left";
-  Serial.println("Left");
+  state = 4;
 }
 
 void stop() {
   digitalWrite(ENA,LOW);
   digitalWrite(ENB,LOW);
-  state = "Stop";
-  Serial.println("Stop");
+  state = 0;
 }
 
 void rotateServoLeft() {
@@ -368,6 +362,6 @@ void loop() {
     DataPacket packet(distance, left, middle, right, ax, ay, az, gx, gy, gz, mx, my, mz, carSpeed, servoAngle, state);
     packet.print();
   
-    delay(200);
+    delay(400);
 }
 

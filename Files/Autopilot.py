@@ -65,8 +65,6 @@ ser = serial.Serial(
 print("Serial port is opened.. Waiting three seconds for initialization")
 time.sleep(3)
 
-var = 1
-
 while (1):
     if len(ser.readline().decode("utf-8").strip().split(",")) == 16:
         # Modified the input line so it doesn't contain the carspeed and the label "state"
@@ -84,17 +82,18 @@ while (1):
         
         prediction = str(y_prediction[0])
         print(prediction)
-        
-        if prediction == "Forward":
-            ser.write(bytes(b'f'))
-        elif prediction == "Backward":
-            ser.write(bytes(b'b'))
-        elif prediction == "Left":
-            ser.write(bytes(b'l'))
-        elif prediction == "Right":
-            ser.write(bytes(b'r'))
-        elif prediction == "Stop":
+
+        # 0 is Stop, 1 is Forward, 2 is Backward, 3 is Right, 4 is Left
+        if prediction == "0":
             ser.write(bytes(b's'))
+        elif prediction == "1":
+            ser.write(bytes(b'f'))
+        elif prediction == "2":
+            ser.write(bytes(b'b'))
+        elif prediction == "3":
+            ser.write(bytes(b'r'))
+        elif prediction == "4":
+            ser.write(bytes(b'l'))
 
         time.sleep(0.200)
         

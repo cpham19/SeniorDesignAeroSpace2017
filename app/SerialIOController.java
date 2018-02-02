@@ -69,7 +69,7 @@ public class SerialIOController implements SerialPortEventListener
 				double zMag = Double.parseDouble(inputLine[12]);
 				int carSpeed = Integer.parseInt(inputLine[13]);
 				int servoAngle = Integer.parseInt(inputLine[14]);
-				String state = inputLine[15];
+				int state = Integer.parseInt(inputLine[15]);
 
 				// Format Time
 				double time = (double) (System.currentTimeMillis() - startingTime) / 1000;
@@ -156,7 +156,7 @@ public class SerialIOController implements SerialPortEventListener
 		}
 		catch (Exception e)
 		{
-			GUIController.outputTextArea.append("The COM Port is being used by another application!");
+			GUIController.outputTextArea.append("The COM Port is being used by another application!\n");
 		}
 	}
 

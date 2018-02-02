@@ -21,7 +21,7 @@ public class DataPacket
 	public double yMag;
 	public double zMag;
 	public int servoAngle;
-	public String state;
+	public int state;
 	public String[] array;
 
 	public String[] toStringArray() {
@@ -40,7 +40,7 @@ public class DataPacket
 	}
 
 	public DataPacket(double time, double ultrasonic, int L0, int L1, int L2, double xAccel, double yAccel, double zAccel,
-			double xGyro, double yGyro, double zGyro, double xMag, double yMag, double zMag, int servoAngle, String state)
+			double xGyro, double yGyro, double zGyro, double xMag, double yMag, double zMag, int servoAngle, int state)
 	{
 		this.time = time;
 		this.ultrasonic = ultrasonic;
@@ -207,17 +207,17 @@ public class DataPacket
 		return servoAngle;
 	}
 
-	public void setState(int servoAngle)
+	public void setServo(int servoAngle)
 	{
 		this.servoAngle = servoAngle;
 	}
 
-	public String getState()
+	public int getState()
 	{
 		return state;
 	}
 
-	public void setState(String state)
+	public void setState(int state)
 	{
 		this.state = state;
 	}

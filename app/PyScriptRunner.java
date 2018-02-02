@@ -22,7 +22,7 @@ public class PyScriptRunner
 {
 	private String nameOfTrainingScript = "MLP.py";
 	private String pathToTrainingScript= "cd src/Files & " + nameOfTrainingScript;
-	private String nameOfAutopilotScript = "Autopilot.py";
+	private String nameOfAutopilotScript = "Autopilot2.py";
 	private String pathToAutopilotScript= "cd src/Files & " + nameOfAutopilotScript;
 	String s = null;
 
