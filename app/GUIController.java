@@ -339,6 +339,8 @@ public class GUIController extends JFrame
 					JOptionPane.showMessageDialog(null, "Stop collecting data if you want to use Autopilot mode.");
 				}
 				else {
+					sioc.close();
+					JOptionPane.showMessageDialog(null, "Unplug the SerialPort. Plug in the bluetooth module. Reset the car. Press okay when you're done.");
 					runner.runAutomaticScript();
 					manualMode.setVisible(true);
 					up.setVisible(false);
@@ -365,8 +367,8 @@ public class GUIController extends JFrame
 					collectMode.setEnabled(false);
 					trainingMode.setVisible(false);
 					trainingMode.setEnabled(false);
-					sioc.close();
 					outputTextArea.append(getCurrentLocalDateTimeStamp() + "User pressed Autopilot button.\n");
+					JOptionPane.showMessageDialog(null, "Plug the SerialPort. Unplug in the bluetooth module. Reset the car. Press okay when you're done.");
 				}
 			}
 		});

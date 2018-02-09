@@ -1,8 +1,10 @@
 import pandas as pd
 import tensorflow as tf
 
-TRAIN_URL = "https://raw.githubusercontent.com/Naturelord/SeniorDesignAeroSpace2017/temp/Files/Sample.csv"
-TEST_URL = "https://raw.githubusercontent.com/Naturelord/SeniorDesignAeroSpace2017/temp/Files/Sample.csv"
+TRAIN_URL = "Sample.csv"
+TEST_URL = "Sample.csv"
+
+# "https://raw.githubusercontent.com/Naturelord/SeniorDesignAeroSpace2017/temp/Files/Sample.csv"
 
 CSV_COLUMN_NAMES = ['ultrasonic', 'L0',
                     'L1', 'L2', 'xAccel', 'yAccel',

@@ -21,6 +21,7 @@ import tensorflow as tf
 import serial
 import time
 import numpy as np
+import keyboard
 
 import sample_data
 
@@ -64,7 +65,7 @@ def main(argv):
     # Generate predictions from the model
     # Opening serial port communcation for Arduino
     ser = serial.Serial(
-        port='COM4',
+        port='COM8',
         baudrate=115200,
         parity=serial.PARITY_NONE,
         stopbits=serial.STOPBITS_ONE,
@@ -78,7 +79,9 @@ def main(argv):
     expected = ['Stop', 'Forward', 'Backward', 'Right', 'Left']
 
     while (1):
-        if len(ser.readline().decode("utf-8").strip().split(",")) == 16:
+        if keyboard.is_pressed('s'):
+            break
+        elif len(ser.readline().decode("utf-8").strip().split(",")) == 16:
             # Modified the input line so it doesn't contain the carspeed and the label "state"
             modifiedInputLine = ser.readline().decode("utf-8").strip().split(",")
             print(modifiedInputLine)
@@ -110,18 +113,14 @@ def main(argv):
                                                     labels=None,
                                                     batch_size=args.batch_size))
 
+
             prediction = ''
 
             for pred_dict, expec in zip(predictions, expected):
-                template = ('\nPrediction is "{}" ({:.1f}%), expected "{}"')
 
                 class_id = pred_dict['class_ids'][0]
-                probability = pred_dict['probabilities'][class_id]
 
                 prediction = sample_data.COMMANDS[class_id]
-
-                print(template.format(sample_data.COMMANDS[class_id],
-                                      100 * probability, expec))
 
             # 0 is Stop, 1 is Forward, 2 is Backward, 3 is Right, 4 is Left
             if prediction == "Stop":
@@ -136,8 +135,8 @@ def main(argv):
                 ser.write(bytes(b'l'))
 
             time.sleep(0.400)
+            
 
-        
     ser.write(bytes(b's'))
     ser.flush()
     ser.close()

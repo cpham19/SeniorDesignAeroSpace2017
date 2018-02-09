@@ -54,7 +54,7 @@ print("Done...")
 
 # Opening serial port communcation for Arduino
 ser = serial.Serial(
-    port='COM4',
+    port='COM8',
     baudrate=115200,
     parity=serial.PARITY_NONE,
     stopbits=serial.STOPBITS_ONE,
