@@ -54,7 +54,10 @@ public class GUIController extends JFrame
 	private JButton down = new JButton("Backward");
 	private JButton right = new JButton("Right");
 	private JButton stop = new JButton("Stop");
-	public static JTextField ultraSonicTF = new JTextField("Ult. Sonic: " + 0);
+	public static JTextField middleUltraSonicTF = new JTextField("M Ult. Sonic: " + 0);
+	public static JTextField leftUltraSonicTF = new JTextField("L Ult. Sonic: " + 0);
+	public static JTextField rightUltraSonicTF = new JTextField("R Ult. Sonic: " + 0);
+	public static JTextField backUltraSonicTF = new JTextField("B Ult. Sonic: " + 0);
 	public static JTextField L0TF = new JTextField("L0: " + 0);
 	public static JTextField L1TF = new JTextField("L1: " + 0);
 	public static JTextField L2TF = new JTextField("L2: " + 0);
@@ -70,6 +73,7 @@ public class GUIController extends JFrame
 	public static JTextField carSpeedTF = new JTextField("CarSpeed: " + 0);
 	public static JTextField servoAngleTF = new JTextField("Servo Angle: " + 0);
 	public static JTextField stateTF = new JTextField("State: None");
+	private JButton clearCSVButton = new JButton("Clear CSV");
 	private JButton decreaseCarSpeed = new JButton();
 	private JButton increaseCarSpeed = new JButton();
 	private JButton rotateServoLeft = new JButton();
@@ -89,7 +93,7 @@ public class GUIController extends JFrame
 		this.setLayout(null);
 		// INITIALIZE ANYTHING THAT NEEDS TO BE INTIALIZED
 		initialize();
-		
+
 		// set Visible // and close on exit (To prevent memory leaks, etc )
 		this.setVisible(true);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -113,6 +117,7 @@ public class GUIController extends JFrame
 		collectMode.setFont(new Font("Dialog", Font.PLAIN, 10));
 		collectMode.setBackground(Color.WHITE);
 		trainingMode.setBackground(Color.WHITE);
+		clearCSVButton.setBackground(Color.WHITE);
 
 		decreaseCarSpeed.setLayout(new BorderLayout());
 		decreaseCarSpeed.add(BorderLayout.NORTH, new JLabel("Decrease"));
@@ -154,6 +159,7 @@ public class GUIController extends JFrame
 		increaseCarSpeed.setBounds(manualButtonX + 100, manualButtonY - 100, buttonWidth, buttonHeight);
 		rotateServoLeft.setBounds(manualButtonX + 200, manualButtonY - 100, buttonWidth, buttonHeight);
 		rotateServoRight.setBounds(manualButtonX + 300, manualButtonY - 100, buttonWidth, buttonHeight);
+		clearCSVButton.setBounds(manualButtonX + 300, manualButtonY - 150, buttonWidth, buttonHeight - 50);
 		manualMode.setBounds(manualButtonX, manualButtonY, buttonWidth, buttonHeight);
 		manualMode.setVisible(false);
 		autoPilotMode.setBounds(manualButtonX + 100, manualButtonY, buttonWidth, buttonHeight);
@@ -164,25 +170,32 @@ public class GUIController extends JFrame
 		stateTF.setBounds(decreaseCarSpeed.getX() + 400, decreaseCarSpeed.getY(), 100, 50);
 		carSpeedTF.setBounds(decreaseCarSpeed.getX() + 500, decreaseCarSpeed.getY(), 100, 50);
 		servoAngleTF.setBounds(decreaseCarSpeed.getX() + 600, decreaseCarSpeed.getY(), 100, 50);
-		ultraSonicTF.setBounds(decreaseCarSpeed.getX() + 700, decreaseCarSpeed.getY(), 100, 50);
+		middleUltraSonicTF.setBounds(decreaseCarSpeed.getX() + 700, decreaseCarSpeed.getY(), 100, 50);
+		leftUltraSonicTF.setBounds(decreaseCarSpeed.getX() + 800, decreaseCarSpeed.getY(), 100, 50);
 		L0TF.setBounds(decreaseCarSpeed.getX() + 400, decreaseCarSpeed.getY() + 50, 100, 50);
 		L1TF.setBounds(decreaseCarSpeed.getX() + 500, decreaseCarSpeed.getY() + 50, 100, 50);
 		L2TF.setBounds(decreaseCarSpeed.getX() + 600, decreaseCarSpeed.getY() + 50, 100, 50);
 		xAccelTF.setBounds(decreaseCarSpeed.getX() + 700, decreaseCarSpeed.getY() + 50, 100, 50);
+		rightUltraSonicTF.setBounds(decreaseCarSpeed.getX() + 800, decreaseCarSpeed.getY() + 50, 100, 50);
 		yAccelTF.setBounds(decreaseCarSpeed.getX() + 400, decreaseCarSpeed.getY() + 100, 100, 50);
 		zAccelTF.setBounds(decreaseCarSpeed.getX() + 500, decreaseCarSpeed.getY() + 100, 100, 50);
 		xGyroTF.setBounds(decreaseCarSpeed.getX() + 600, decreaseCarSpeed.getY() + 100, 100, 50);
 		yGyroTF.setBounds(decreaseCarSpeed.getX() + 700, decreaseCarSpeed.getY() + 100, 100, 50);
+		backUltraSonicTF.setBounds(decreaseCarSpeed.getX() + 800, decreaseCarSpeed.getY() + 100, 100, 50);
 		zGyroTF.setBounds(decreaseCarSpeed.getX() + 400, decreaseCarSpeed.getY() + 150, 100, 50);
 		xMagTF.setBounds(decreaseCarSpeed.getX() + 500, decreaseCarSpeed.getY() + 150, 100, 50);
 		yMagTF.setBounds(decreaseCarSpeed.getX() + 600, decreaseCarSpeed.getY() + 150, 100, 50);
 		zMagTF.setBounds(decreaseCarSpeed.getX() + 700, decreaseCarSpeed.getY() + 150, 100, 50);
-		
+
+
 		// set editables of all textfields
 		carSpeedTF.setEditable(false);
 		servoAngleTF.setEditable(false);
 		stateTF.setEditable(false);
-		ultraSonicTF.setEditable(false);
+		middleUltraSonicTF.setEditable(false);
+		leftUltraSonicTF.setEditable(false);
+		rightUltraSonicTF.setEditable(false);
+		backUltraSonicTF.setEditable(false);
 		L0TF.setEditable(false);
 		L1TF.setEditable(false);
 		L2TF.setEditable(false);
@@ -195,12 +208,15 @@ public class GUIController extends JFrame
 		xMagTF.setEditable(false);
 		yMagTF.setEditable(false);
 		zMagTF.setEditable(false);
-		
+
 		// set font size of textfields
 		carSpeedTF.setFont(new Font("Serif", Font.PLAIN, 12));
 		servoAngleTF.setFont(new Font("Serif", Font.PLAIN, 12));
 		stateTF.setFont(new Font("Serif", Font.PLAIN, 12));
-		ultraSonicTF.setFont(new Font("Serif", Font.PLAIN, 12));
+		middleUltraSonicTF.setFont(new Font("Serif", Font.PLAIN, 12));
+		leftUltraSonicTF.setFont(new Font("Serif", Font.PLAIN, 12));
+		rightUltraSonicTF.setFont(new Font("Serif", Font.PLAIN, 12));
+		backUltraSonicTF.setFont(new Font("Serif", Font.PLAIN, 12));
 		L0TF.setFont(new Font("Serif", Font.PLAIN, 12));
 		L1TF.setFont(new Font("Serif", Font.PLAIN, 12));
 		L2TF.setFont(new Font("Serif", Font.PLAIN, 12));
@@ -223,7 +239,10 @@ public class GUIController extends JFrame
 		this.add(carSpeedTF);
 		this.add(servoAngleTF);
 		this.add(stateTF);
-		this.add(ultraSonicTF);
+		this.add(middleUltraSonicTF);
+		this.add(leftUltraSonicTF);
+		this.add(rightUltraSonicTF);
+		this.add(backUltraSonicTF);
 		this.add(L0TF);
 		this.add(L1TF);
 		this.add(L2TF);
@@ -240,6 +259,7 @@ public class GUIController extends JFrame
 		this.add(increaseCarSpeed);
 		this.add(rotateServoLeft);
 		this.add(rotateServoRight);
+		this.add(clearCSVButton);
 		this.add(manualMode);
 		this.add(autoPilotMode);
 		this.add(collectMode);
@@ -409,6 +429,20 @@ public class GUIController extends JFrame
 			}
 		});
 
+		clearCSVButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent arg0)
+			{
+				try {
+					sioc.dc.clearCSV(sioc.csvName);
+				}
+				catch (Exception e) {
+					e.printStackTrace();
+				}
+				outputTextArea.append(getCurrentLocalDateTimeStamp() + "User pressed Clear CSV button.\n");
+			}
+		});
+
 		collectMode.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent arg0)
@@ -455,7 +489,7 @@ public class GUIController extends JFrame
 //                e.getAdjustable().setValue(e.getAdjustable().getMaximum());
 //            }
 //        });
-		
+
 
 		scroll.setBounds(0, 600, 910, 180);
 		this.add(scroll);
@@ -499,7 +533,7 @@ public class GUIController extends JFrame
 	 *  -This method should be invoked by the main controller to accordingly send out information
 	 * regarding the current button that has been chosen
 	 */
-	
+
 	public static String getCurrentLocalDateTimeStamp() {
 		String hour = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH"));
 

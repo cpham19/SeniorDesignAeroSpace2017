@@ -19,12 +19,13 @@ import javax.swing.JTextField;
 public class SerialIOController implements SerialPortEventListener
 {
 	SerialPort serialPort;
+	public static String csvName = "Sample";
 	private BufferedReader input;
 	private OutputStream output;
 	final int timeOut = 2000; // milliseconds
 	final int dataRate = 115200; // general Braud width
 	final long startingTime = System.currentTimeMillis();
-	private DataController dc = new DataController();
+	public DataController dc = new DataController();
 	private int count = 1;
 	public static boolean collectData = false;
 
@@ -32,7 +33,7 @@ public class SerialIOController implements SerialPortEventListener
 			"/dev/tty.usbserial-A9007UX1", // Mac OS X
 			"/dev/ttyACM0", // Raspberry Pi
 			"/dev/ttyUSB0", // Linux
-			"COM4", // Windows
+			"COM5", // Windows
 	};
 
 	public SerialIOController()
@@ -54,33 +55,40 @@ public class SerialIOController implements SerialPortEventListener
 				String[] inputLine = input.readLine().split(",");
 
 				// Parsing String messages (Sensor data) to double and Booleans
-				double ultrasonic = Double.parseDouble(inputLine[0]);
-				Integer L0 = Integer.parseInt(inputLine[1]);
-				Integer L1 = Integer.parseInt(inputLine[2]);
-				Integer L2 = Integer.parseInt(inputLine[3]);
-				double xAccel = Double.parseDouble(inputLine[4]);
-				double yAccel = Double.parseDouble(inputLine[5]);
-				double zAccel = Double.parseDouble(inputLine[6]);
-				double xGyro = Double.parseDouble(inputLine[7]);
-				double yGyro = Double.parseDouble(inputLine[8]);
-				double zGyro = Double.parseDouble(inputLine[9]);
-				double xMag = Double.parseDouble(inputLine[10]);
-				double yMag = Double.parseDouble(inputLine[11]);
-				double zMag = Double.parseDouble(inputLine[12]);
-				int carSpeed = Integer.parseInt(inputLine[13]);
-				int servoAngle = Integer.parseInt(inputLine[14]);
-				int state = Integer.parseInt(inputLine[15]);
+				double middleUltrasonic = Double.parseDouble(inputLine[0]);
+				double leftUltrasonic = Double.parseDouble(inputLine[1]);
+				double rightUltrasonic = Double.parseDouble(inputLine[2]);
+				double backUltrasonic = Double.parseDouble(inputLine[3]);
+				Integer L0 = Integer.parseInt(inputLine[4]);
+				Integer L1 = Integer.parseInt(inputLine[5]);
+				Integer L2 = Integer.parseInt(inputLine[6]);
+				double xAccel = Double.parseDouble(inputLine[7]);
+				double yAccel = Double.parseDouble(inputLine[8]);
+				double zAccel = Double.parseDouble(inputLine[9]);
+				double xGyro = Double.parseDouble(inputLine[10]);
+				double yGyro = Double.parseDouble(inputLine[11]);
+				double zGyro = Double.parseDouble(inputLine[12]);
+				double xMag = Double.parseDouble(inputLine[13]);
+				double yMag = Double.parseDouble(inputLine[14]);
+				double zMag = Double.parseDouble(inputLine[15]);
+				int carSpeed = Integer.parseInt(inputLine[16]);
+				int servoAngle = Integer.parseInt(inputLine[17]);
+				int state = Integer.parseInt(inputLine[18]);
 
 				// Format Time
 				double time = (double) (System.currentTimeMillis() - startingTime) / 1000;
 
-				DataPacket packet = new DataPacket(time, ultrasonic, L0, L1, L2, xAccel, yAccel, zAccel,
-						xGyro, yGyro, zGyro, xMag, yMag, zMag, servoAngle, state);
-				
+				DataPacket packet = new DataPacket(time, middleUltrasonic, leftUltrasonic, rightUltrasonic, backUltrasonic, L0, L1, L2, xAccel, yAccel, zAccel,
+						  xGyro, yGyro, zGyro, xMag, yMag, zMag, servoAngle, state);
+
+
 				GUIController.carSpeedTF.setText("Car Speed: " + carSpeed);
 				GUIController.servoAngleTF.setText("Servo Angle: " + servoAngle);
 				GUIController.stateTF.setText("State: " + state);
-				GUIController.ultraSonicTF.setText("Ult. Sonic: " + ultrasonic);
+				GUIController.middleUltraSonicTF.setText("M Ult. Sonic: " + middleUltrasonic);
+				GUIController.leftUltraSonicTF.setText("L Ult. Sonic: " + leftUltrasonic);
+				GUIController.rightUltraSonicTF.setText("R Ult. Sonic: " + rightUltrasonic);
+				GUIController.backUltraSonicTF.setText("B Ult. Sonic: " + backUltrasonic);
 				GUIController.L0TF.setText("L0: " + L0);
 				GUIController.L1TF.setText("L1: " + L1);
 				GUIController.L2TF.setText("L2: " + L2);
@@ -93,12 +101,12 @@ public class SerialIOController implements SerialPortEventListener
 				GUIController.xMagTF.setText("xMag: " + xMag);
 				GUIController.yMagTF.setText("yMag: " + yMag);
 				GUIController.zMagTF.setText("zMag: " + zMag);
-				
+
 
 				// Add DataPacket to CSV file
-				
+
 				if (collectData == true) {
-					dc.writeToCSV("Sample", packet);
+					dc.writeToCSV(csvName, packet);
 					//dc.writeToDatabase("aria_data", packet);
 					GUIController.outputTextArea.append(count + ") " + packet.toString() + "\n");
 					count++;
@@ -149,7 +157,7 @@ public class SerialIOController implements SerialPortEventListener
 			// open the streams
 			input = new BufferedReader(new InputStreamReader(serialPort.getInputStream()));
 			output = serialPort.getOutputStream();
-			
+
 			// add event listeners
 			serialPort.addEventListener(this);
 			serialPort.notifyOnDataAvailable(true);

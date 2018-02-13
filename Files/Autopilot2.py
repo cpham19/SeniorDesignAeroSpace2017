@@ -47,7 +47,7 @@ def main(argv):
         # Two hidden layers of 10 nodes each.
         hidden_units=[10, 10],
         # The model must choose between 5 classes.
-        n_classes=5)
+        n_classes=4)
 
     # Train the Model.
     classifier.train(
@@ -65,7 +65,7 @@ def main(argv):
     # Generate predictions from the model
     # Opening serial port communcation for Arduino
     ser = serial.Serial(
-        port='COM8',
+        port='COM9',
         baudrate=115200,
         parity=serial.PARITY_NONE,
         stopbits=serial.STOPBITS_ONE,
@@ -76,36 +76,39 @@ def main(argv):
     print("Serial port is opened.. Waiting three seconds for initialization")
     time.sleep(3)
     
-    expected = ['Stop', 'Forward', 'Backward', 'Right', 'Left']
+    expected = ['Forward', 'Backward', 'Right', 'Left']
 
     while (1):
         if keyboard.is_pressed('s'):
             break
-        elif len(ser.readline().decode("utf-8").strip().split(",")) == 16:
+        elif len(ser.readline().decode("utf-8").strip().split(",")) == 19:
             # Modified the input line so it doesn't contain the carspeed and the label "state"
             modifiedInputLine = ser.readline().decode("utf-8").strip().split(",")
             print(modifiedInputLine)
             del modifiedInputLine[-1]
-            del modifiedInputLine[13]
+            del modifiedInputLine[16]
         
             modifiedInputLine = np.array(modifiedInputLine)
             modifiedInputLine = modifiedInputLine.astype(float)
 
             predict_x = {
-                'ultrasonic': [modifiedInputLine[0]],
-                'L0': [modifiedInputLine[1]],
-                'L1': [modifiedInputLine[2]],
-                'L2': [modifiedInputLine[3]],
-                'xAccel': [modifiedInputLine[4]],
-                'yAccel': [modifiedInputLine[5]],
-                'zAccel': [modifiedInputLine[6]],
-                'xGyro': [modifiedInputLine[7]],
-                'yGyro': [modifiedInputLine[8]],
-                'zGyro': [modifiedInputLine[9]],
-                'xMag': [modifiedInputLine[10]],
-                'yMag': [modifiedInputLine[11]],
-                'zMag': [modifiedInputLine[12]],
-                'servoAngle': [modifiedInputLine[13]],
+                'middleUltrasonic': [modifiedInputLine[0]],
+                'leftUltrasonic': [modifiedInputLine[1]],
+                'rightUltrasonic': [modifiedInputLine[2]],
+                'backUltrasonic': [modifiedInputLine[3]],
+                'L0': [modifiedInputLine[4]],
+                'L1': [modifiedInputLine[5]],
+                'L2': [modifiedInputLine[6]],
+                'xAccel': [modifiedInputLine[7]],
+                'yAccel': [modifiedInputLine[8]],
+                'zAccel': [modifiedInputLine[9]],
+                'xGyro': [modifiedInputLine[10]],
+                'yGyro': [modifiedInputLine[11]],
+                'zGyro': [modifiedInputLine[12]],
+                'xMag': [modifiedInputLine[13]],
+                'yMag': [modifiedInputLine[14]],
+                'zMag': [modifiedInputLine[15]],
+                'servoAngle': [modifiedInputLine[16]],
             }
 
              
@@ -122,10 +125,10 @@ def main(argv):
 
                 prediction = sample_data.COMMANDS[class_id]
 
+            print(prediction)
+
             # 0 is Stop, 1 is Forward, 2 is Backward, 3 is Right, 4 is Left
-            if prediction == "Stop":
-                ser.write(bytes(b's'))
-            elif prediction == "Forward":
+            if prediction == "Forward":
                 ser.write(bytes(b'f'))
             elif prediction == "Backward":
                 ser.write(bytes(b'b'))

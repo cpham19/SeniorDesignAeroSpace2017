@@ -32,8 +32,14 @@
 #define    ACC_FULL_SCALE_16_G       0x18
 
 Servo myservo;      // create servo object to control servo
-int Echo = A4;  
-int Trig = A5; 
+int Echo = A4;      // Ultrasonic on the Top 
+int Trig = A5;      // Ultrasonic on the Top
+int Echo1 = A0;     // Ultrasonic on the Left
+int Trig1 = A1;     // Ultrasonic on the Left
+int Echo2 = A2;     // Ultrasonic on the Right
+int Trig2 = A3;     // Ultrasonic on the Right
+int Echo3 = A6;     // Ultrasonic on the Back
+int Trig3 = A7;     // Ultrasonic on the Back
 
 // For carspeed
 // 100 is enough to move the car forward and backward (BUT NOT LEFT AND RIGHT)
@@ -47,6 +53,9 @@ int state = 0;
 class DataPacket {
   private:
     int distance;
+    int distance1;
+    int distance3;
+    int distance5;
     String left;
     String middle;
     String right;
@@ -64,9 +73,12 @@ class DataPacket {
     int servoAngle;
 
   public:
-    DataPacket(int distance1, int left1, int middle1, int right1, double ax1, double ay1, double az1, double gx1, double gy1, double gz1, double mx1, double my1, double mz1, unsigned char carSpeed1, int servoAngle1, int state1)
+    DataPacket(int distance0, int distance2, int distance4, int distance6, int left1, int middle1, int right1, double ax1, double ay1, double az1, double gx1, double gy1, double gz1, double mx1, double my1, double mz1, unsigned char carSpeed1, int servoAngle1, int state1)
     {
-        distance = distance1;
+        distance = distance0;
+        distance1 = distance2;
+        distance3 = distance4;
+        distance5 = distance6;
         left = left1;
         middle = middle1;
         right = right1;
@@ -87,6 +99,12 @@ class DataPacket {
     void print() {
       // Separate the print values by commas for parsing in DAM
       Serial.print(distance);
+      Serial.print(",");
+      Serial.print(distance1);
+      Serial.print(",");
+      Serial.print(distance3);
+      Serial.print(",");
+      Serial.print(distance5);
       Serial.print(",");
       Serial.print(left);
       Serial.print(",");
@@ -201,7 +219,7 @@ void increaseCarSpeed() {
   }
 }
  
-//Ultrasonic distance measurement Sub function
+//Ultrasonic distance measurement for Ultrasonic on Top
 int Distance_test() {
   digitalWrite(Trig, LOW);   
   delayMicroseconds(2);
@@ -209,6 +227,42 @@ int Distance_test() {
   delayMicroseconds(20);
   digitalWrite(Trig, LOW);   
   float Fdistance = pulseIn(Echo, HIGH);  
+  Fdistance= Fdistance / 58;       
+  return (int)Fdistance;
+}
+
+//Ultrasonic distance measurement for Ultrasonic on Left
+int Distance_test1() {
+  digitalWrite(Trig1, LOW);   
+  delayMicroseconds(2);
+  digitalWrite(Trig1, HIGH);  
+  delayMicroseconds(20);
+  digitalWrite(Trig1, LOW);   
+  float Fdistance = pulseIn(Echo1, HIGH);  
+  Fdistance= Fdistance / 58;       
+  return (int)Fdistance;
+}
+
+//Ultrasonic distance measurement for Ultrasonic on Right
+int Distance_test2() {
+  digitalWrite(Trig2, LOW);   
+  delayMicroseconds(2);
+  digitalWrite(Trig2, HIGH);  
+  delayMicroseconds(20);
+  digitalWrite(Trig2, LOW);   
+  float Fdistance = pulseIn(Echo2, HIGH);  
+  Fdistance= Fdistance / 58;       
+  return (int)Fdistance;
+}
+
+//Ultrasonic distance measurement for Ultrasonic on Back
+int Distance_test3() {
+  digitalWrite(Trig3, LOW);   
+  delayMicroseconds(2);
+  digitalWrite(Trig3, HIGH);  
+  delayMicroseconds(20);
+  digitalWrite(Trig3, LOW);   
+  float Fdistance = pulseIn(Echo3, HIGH);  
   Fdistance= Fdistance / 58;       
   return (int)Fdistance;
 }
@@ -261,6 +315,7 @@ void I2CwriteByte(uint8_t Address, uint8_t Register, uint8_t Data)
 }
 
 void setup() { 
+  pinMode(LED, OUTPUT);
   // Arduino initializations
   Wire.begin();
 
@@ -272,8 +327,13 @@ void setup() {
 
   // These are for Servo
   pinMode(Echo, INPUT);    
-  pinMode(Trig, OUTPUT); 
-  pinMode(LED, OUTPUT); 
+  pinMode(Trig, OUTPUT);  
+  pinMode(Echo1, INPUT);
+  pinMode(Trig1, OUTPUT);
+  pinMode(Echo2, INPUT);
+  pinMode(Trig2, OUTPUT);
+  pinMode(Echo3, INPUT);
+  pinMode(Trig3, OUTPUT);
 
   // These are for the motors
   pinMode(IN1,OUTPUT);
@@ -314,6 +374,9 @@ void loop() {
 
     // Method that returns ultrasonic data in centimeters
     int distance = Distance_test();
+    int distance1 = Distance_test1();
+    int distance2 = Distance_test2();
+    int distance3 = Distance_test3();
   
     // Line-tracking data returns 0's and 1's so we need to convert it to String
     int left = LT_L;
@@ -359,7 +422,7 @@ void loop() {
     int16_t mz=-(Mag[5]<<8 | Mag[4]);
 
     // Create a DataPacket object and print its data to the DAM
-    DataPacket packet(distance, left, middle, right, ax, ay, az, gx, gy, gz, mx, my, mz, carSpeed, servoAngle, state);
+    DataPacket packet(distance, distance1, distance2, distance3, left, middle, right, ax, ay, az, gx, gy, gz, mx, my, mz, carSpeed, servoAngle, state);
     packet.print();
   
     delay(400);

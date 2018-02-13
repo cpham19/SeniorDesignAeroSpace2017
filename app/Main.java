@@ -15,9 +15,6 @@ public class Main
 		ScriptRunner = new PyScriptRunner();
 		ScriptRunner.makeDirectory();
 
-		//Data_Controller.clearCSV("Sample");
-		//Data_Controller.clearDatabase("aria_data");
-
 		// create a Communication controller
 		VCM_Communicator = new SerialIOController();
 

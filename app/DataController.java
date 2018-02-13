@@ -23,7 +23,7 @@ import java.util.TimerTask;
 
 public class DataController
 {
-	public static String columns = "time,ultrasonic,L0,L1,L2,xAccel,yAccel,zAccel,xGyro,yGyro,zGyro,xMag,yMag,zMag,servoAngle,state";
+	public static String columns = "time,middleUltrasonic,leftUltrasonic,rightUltrasonic,backUltrasonic,L0,L1,L2,xAccel,yAccel,zAccel,xGyro,yGyro,zGyro,xMag,yMag,zMag,servoAngle,state";
 
 	public DataController()
 	{
@@ -48,25 +48,28 @@ public class DataController
 			while ((element = reader.readNext()) != null)
 			{
 				double time = Double.parseDouble(element[0]);
-				double ultrasonic = Double.parseDouble(element[1]);
-				int L0 = Integer.parseInt(element[2]);
-				int L1 = Integer.parseInt(element[3]);
-				int L2 = Integer.parseInt(element[4]);
-				double xAccel = Double.parseDouble(element[5]);
-				double yAccel = Double.parseDouble(element[6]);
-				double zAccel = Double.parseDouble(element[7]);
-				double xGyro = Double.parseDouble(element[8]);
-				double yGyro = Double.parseDouble(element[9]);
-				double zGyro = Double.parseDouble(element[10]);
-				double xMag = Double.parseDouble(element[11]);
-				double yMag = Double.parseDouble(element[12]);
-				double zMag = Double.parseDouble(element[13]);
-				int servoAngle = Integer.parseInt(element[14]);
-				int state = Integer.parseInt(element[15]);
+				double middleUltrasonic = Double.parseDouble(element[1]);
+				double leftUltrasonic = Double.parseDouble(element[2]);
+				double rightUltrasonic = Double.parseDouble(element[3]);
+				double backUltrasonic = Double.parseDouble(element[4]);
+				int L0 = Integer.parseInt(element[5]);
+				int L1 = Integer.parseInt(element[6]);
+				int L2 = Integer.parseInt(element[7]);
+				double xAccel = Double.parseDouble(element[8]);
+				double yAccel = Double.parseDouble(element[9]);
+				double zAccel = Double.parseDouble(element[10]);
+				double xGyro = Double.parseDouble(element[11]);
+				double yGyro = Double.parseDouble(element[12]);
+				double zGyro = Double.parseDouble(element[13]);
+				double xMag = Double.parseDouble(element[14]);
+				double yMag = Double.parseDouble(element[15]);
+				double zMag = Double.parseDouble(element[16]);
+				int servoAngle = Integer.parseInt(element[17]);
+				int state = Integer.parseInt(element[18]);
 
-				DataPacket packet = new DataPacket(time, ultrasonic, L0, L1, L2, xAccel, yAccel, zAccel,
+				DataPacket packet = new DataPacket(time, middleUltrasonic, leftUltrasonic, rightUltrasonic, backUltrasonic, L0, L1, L2, xAccel, yAccel, zAccel,
 						  xGyro, yGyro, zGyro, xMag, yMag, zMag, servoAngle, state);
-				
+
 				data.add(packet);
 			}
 		}
@@ -161,26 +164,29 @@ public class DataController
 		{
 			c = DriverManager.getConnection(url, username, password);
 
-			String sql = "insert into " + tableName + " (time, ultrasonic, L0, L1, L2, xAccel, yAccel, zAccel, xGyro, yGyro, zGyro, xMag, yMag, zMag, servoAngle, state) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			String sql = "insert into " + tableName + " (time, middleUltrasonic, leftUltrasonic, rightUltrasonic, backUltrasonic, L0, L1, L2, xAccel, yAccel, zAccel, xGyro, yGyro, zGyro, xMag, yMag, zMag, servoAngle, state) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 			PreparedStatement pstmt = c.prepareStatement(sql);
 
 			pstmt.setDouble(1, packet.getTime());
-			pstmt.setDouble(2, packet.getUltrasonic());
-			pstmt.setInt(3, packet.isL0());
-			pstmt.setInt(4, packet.isL1());
-			pstmt.setInt(5, packet.isL2());
-			pstmt.setDouble(6, packet.getxAccel());
-			pstmt.setDouble(7, packet.getyAccel());
-			pstmt.setDouble(8, packet.getzAccel());
-			pstmt.setDouble(9, packet.getxGyro());
-			pstmt.setDouble(10, packet.getyGyro());
-			pstmt.setDouble(11, packet.getzGyro());
-			pstmt.setDouble(12, packet.getxMag());
-			pstmt.setDouble(13, packet.getyMag());
-			pstmt.setDouble(14, packet.getzMag());
-			pstmt.setInt(15,  packet.getServoAngle());
-			pstmt.setInt(16, packet.getState());
+			pstmt.setDouble(2, packet.getMiddleUltrasonic());
+			pstmt.setDouble(3, packet.getLeftUltrasonic());
+			pstmt.setDouble(4, packet.getRightUltrasonic());
+			pstmt.setDouble(5, packet.getBackUltrasonic());
+			pstmt.setInt(6, packet.isL0());
+			pstmt.setInt(7, packet.isL1());
+			pstmt.setInt(8, packet.isL2());
+			pstmt.setDouble(9, packet.getxAccel());
+			pstmt.setDouble(10, packet.getyAccel());
+			pstmt.setDouble(11, packet.getzAccel());
+			pstmt.setDouble(12, packet.getxGyro());
+			pstmt.setDouble(13, packet.getyGyro());
+			pstmt.setDouble(14, packet.getzGyro());
+			pstmt.setDouble(15, packet.getxMag());
+			pstmt.setDouble(16, packet.getyMag());
+			pstmt.setDouble(17, packet.getzMag());
+			pstmt.setInt(18,  packet.getServoAngle());
+			pstmt.setInt(19, packet.getState());
 			pstmt.executeUpdate();
 
 			c.close();
@@ -225,7 +231,7 @@ public class DataController
 
 			while (rs.next())
 			{
-				DataPacket packet = new DataPacket(rs.getDouble("time"), rs.getDouble("ultrasonic"), rs.getInt("L0"), rs.getInt("L1"), rs.getInt("L2"),
+				DataPacket packet = new DataPacket(rs.getDouble("time"), rs.getDouble("middleUltrasonic"), rs.getDouble("leftUltrasonic"), rs.getDouble("rightUltrasonic"), rs.getDouble("backUltrasonic"), rs.getInt("L0"), rs.getInt("L1"), rs.getInt("L2"),
 						rs.getDouble("xAccel"), rs.getDouble("yAccel"), rs.getDouble("zAccel"), rs.getDouble("xGyro"), rs.getDouble("yGyro"), rs.getDouble("zGyro"),
 						rs.getDouble("xMag"), rs.getDouble("yMag"), rs.getDouble("zMag"), rs.getInt("servoAngle"), rs.getInt("state"));
 

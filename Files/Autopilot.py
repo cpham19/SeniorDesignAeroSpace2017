@@ -66,12 +66,12 @@ print("Serial port is opened.. Waiting three seconds for initialization")
 time.sleep(3)
 
 while (1):
-    if len(ser.readline().decode("utf-8").strip().split(",")) == 16:
+    if len(ser.readline().decode("utf-8").strip().split(",")) == 19:
         # Modified the input line so it doesn't contain the carspeed and the label "state"
         modifiedInputLine = ser.readline().decode("utf-8").strip().split(",")
         print(modifiedInputLine)
         del modifiedInputLine[-1]
-        del modifiedInputLine[13]
+        del modifiedInputLine[16]
         
         modifiedInputLine = np.array(modifiedInputLine)
         modifiedInputLine = modifiedInputLine.astype(float)

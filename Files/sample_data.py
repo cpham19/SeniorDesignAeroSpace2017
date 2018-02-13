@@ -6,12 +6,12 @@ TEST_URL = "Sample.csv"
 
 # "https://raw.githubusercontent.com/Naturelord/SeniorDesignAeroSpace2017/temp/Files/Sample.csv"
 
-CSV_COLUMN_NAMES = ['ultrasonic', 'L0',
-                    'L1', 'L2', 'xAccel', 'yAccel',
+CSV_COLUMN_NAMES = ['middleUltrasonic', 'leftUltrasonic', 'rightUltrasonic', 'backUltrasonic',
+                    'L0','L1', 'L2', 'xAccel', 'yAccel',
                     'zAccel', 'xGyro', 'yGyro', 'zGyro',
                     'xMag', 'yMag', 'zMag', 'servoAngle', 'state']
 
-COMMANDS = ['Stop', 'Forward', 'Backward','Right','Left']
+COMMANDS = ['Forward', 'Backward','Right','Left']
 
 def maybe_download():
     train_path = tf.keras.utils.get_file(TRAIN_URL.split('/')[-1], TRAIN_URL)
@@ -24,9 +24,11 @@ def load_data(y_name='state'):
     train_path, test_path = maybe_download()
 
     train = pd.read_csv(train_path, names=CSV_COLUMN_NAMES, header=0)
+    train = train[train.state != 0]
     train_x, train_y = train, train.pop(y_name)
 
     test = pd.read_csv(test_path, names=CSV_COLUMN_NAMES, header=0)
+    test = test[test.state != 0]
     test_x, test_y = test, test.pop(y_name)
 
     return (train_x, train_y), (test_x, test_y)
