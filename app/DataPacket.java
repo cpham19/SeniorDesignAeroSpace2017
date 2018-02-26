@@ -6,7 +6,6 @@ import java.text.NumberFormat;
 
 public class DataPacket
 {
-	public double time;
 	public double middleUltrasonic;
 	public double leftUltrasonic;
 	public double rightUltrasonic;
@@ -28,12 +27,12 @@ public class DataPacket
 	public String[] array;
 
 	public String[] toStringArray() {
-		return (time + "," + middleUltrasonic + "," + leftUltrasonic + ","  + rightUltrasonic + ","  + backUltrasonic + "," + L0 + "," + L1 + "," + L2 + "," + xAccel + "," + yAccel + "," + zAccel + "," +
+		return (middleUltrasonic + "," + leftUltrasonic + ","  + rightUltrasonic + ","  + backUltrasonic + "," + L0 + "," + L1 + "," + L2 + "," + xAccel + "," + yAccel + "," + zAccel + "," +
 				xGyro + "," + yGyro + "," + zGyro + "," + xMag + "," + yMag + "," + zMag + "," + servoAngle + "," + state).split(",");
 	}
 
 	public String toString() {
-		return "Time: " + time + ", Middle Ulrasonic: " + middleUltrasonic + ", Left Ulrasonic: " + leftUltrasonic + ", Right Ulrasonic: " + rightUltrasonic + ", Back Ulrasonic: " + backUltrasonic + ", L0: " + L0 + ", L1: " + L1 + ", L2: " + L2 + ", xAccel: " + xAccel + ", yAccel: " + yAccel + ", zAccel: " + zAccel + ", xGyro: " +
+		return "Middle Ulrasonic: " + middleUltrasonic + ", Left Ulrasonic: " + leftUltrasonic + ", Right Ulrasonic: " + rightUltrasonic + ", Back Ulrasonic: " + backUltrasonic + ", L0: " + L0 + ", L1: " + L1 + ", L2: " + L2 + ", xAccel: " + xAccel + ", yAccel: " + yAccel + ", zAccel: " + zAccel + ", xGyro: " +
 				xGyro + ", yGyro: " + yGyro + ", zGyro: " + zGyro + ", xMag: " + xMag + ", yMag: " + yMag + ", zMag: " + zMag + ", Servo Angle: " + servoAngle + ", State: " + state;
 	}
 
@@ -42,10 +41,9 @@ public class DataPacket
 
 	}
 
-	public DataPacket(double time, double middleUltrasonic, double leftUltrasonic, double rightUltrasonic, double backUltrasonic, int L0, int L1, int L2, double xAccel, double yAccel, double zAccel,
+	public DataPacket(double middleUltrasonic, double leftUltrasonic, double rightUltrasonic, double backUltrasonic, int L0, int L1, int L2, double xAccel, double yAccel, double zAccel,
 			double xGyro, double yGyro, double zGyro, double xMag, double yMag, double zMag, int servoAngle, int state)
 	{
-		this.time = time;
 		this.middleUltrasonic = middleUltrasonic;
 		this.leftUltrasonic = leftUltrasonic;
 		this.rightUltrasonic = rightUltrasonic;
@@ -64,16 +62,6 @@ public class DataPacket
 		this.zMag = zMag;
 		this.servoAngle = servoAngle;
 		this.state = state;
-	}
-
-	public double getTime()
-	{
-		return time;
-	}
-
-	public void setTime(double time)
-	{
-		this.time = time;
 	}
 
 	public double getMiddleUltrasonic()

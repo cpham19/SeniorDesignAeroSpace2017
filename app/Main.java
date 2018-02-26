@@ -11,14 +11,14 @@ public class Main
 
 	public static void main(String args[]) throws Exception
 	{
-		// Create a new Python Script Runner
+		// Create a PyscriptRunner object
 		ScriptRunner = new PyScriptRunner();
 		ScriptRunner.makeDirectory();
 
-		// create a Communication controller
+		// Create a SerialIOcontroller object
 		VCM_Communicator = new SerialIOController();
 
-		// create a GUI controller (Automatically opens itself
+		// Create a GUIController object
 		GUI = new GUIController(GUIWidth,GUIHeight, VCM_Communicator, ScriptRunner);
 	}
 }

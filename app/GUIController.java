@@ -361,7 +361,7 @@ public class GUIController extends JFrame
 				else {
 					sioc.close();
 					JOptionPane.showMessageDialog(null, "Unplug the SerialPort. Plug in the bluetooth module. Reset the car. Press okay when you're done.");
-					runner.runAutomaticScript();
+					//runner.runAutomaticScript();
 					manualMode.setVisible(true);
 					up.setVisible(false);
 					up.setEnabled(false);

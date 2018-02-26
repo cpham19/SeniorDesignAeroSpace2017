@@ -50,6 +50,8 @@ int servoAngle = 90;
 char currentInput;
 int state = 0;
 
+unsigned long preMillis;
+
 class DataPacket {
   private:
     int distance;
@@ -369,6 +371,15 @@ void setup() {
 }
 
 void loop() {
+//      if (Distance_test() <= 30){
+//         stop();
+//      }
+  
+//    if(millis() - preMillis > 500){
+//      stop();
+//      preMillis = millis();
+//    }
+    
     // Method to read input from user from DAM for controlling car
     readIncomingSerial();
 
@@ -424,7 +435,7 @@ void loop() {
     // Create a DataPacket object and print its data to the DAM
     DataPacket packet(distance, distance1, distance2, distance3, left, middle, right, ax, ay, az, gx, gy, gz, mx, my, mz, carSpeed, servoAngle, state);
     packet.print();
-  
-    delay(400);
+    
+    delay(100);
 }
 

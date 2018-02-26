@@ -22,7 +22,6 @@ sample_df = pd.read_csv('Sample.csv');
 
 # Selected feature columns
 feature_cols = list(sample_df.columns.values)
-feature_cols.remove('time')
 feature_cols.remove('state')
 
 # Create a feature matrix to show data from these feature columns
@@ -83,19 +82,17 @@ while (1):
         prediction = str(y_prediction[0])
         print(prediction)
 
-        # 0 is Stop, 1 is Forward, 2 is Backward, 3 is Right, 4 is Left
+        # 0 is Forward, 1 is Backward, 2 is Right, 3 is Left
         if prediction == "0":
-            ser.write(bytes(b's'))
-        elif prediction == "1":
             ser.write(bytes(b'f'))
-        elif prediction == "2":
+        elif prediction == "1":
             ser.write(bytes(b'b'))
-        elif prediction == "3":
+        elif prediction == "2":
             ser.write(bytes(b'r'))
-        elif prediction == "4":
+        elif prediction == "3":
             ser.write(bytes(b'l'))
 
-        time.sleep(0.200)
+        time.sleep(0.250)
         
 ser.write(bytes(b's'))
 ser.flush()

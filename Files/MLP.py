@@ -18,7 +18,6 @@ sample_df[0::20]
 
 # Selected feature columns
 feature_cols = list(sample_df.columns.values)
-feature_cols.remove('time')
 feature_cols.remove('state')
 
 # Create a feature matrix to show data from these feature columns

@@ -20,11 +20,14 @@ import javax.script.SimpleScriptContext;
 
 public class PyScriptRunner
 {
+	// Name of script to train
 	private String nameOfTrainingScript = "MLP.py";
+	// Path of training script
 	private String pathToTrainingScript= "cd src/Files & " + nameOfTrainingScript;
+	// Name of autopilot script
 	private String nameOfAutopilotScript = "Autopilot2.py";
+	// Path of training script
 	private String pathToAutopilotScript= "cd src/Files & " + nameOfAutopilotScript;
-	String s = null;
 
 	public PyScriptRunner()
 	{
@@ -86,7 +89,7 @@ public class PyScriptRunner
 			 GUIController.outputTextArea.append(GUIController.getCurrentLocalDateTimeStamp() + "Python script didn't run.\n");
 		}
 	}
-	
+
 	public void runAutomaticScript()
 	{
 		try

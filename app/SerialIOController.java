@@ -24,7 +24,6 @@ public class SerialIOController implements SerialPortEventListener
 	private OutputStream output;
 	final int timeOut = 2000; // milliseconds
 	final int dataRate = 115200; // general Braud width
-	final long startingTime = System.currentTimeMillis();
 	public DataController dc = new DataController();
 	private int count = 1;
 	public static boolean collectData = false;
@@ -75,10 +74,7 @@ public class SerialIOController implements SerialPortEventListener
 				int servoAngle = Integer.parseInt(inputLine[17]);
 				int state = Integer.parseInt(inputLine[18]);
 
-				// Format Time
-				double time = (double) (System.currentTimeMillis() - startingTime) / 1000;
-
-				DataPacket packet = new DataPacket(time, middleUltrasonic, leftUltrasonic, rightUltrasonic, backUltrasonic, L0, L1, L2, xAccel, yAccel, zAccel,
+				DataPacket packet = new DataPacket(middleUltrasonic, leftUltrasonic, rightUltrasonic, backUltrasonic, L0, L1, L2, xAccel, yAccel, zAccel,
 						  xGyro, yGyro, zGyro, xMag, yMag, zMag, servoAngle, state);
 
 
