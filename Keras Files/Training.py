@@ -1,4 +1,4 @@
-from keras.models import Sequential
+from keras.models import Sequential, load_model
 from keras.layers import Dense, Dropout
 from keras.utils import to_categorical
 import matplotlib.pyplot as plt
@@ -58,6 +58,12 @@ history = model.fit(X, Y, epochs=500, batch_size=math.ceil(numberOfRows * 0.10),
 print("Accuracy: " + str(numpy.mean(history['acc'])))
 print("Cross Validation Accuracy: " + str(numpy.mean(history['val_acc'])))
 print()
+
+# Save the model
+model.save('mlp_model.h5')
+
+# Load trained model
+model.load_model('mlp_model.h5')
 
 ### we can now plot how our accuracy and loss change over training epochs
 ##sns.set(style='whitegrid', palette='muted', font_scale=1.5)
