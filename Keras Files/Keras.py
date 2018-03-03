@@ -16,9 +16,11 @@ numpy.random.seed(10)
 # load ARIA training data
 dataset = pd.read_csv('Sample.csv')
 numberOfRows = len(dataset.index)
+print(dataset.columns)
 feature_cols = list(dataset.columns.values)
+feature_cols.remove('middleUltrasonic')
 feature_cols.remove('leftUltrasonic')
-feature_cols.remove('rightUltrasonic')
+#feature_cols.remove('rightUltrasonic')
 feature_cols.remove('backUltrasonic')
 feature_cols.remove('L0')
 feature_cols.remove('L1')
@@ -34,6 +36,8 @@ feature_cols.remove('yMag')
 feature_cols.remove('zMag')
 feature_cols.remove('servoAngle')
 feature_cols.remove('state')
+print(feature_cols)
+# 0 is Forward, 1 is Left, 2 is Right, 3 is Backward, 4 is Stop
 labels = ['0','1']
 
 # split into input (X) and output (Y) variables
@@ -44,8 +48,11 @@ print(Y)
 
 # create model
 model = Sequential()
+# Input layer
 model.add(Dense(len(feature_cols), input_dim=len(feature_cols), activation='sigmoid'))
+# Hidden Layer
 model.add(Dense(math.ceil((len(feature_cols) + len(labels))/ 2), activation='sigmoid'))
+# Output layer
 model.add(Dense(len(labels), activation='softmax'))
 # model.add(Dropout(0.2))
 
@@ -74,8 +81,10 @@ time.sleep(3)
 
 while (1):
     if len(ser.readline().decode("utf-8").strip().split(",")) == 19:
-        # Modified the input line so it doesn't contain the carspeed and the label "state"
+        # Modified the input line
         modifiedInputLine = ser.readline().decode("utf-8").strip().split(",")
+        #print(modifiedInputLine)
+
         del modifiedInputLine[18] # state 18
         del modifiedInputLine[17] # servoAngle 17
         del modifiedInputLine[16] # carSpeed 16
@@ -92,31 +101,30 @@ while (1):
         del modifiedInputLine[5] # L1 5
         del modifiedInputLine[4] # L0 4
         del modifiedInputLine[3]  # backUltrasonic 3
-        del modifiedInputLine[2]  # rightUltrasonic 2
+        #del modifiedInputLine[2]  # rightUltrasonic 2
         del modifiedInputLine[1]  # leftUltrasonic 1
-        #del modifiedInputLine[0]  # middleUltrasonic 0
+        del modifiedInputLine[0]  # middleUltrasonic 0
 
-        print(modifiedInputLine)
-        array = modifiedInputLine
         modifiedInputLine = numpy.array(modifiedInputLine)
         modifiedInputLine = modifiedInputLine.astype(float)
         modifiedInputLine = modifiedInputLine.reshape(1,-1)
+        print(modifiedInputLine)
 
         prediction = model.predict(modifiedInputLine)
         prediction = numpy.argmax(prediction[0])
         print(prediction)
 
-        # 0 is Stop, 1 is Forward, 2 is Backward, 3 is Right, 4 is Left
-        if prediction == 0:
-            ser.write(bytes(b's'))
-        elif prediction == 1:
-            ser.write(bytes(b'f'))
-        elif prediction == 2:
-            ser.write(bytes(b'b'))
-        elif prediction == 3:
-            ser.write(bytes(b'r'))
-        elif prediction == 4:
-            ser.write(bytes(b'l'))
+        # 0 is Forward, 1 is Left, 2 is Right, 3 is Backward, 4 is Stop
+        # if prediction == 0:
+        #     ser.write(bytes(b'f'))
+        # elif prediction == 1:
+        #     ser.write(bytes(b'l'))
+        # elif prediction == 2:
+        #     ser.write(bytes(b'r'))
+        # elif prediction == 3:
+        #     ser.write(bytes(b'b'))
+        # elif prediction == 4:
+        #     ser.write(bytes(b's'))
 
         time.sleep(0.100)
             

@@ -263,7 +263,7 @@ public class GUIController extends JFrame
 		this.add(manualMode);
 		this.add(autoPilotMode);
 		this.add(collectMode);
-		this.add(trainingMode);
+		//this.add(trainingMode);
 
 		// add action listeners to the buttons
 		left.addActionListener(new ActionListener()
@@ -342,8 +342,10 @@ public class GUIController extends JFrame
 				autoPilotMode.setEnabled(true);
 				collectMode.setVisible(true);
 				collectMode.setEnabled(true);
-				trainingMode.setVisible(true);
-				trainingMode.setEnabled(true);
+				//trainingMode.setVisible(true);
+				//trainingMode.setEnabled(true);
+				clearCSVButton.setVisible(true);
+				clearCSVButton.setEnabled(true);
 				manualMode.setVisible(false);
 				sioc.initialize();
 				sioc.SerialWrite('s');
@@ -360,7 +362,6 @@ public class GUIController extends JFrame
 				}
 				else {
 					sioc.close();
-					JOptionPane.showMessageDialog(null, "Unplug the SerialPort. Plug in the bluetooth module. Reset the car. Press okay when you're done.");
 					//runner.runAutomaticScript();
 					manualMode.setVisible(true);
 					up.setVisible(false);
@@ -385,10 +386,12 @@ public class GUIController extends JFrame
 					autoPilotMode.setEnabled(false);
 					collectMode.setVisible(false);
 					collectMode.setEnabled(false);
-					trainingMode.setVisible(false);
-					trainingMode.setEnabled(false);
+					//trainingMode.setVisible(false);
+					//trainingMode.setEnabled(false);
+					clearCSVButton.setVisible(false);
+					clearCSVButton.setEnabled(false);
 					outputTextArea.append(getCurrentLocalDateTimeStamp() + "User pressed Autopilot button.\n");
-					JOptionPane.showMessageDialog(null, "Plug the SerialPort. Unplug in the bluetooth module. Reset the car. Press okay when you're done.");
+					JOptionPane.showMessageDialog(null, "Serial Port disconnected. Run Keras on Pycharm.");
 				}
 			}
 		});
