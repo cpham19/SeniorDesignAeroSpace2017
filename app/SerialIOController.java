@@ -70,11 +70,11 @@ public class SerialIOController implements SerialPortEventListener {
 				DataPacket packet = new DataPacket(leftUltrasonic, upperLeftUltrasonic, middleUltrasonic, upperRightUltrasonic, rightUltrasonic,
 						L0, L1, L2, xAccel, yAccel, zAccel, xGyro, yGyro, zGyro, xMag, yMag, zMag, servoAngle, state);
 
-				GUIController.leftUltrasonicTF.setText("L Ult. Sonic: " + leftUltrasonic);
-				GUIController.upperLeftUltrasonicTF.setText("Up. L Ult. Sonic: " + upperLeftUltrasonic);
-				GUIController.middleUltrasonicTF.setText("M Ult. Sonic: " + middleUltrasonic);
-				GUIController.upperRightUltrasonicTF.setText("R Ult. Sonic: " + upperRightUltrasonic);
-				GUIController.rightUltrasonicTF.setText("R Ult. Sonic: " + rightUltrasonic);
+				GUIController.leftUltrasonicTF.setText("L UltSonic:" + leftUltrasonic);
+				GUIController.upperLeftUltrasonicTF.setText("UpL UltSonic:" + upperLeftUltrasonic);
+				GUIController.middleUltrasonicTF.setText("M UltSonic:" + middleUltrasonic);
+				GUIController.upperRightUltrasonicTF.setText("UpR UltSonic:" + upperRightUltrasonic);
+				GUIController.rightUltrasonicTF.setText("R UltSonic:" + rightUltrasonic);
 				GUIController.L0TF.setText("L0: " + L0);
 				GUIController.L1TF.setText("L1: " + L1);
 				GUIController.L2TF.setText("L2: " + L2);

@@ -156,7 +156,7 @@ void back(){
   state = 3;
 }
 
-void right(){
+void left(){
   analogWrite(ENA,carSpeed2);
   analogWrite(ENB,carSpeed2);
   //digitalWrite(ENA, HIGH);
@@ -165,10 +165,10 @@ void right(){
   digitalWrite(IN2,LOW);
   digitalWrite(IN3,HIGH);
   digitalWrite(IN4,LOW);
-  state = 2;
+  state = 1;
 }
 
-void left(){
+void right(){
   analogWrite(ENA,carSpeed2);
   analogWrite(ENB,carSpeed2);
   //digitalWrite(ENA,HIGH);
@@ -177,7 +177,7 @@ void left(){
   digitalWrite(IN2,HIGH);
   digitalWrite(IN3,LOW);
   digitalWrite(IN4,HIGH);
-  state = 1;
+  state = 2;
 }
 
 void stop() {

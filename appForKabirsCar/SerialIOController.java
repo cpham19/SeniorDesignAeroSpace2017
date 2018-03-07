@@ -11,6 +11,8 @@ import gnu.io.SerialPortEventListener;
 
 import java.util.Enumeration;
 
+import appForKabirsCar.GUIController;
+
 public class SerialIOController implements SerialPortEventListener {
 	SerialPort serialPort;
 	public static String csvName = "Sample";
@@ -67,11 +69,11 @@ public class SerialIOController implements SerialPortEventListener {
 				DataPacket packet = new DataPacket(leftUltrasonic, upperLeftUltrasonic, middleUltrasonic, upperRightUltrasonic, rightUltrasonic,
 						xAccel, yAccel, zAccel, xGyro, yGyro, zGyro, xMag, yMag, zMag, servoAngle, state);
 
-				GUIController.leftUltrasonicTF.setText("L Ult. Sonic: " + leftUltrasonic);
-				GUIController.upperLeftUltrasonicTF.setText("Up. L Ult. Sonic: " + upperLeftUltrasonic);
-				GUIController.middleUltrasonicTF.setText("M Ult. Sonic: " + middleUltrasonic);
-				GUIController.upperRightUltrasonicTF.setText("R Ult. Sonic: " + upperRightUltrasonic);
-				GUIController.rightUltrasonicTF.setText("R Ult. Sonic: " + rightUltrasonic);
+				GUIController.leftUltrasonicTF.setText("L UltSonic:" + leftUltrasonic);
+				GUIController.upperLeftUltrasonicTF.setText("UpL UltSonic:" + upperLeftUltrasonic);
+				GUIController.middleUltrasonicTF.setText("M UltSonic:" + middleUltrasonic);
+				GUIController.upperRightUltrasonicTF.setText("UpR UltSonic:" + upperRightUltrasonic);
+				GUIController.rightUltrasonicTF.setText("R UltSonic:" + rightUltrasonic);
 				GUIController.xAccelTF.setText("xAccel: " + xAccel);
 				GUIController.yAccelTF.setText("yAccel: " + yAccel);
 				GUIController.zAccelTF.setText("zAccel: " + zAccel);

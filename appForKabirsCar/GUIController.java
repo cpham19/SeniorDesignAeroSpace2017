@@ -44,11 +44,11 @@ public class GUIController extends JFrame
 	private JButton down = new JButton("Backward");
 	private JButton right = new JButton("Right");
 	private JButton stop = new JButton("Stop");
-	public static JTextField leftUltrasonicTF = new JTextField("L Ult. Sonic: " + 0);
-	public static JTextField upperLeftUltrasonicTF = new JTextField("Up. L Ult. Sonic: " + 0);
-	public static JTextField middleUltrasonicTF = new JTextField("M Ult. Sonic: " + 0);
-	public static JTextField upperRightUltrasonicTF = new JTextField("Up. R Ult. Sonic: " + 0);
-	public static JTextField rightUltrasonicTF = new JTextField("R Ult. Sonic: " + 0);
+	public static JTextField leftUltrasonicTF = new JTextField("L UltSonic:" + 0);
+	public static JTextField upperLeftUltrasonicTF = new JTextField("UpL UltSonic:" + 0);
+	public static JTextField middleUltrasonicTF = new JTextField("M UltSonic:" + 0);
+	public static JTextField upperRightUltrasonicTF = new JTextField("UpR UltSonic:" + 0);
+	public static JTextField rightUltrasonicTF = new JTextField("R UltSonic:" + 0);
 	public static JTextField xAccelTF = new JTextField("xAccel: " + 0);
 	public static JTextField yAccelTF = new JTextField("yAccel: " + 0);
 	public static JTextField zAccelTF = new JTextField("zAccel: " + 0);
