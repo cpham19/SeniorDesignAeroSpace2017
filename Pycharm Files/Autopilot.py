@@ -48,23 +48,9 @@ print(Y)
 
 # create model
 model = Sequential()
-# Input layer
-model.add(Dense(len(feature_cols), input_dim=len(feature_cols), activation='sigmoid'))
-# Hidden Layer
-model.add(Dense(math.ceil((len(feature_cols) + len(labels))/ 2), activation='sigmoid'))
-# Output layer
-model.add(Dense(len(labels), activation='softmax'))
-# model.add(Dropout(0.2))
 
-# Compile model
-model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-
-# Fit the model
-history = model.fit(X, Y, epochs=500, batch_size=math.ceil(numberOfRows * 0.10), validation_split=0.10).history
-
-print("Accuracy: " + str(numpy.mean(history['acc'])))
-print("Cross Validation Accuracy: " + str(numpy.mean(history['val_acc'])))
-print()
+# Load trained model
+model.load_model('mlp_model.h5')
 
 # Opening serial port communcation for Arduino
 ser = serial.Serial(

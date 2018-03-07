@@ -66,6 +66,9 @@ print("Accuracy: " + str(numpy.mean(history['acc'])))
 print("Cross Validation Accuracy: " + str(numpy.mean(history['val_acc'])))
 print()
 
+# Save the model
+model.save('mlp_model.h5')
+
 string = "20,250,105"
 modifiedInputLine = numpy.array(string.split(","))
 modifiedInputLine = modifiedInputLine.astype(float)
