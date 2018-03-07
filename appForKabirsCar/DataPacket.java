@@ -1,4 +1,4 @@
-package app;
+package appForKabirsCar;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -10,9 +10,6 @@ public class DataPacket {
 	public double middleUltrasonic;
 	public double upperRightUltrasonic;
 	public double rightUltrasonic;
-	public int L0;
-	public int L1;
-	public int L2;
 	public double xAccel;
 	public double yAccel;
 	public double zAccel;
@@ -26,16 +23,15 @@ public class DataPacket {
 	public int state;
 
 	public String[] toStringArray() {
-		return (leftUltrasonic + "," + upperLeftUltrasonic + "," + middleUltrasonic + "," + upperRightUltrasonic + ","
-				+ rightUltrasonic + "," + L0 + "," + L1 + "," + L2 + "," + xAccel + "," + yAccel + "," + zAccel + ","
-				+ xGyro + "," + yGyro + "," + zGyro + "," + xMag + "," + yMag + "," + zMag + "," + servoAngle + ","
-				+ state).split(",");
+		return (leftUltrasonic + "," + upperLeftUltrasonic + "," + middleUltrasonic + "," + upperRightUltrasonic + "," + rightUltrasonic
+				+ "," + xAccel + "," + yAccel + "," + zAccel + ","
+				+ xGyro + "," + yGyro + "," + zGyro + ","
+				+ xMag + "," + yMag + "," + zMag + ","
+				+ servoAngle + "," + state).split(",");
 	}
 
 	public String toString() {
-		return "Left Ultrasonic: " + leftUltrasonic + ", Up. Left Ultrasonic: " + upperLeftUltrasonic
-				+ ", Midle Ultrasonic: " + middleUltrasonic + ", Up. Right Ultrasonic: " + upperRightUltrasonic
-				+ ", Right Ultrasonic: " + rightUltrasonic + ", L0: " + L0 + ", L1: " + L1 + ", L2: " + L2
+		return "Left Ultrasonic: " + leftUltrasonic + ", Up. Left Ultrasonic: " + upperLeftUltrasonic + ", Middle Ultrasonic: " + middleUltrasonic + ", Up. Right Ultrasonic: " + upperRightUltrasonic + ", Right Ultrasonic: " + rightUltrasonic
 				+ ", xAccel: " + xAccel + ", yAccel: " + yAccel + ", zAccel: " + zAccel + ", xGyro: " + xGyro
 				+ ", yGyro: " + yGyro + ", zGyro: " + zGyro + ", xMag: " + xMag + ", yMag: " + yMag + ", zMag: " + zMag
 				+ ", Servo Angle: " + servoAngle + ", State: " + state;
@@ -46,7 +42,7 @@ public class DataPacket {
 	}
 
 	public DataPacket(double leftUltrasonic, double upperLeftUltrasonic, double middleUltrasonic,
-			double upperRightUltrasonic, double rightUltrasonic, int L0, int L1, int L2, double xAccel, double yAccel,
+			double upperRightUltrasonic, double rightUltrasonic, double xAccel, double yAccel,
 			double zAccel, double xGyro, double yGyro, double zGyro, double xMag, double yMag, double zMag,
 			int servoAngle, int state) {
 		this.leftUltrasonic = leftUltrasonic;
@@ -54,9 +50,6 @@ public class DataPacket {
 		this.middleUltrasonic = middleUltrasonic;
 		this.upperRightUltrasonic = upperRightUltrasonic;
 		this.rightUltrasonic = rightUltrasonic;
-		this.L0 = L0;
-		this.L1 = L1;
-		this.L2 = L2;
 		this.xAccel = xAccel;
 		this.yAccel = yAccel;
 		this.zAccel = zAccel;
@@ -108,30 +101,6 @@ public class DataPacket {
 
 	public void setRightUltrasonic(double rightUltrasonic) {
 		this.rightUltrasonic = rightUltrasonic;
-	}
-
-	public int getL0() {
-		return L0;
-	}
-
-	public void setL0(int l0) {
-		L0 = l0;
-	}
-
-	public int getL1() {
-		return L1;
-	}
-
-	public void setL1(int l1) {
-		L1 = l1;
-	}
-
-	public int getL2() {
-		return L2;
-	}
-
-	public void setL2(int l2) {
-		L2 = l2;
 	}
 
 	public double getxAccel() {

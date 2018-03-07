@@ -1,4 +1,4 @@
-package app;
+package appForKabirsCar;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -26,7 +26,7 @@ public class SerialIOController implements SerialPortEventListener {
 			"/dev/tty.usbserial-A9007UX1", // Mac
 			"/dev/ttyACM0", // Raspberry Pi
 			"/dev/ttyUSB0", // Linux
-			"COM5", // Windows
+			"COM3", // Windows
 	};
 
 	public SerialIOController() {
@@ -51,33 +51,27 @@ public class SerialIOController implements SerialPortEventListener {
 				double middleUltrasonic = Double.parseDouble(inputLine[2]);
 				double upperRightUltrasonic = Double.parseDouble(inputLine[3]);
 				double rightUltrasonic = Double.parseDouble(inputLine[4]);
-				Integer L0 = Integer.parseInt(inputLine[5]);
-				Integer L1 = Integer.parseInt(inputLine[6]);
-				Integer L2 = Integer.parseInt(inputLine[7]);
-				double xAccel = Double.parseDouble(inputLine[8]);
-				double yAccel = Double.parseDouble(inputLine[9]);
-				double zAccel = Double.parseDouble(inputLine[10]);
-				double xGyro = Double.parseDouble(inputLine[11]);
-				double yGyro = Double.parseDouble(inputLine[12]);
-				double zGyro = Double.parseDouble(inputLine[13]);
-				double xMag = Double.parseDouble(inputLine[14]);
-				double yMag = Double.parseDouble(inputLine[15]);
-				double zMag = Double.parseDouble(inputLine[16]);
-				int carSpeed = Integer.parseInt(inputLine[17]);
-				int servoAngle = Integer.parseInt(inputLine[18]);
-				int state = Integer.parseInt(inputLine[19]);
+				double xAccel = Double.parseDouble(inputLine[5]);
+				double yAccel = Double.parseDouble(inputLine[6]);
+				double zAccel = Double.parseDouble(inputLine[7]);
+				double xGyro = Double.parseDouble(inputLine[8]);
+				double yGyro = Double.parseDouble(inputLine[9]);
+				double zGyro = Double.parseDouble(inputLine[10]);
+				double xMag = Double.parseDouble(inputLine[11]);
+				double yMag = Double.parseDouble(inputLine[12]);
+				double zMag = Double.parseDouble(inputLine[13]);
+				int carSpeed = Integer.parseInt(inputLine[14]);
+				int servoAngle = Integer.parseInt(inputLine[15]);
+				int state = Integer.parseInt(inputLine[16]);
 
 				DataPacket packet = new DataPacket(leftUltrasonic, upperLeftUltrasonic, middleUltrasonic, upperRightUltrasonic, rightUltrasonic,
-						L0, L1, L2, xAccel, yAccel, zAccel, xGyro, yGyro, zGyro, xMag, yMag, zMag, servoAngle, state);
+						xAccel, yAccel, zAccel, xGyro, yGyro, zGyro, xMag, yMag, zMag, servoAngle, state);
 
 				GUIController.leftUltrasonicTF.setText("L Ult. Sonic: " + leftUltrasonic);
 				GUIController.upperLeftUltrasonicTF.setText("Up. L Ult. Sonic: " + upperLeftUltrasonic);
 				GUIController.middleUltrasonicTF.setText("M Ult. Sonic: " + middleUltrasonic);
 				GUIController.upperRightUltrasonicTF.setText("R Ult. Sonic: " + upperRightUltrasonic);
 				GUIController.rightUltrasonicTF.setText("R Ult. Sonic: " + rightUltrasonic);
-				GUIController.L0TF.setText("L0: " + L0);
-				GUIController.L1TF.setText("L1: " + L1);
-				GUIController.L2TF.setText("L2: " + L2);
 				GUIController.xAccelTF.setText("xAccel: " + xAccel);
 				GUIController.yAccelTF.setText("yAccel: " + yAccel);
 				GUIController.zAccelTF.setText("zAccel: " + zAccel);

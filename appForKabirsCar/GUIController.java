@@ -1,4 +1,4 @@
-package app;
+package appForKabirsCar;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -49,9 +49,6 @@ public class GUIController extends JFrame
 	public static JTextField middleUltrasonicTF = new JTextField("M Ult. Sonic: " + 0);
 	public static JTextField upperRightUltrasonicTF = new JTextField("Up. R Ult. Sonic: " + 0);
 	public static JTextField rightUltrasonicTF = new JTextField("R Ult. Sonic: " + 0);
-	public static JTextField L0TF = new JTextField("L0: " + 0);
-	public static JTextField L1TF = new JTextField("L1: " + 0);
-	public static JTextField L2TF = new JTextField("L2: " + 0);
 	public static JTextField xAccelTF = new JTextField("xAccel: " + 0);
 	public static JTextField yAccelTF = new JTextField("yAccel: " + 0);
 	public static JTextField zAccelTF = new JTextField("zAccel: " + 0);
@@ -169,26 +166,23 @@ public class GUIController extends JFrame
 		leftUltrasonicTF.setBounds(decreaseCarSpeed.getX() + 700, decreaseCarSpeed.getY(), 100, 50);
 		upperLeftUltrasonicTF.setBounds(decreaseCarSpeed.getX() + 800, decreaseCarSpeed.getY(), 100, 50);
 
-		// Second Row
-		L0TF.setBounds(decreaseCarSpeed.getX() + 400, decreaseCarSpeed.getY() + 50, 100, 50);
-		L1TF.setBounds(decreaseCarSpeed.getX() + 500, decreaseCarSpeed.getY() + 50, 100, 50);
-		L2TF.setBounds(decreaseCarSpeed.getX() + 600, decreaseCarSpeed.getY() + 50, 100, 50);
+		// Second row
+		middleUltrasonicTF.setBounds(decreaseCarSpeed.getX() + 400, decreaseCarSpeed.getY() + 50, 100, 50);
+		upperRightUltrasonicTF.setBounds(decreaseCarSpeed.getX() + 500, decreaseCarSpeed.getY() + 50, 100, 50);
+		rightUltrasonicTF.setBounds(decreaseCarSpeed.getX() + 600, decreaseCarSpeed.getY() + 50, 100, 50);
 		xAccelTF.setBounds(decreaseCarSpeed.getX() + 700, decreaseCarSpeed.getY() + 50, 100, 50);
-		middleUltrasonicTF.setBounds(decreaseCarSpeed.getX() + 800, decreaseCarSpeed.getY() + 50, 100, 50);
 
-		// Third Row
+		// Third row
 		yAccelTF.setBounds(decreaseCarSpeed.getX() + 400, decreaseCarSpeed.getY() + 100, 100, 50);
 		zAccelTF.setBounds(decreaseCarSpeed.getX() + 500, decreaseCarSpeed.getY() + 100, 100, 50);
 		xGyroTF.setBounds(decreaseCarSpeed.getX() + 600, decreaseCarSpeed.getY() + 100, 100, 50);
 		yGyroTF.setBounds(decreaseCarSpeed.getX() + 700, decreaseCarSpeed.getY() + 100, 100, 50);
-		upperRightUltrasonicTF.setBounds(decreaseCarSpeed.getX() + 800, decreaseCarSpeed.getY() + 100, 100, 50);
 
-		// Fourth Row
+		// Fourth row
 		zGyroTF.setBounds(decreaseCarSpeed.getX() + 400, decreaseCarSpeed.getY() + 150, 100, 50);
 		xMagTF.setBounds(decreaseCarSpeed.getX() + 500, decreaseCarSpeed.getY() + 150, 100, 50);
 		yMagTF.setBounds(decreaseCarSpeed.getX() + 600, decreaseCarSpeed.getY() + 150, 100, 50);
 		zMagTF.setBounds(decreaseCarSpeed.getX() + 700, decreaseCarSpeed.getY() + 150, 100, 50);
-		rightUltrasonicTF.setBounds(decreaseCarSpeed.getX() + 800, decreaseCarSpeed.getY() + 150, 100, 50);
 
 
 		// set editables of all textfields
@@ -200,9 +194,6 @@ public class GUIController extends JFrame
 		middleUltrasonicTF.setEditable(false);
 		upperRightUltrasonicTF.setEditable(false);
 		rightUltrasonicTF.setEditable(false);
-		L0TF.setEditable(false);
-		L1TF.setEditable(false);
-		L2TF.setEditable(false);
 		xAccelTF.setEditable(false);
 		yAccelTF.setEditable(false);
 		zAccelTF.setEditable(false);
@@ -222,9 +213,6 @@ public class GUIController extends JFrame
 		middleUltrasonicTF.setFont(new Font("Serif", Font.PLAIN, 12));
 		upperRightUltrasonicTF.setFont(new Font("Serif", Font.PLAIN, 12));
 		rightUltrasonicTF.setFont(new Font("Serif", Font.PLAIN, 12));
-		L0TF.setFont(new Font("Serif", Font.PLAIN, 12));
-		L1TF.setFont(new Font("Serif", Font.PLAIN, 12));
-		L2TF.setFont(new Font("Serif", Font.PLAIN, 12));
 		xAccelTF.setFont(new Font("Serif", Font.PLAIN, 12));
 		yAccelTF.setFont(new Font("Serif", Font.PLAIN, 12));
 		zAccelTF.setFont(new Font("Serif", Font.PLAIN, 12));
@@ -249,9 +237,6 @@ public class GUIController extends JFrame
 		this.add(middleUltrasonicTF);
 		this.add(upperRightUltrasonicTF);
 		this.add(rightUltrasonicTF);
-		this.add(L0TF);
-		this.add(L1TF);
-		this.add(L2TF);
 		this.add(xAccelTF);
 		this.add(yAccelTF);
 		this.add(zAccelTF);
