@@ -18,10 +18,11 @@ dataset = pd.read_csv('Sample.csv')
 numberOfRows = len(dataset.index)
 print(dataset.columns)
 feature_cols = list(dataset.columns.values)
-#feature_cols.remove('middleUltrasonic')
 #feature_cols.remove('leftUltrasonic')
+#feature_cols.remove('upperLeftUltrasonic')
+#feature_cols.remove('middleUltrasonic')
+#feature_cols.remove('upperRightUltrasonic')
 #feature_cols.remove('rightUltrasonic')
-feature_cols.remove('backUltrasonic')
 feature_cols.remove('L0')
 feature_cols.remove('L1')
 feature_cols.remove('L2')
@@ -38,7 +39,7 @@ feature_cols.remove('servoAngle')
 feature_cols.remove('state')
 print(feature_cols)
 # 0 is Forward, 1 is Left, 2 is Right, 3 is Backward, 4 is Stop
-labels = ['0','1']
+labels = ['0','1','2']
 
 # split into input (X) and output (Y) variables
 X = numpy.array(dataset[feature_cols])
@@ -69,11 +70,11 @@ print()
 # Save the model
 model.save('mlp_model.h5')
 
-string = "20,250,105"
-modifiedInputLine = numpy.array(string.split(","))
-modifiedInputLine = modifiedInputLine.astype(float)
-modifiedInputLine = modifiedInputLine.reshape(1, -1)
-
-prediction = model.predict(modifiedInputLine)
-prediction = numpy.argmax(prediction[0])
-print(prediction)
+# string = "20,250,105"
+# modifiedInputLine = numpy.array(string.split(","))
+# modifiedInputLine = modifiedInputLine.astype(float)
+# modifiedInputLine = modifiedInputLine.reshape(1, -1)
+#
+# prediction = model.predict(modifiedInputLine)
+# prediction = numpy.argmax(prediction[0])
+# print(prediction)

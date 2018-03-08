@@ -93,7 +93,7 @@ public class SerialIOController implements SerialPortEventListener {
 
 				// Add DataPacket to CSV file
 
-				if (collectData == true && (state != 3)) {
+				if (collectData == true && (state != 3 && state != 4)) {
 					dc.writeToCSV(csvName, packet);
 					// dc.writeToDatabase("aria_data", packet);
 					GUIController.outputTextArea.append(count + ") " + packet.toString() + "\n");
