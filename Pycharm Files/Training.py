@@ -61,7 +61,7 @@ model.add(Dense(len(labels), activation='softmax'))
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 # Fit the model
-history = model.fit(X, Y, epochs=50, batch_size=numberOfRows, validation_split=0.10).history
+history = model.fit(X, Y, epochs=500, batch_size=int(numberOfRows * 0.10), validation_split=0.10).history
 
 print("Accuracy: " + str(numpy.mean(history['acc'])))
 print("Cross Validation Accuracy: " + str(numpy.mean(history['val_acc'])))

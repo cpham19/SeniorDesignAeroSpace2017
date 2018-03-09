@@ -14,7 +14,7 @@ ser = serial.Serial(
     parity=serial.PARITY_NONE,
     stopbits=serial.STOPBITS_ONE,
     bytesize=serial.EIGHTBITS,
-    timeout=1
+    timeout=None
 )
 
 print("Serial port is opened.. Waiting three seconds for initialization")
@@ -68,7 +68,7 @@ while (1):
         elif prediction == 4:
             ser.write(bytes(b's'))
 
-        time.sleep(0.100)
+        #time.sleep(0.200)
             
 
 
