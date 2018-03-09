@@ -393,8 +393,37 @@ void setup() {
 }
 
 void loop() {
-//    if (Distance_test2() <= 20) {
-//      stop();
+
+//Teaching car to turn left when it gets close to object
+    // If Middle sensor isn't close to object
+//    if (Distance_test3() > 20) {
+//      // If Upper-right sensor is close to object
+//      if (Distance_test4() <= 20) {
+//        left();
+//      }
+//      else {
+//        forward();
+//      }
+//    }
+//    // If Middle sensor is close to object
+//    else if (Distance_test3() <= 20) {
+//      left();
+//    }
+
+//// Teaching car to turn right when it gets to close to object
+//    // If Middle sensor isn't close to object
+//    if (Distance_test3() > 20) {
+//      // If Upper-left sensor is close to object
+//      if (Distance_test2() <= 20) {
+//        right();
+//      }
+//      else {
+//        forward();
+//      }
+//    }
+//    // If Middle sensor is close to object
+//    else if (Distance_test3() <= 20) {
+//      right();
 //    }
 
 //    if(millis() - preMillis > 500){
@@ -459,6 +488,6 @@ void loop() {
     DataPacket packet(distance1, distance2, distance3, distance4, distance5, left, middle, right, ax, ay, az, gx, gy, gz, mx, my, mz, carSpeed, servoAngle, state);
     packet.print();
     
-    delay(100);
+    delay(200);
 }
 
