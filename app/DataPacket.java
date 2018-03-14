@@ -10,9 +10,9 @@ public class DataPacket {
 	public double middleUltrasonic;
 	public double upperRightUltrasonic;
 	public double rightUltrasonic;
-	public int L0;
-	public int L1;
-	public int L2;
+	public int db1;
+	public int db2;
+	public int db3;
 	public double xAccel;
 	public double yAccel;
 	public double zAccel;
@@ -27,7 +27,7 @@ public class DataPacket {
 
 	public String[] toStringArray() {
 		return (leftUltrasonic + "," + upperLeftUltrasonic + "," + middleUltrasonic + "," + upperRightUltrasonic + ","
-				+ rightUltrasonic + "," + L0 + "," + L1 + "," + L2 + "," + xAccel + "," + yAccel + "," + zAccel + ","
+				+ rightUltrasonic + "," + db1 + "," + db2 + "," + db3 + "," + xAccel + "," + yAccel + "," + zAccel + ","
 				+ xGyro + "," + yGyro + "," + zGyro + "," + xMag + "," + yMag + "," + zMag + "," + servoAngle + ","
 				+ state).split(",");
 	}
@@ -35,7 +35,7 @@ public class DataPacket {
 	public String toString() {
 		return "Left Ultrasonic: " + leftUltrasonic + ", Up. Left Ultrasonic: " + upperLeftUltrasonic
 				+ ", Midle Ultrasonic: " + middleUltrasonic + ", Up. Right Ultrasonic: " + upperRightUltrasonic
-				+ ", Right Ultrasonic: " + rightUltrasonic + ", L0: " + L0 + ", L1: " + L1 + ", L2: " + L2
+				+ ", Right Ultrasonic: " + rightUltrasonic + ", DB #1: " + db1 + ", DB #2: " + db2 + ", DB #3: " + db3
 				+ ", xAccel: " + xAccel + ", yAccel: " + yAccel + ", zAccel: " + zAccel + ", xGyro: " + xGyro
 				+ ", yGyro: " + yGyro + ", zGyro: " + zGyro + ", xMag: " + xMag + ", yMag: " + yMag + ", zMag: " + zMag
 				+ ", Servo Angle: " + servoAngle + ", State: " + state;
@@ -46,7 +46,7 @@ public class DataPacket {
 	}
 
 	public DataPacket(double leftUltrasonic, double upperLeftUltrasonic, double middleUltrasonic,
-			double upperRightUltrasonic, double rightUltrasonic, int L0, int L1, int L2, double xAccel, double yAccel,
+			double upperRightUltrasonic, double rightUltrasonic, int db1, int db2, int db3, double xAccel, double yAccel,
 			double zAccel, double xGyro, double yGyro, double zGyro, double xMag, double yMag, double zMag,
 			int servoAngle, int state) {
 		this.leftUltrasonic = leftUltrasonic;
@@ -54,9 +54,9 @@ public class DataPacket {
 		this.middleUltrasonic = middleUltrasonic;
 		this.upperRightUltrasonic = upperRightUltrasonic;
 		this.rightUltrasonic = rightUltrasonic;
-		this.L0 = L0;
-		this.L1 = L1;
-		this.L2 = L2;
+		this.db1 = db1;
+		this.db2 = db2;
+		this.db3 = db3;
 		this.xAccel = xAccel;
 		this.yAccel = yAccel;
 		this.zAccel = zAccel;
@@ -110,28 +110,28 @@ public class DataPacket {
 		this.rightUltrasonic = rightUltrasonic;
 	}
 
-	public int getL0() {
-		return L0;
+	public int getDb1() {
+		return db1;
 	}
 
-	public void setL0(int l0) {
-		L0 = l0;
+	public void setDb1(int db1) {
+		this.db1 = db1;
 	}
 
-	public int getL1() {
-		return L1;
+	public int getDb2() {
+		return db2;
 	}
 
-	public void setL1(int l1) {
-		L1 = l1;
+	public void setDb2(int db2) {
+		this.db2 = db2;
 	}
 
-	public int getL2() {
-		return L2;
+	public int getDb3() {
+		return db3;
 	}
 
-	public void setL2(int l2) {
-		L2 = l2;
+	public void setDb3(int db3) {
+		this.db3 = db3;
 	}
 
 	public double getxAccel() {

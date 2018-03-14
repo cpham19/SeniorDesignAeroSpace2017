@@ -38,9 +38,9 @@ while (1):
         del modifiedInputLine[10] # zAccel
         del modifiedInputLine[9] # yAccel
         del modifiedInputLine[8] # xAccel
-        del modifiedInputLine[7] # L2
-        del modifiedInputLine[6] # L1
-        del modifiedInputLine[5] # L0
+        del modifiedInputLine[7]  # db1
+        del modifiedInputLine[6]  # db2
+        del modifiedInputLine[5]  # db3
         #del modifiedInputLine[4]  # rightUltrasonic
         #del modifiedInputLine[3]  # upperRightUltrasonic
         #del modifiedInputLine[2]  # middleUltrasonic

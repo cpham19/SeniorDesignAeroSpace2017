@@ -42,8 +42,8 @@ int Trig5 = A9;     // Ultrasonic on the Right
 // For carspeed
 // 100 is enough to move the car forward and backward (BUT NOT LEFT AND RIGHT)
 // 180 is enough to move the car forward, backward, left, and right
-unsigned char carSpeed = 90; // initial speed of car >=0 to <=255
-unsigned char carSpeed2 = 150; // initial speed of car >=0 to <=255
+unsigned char carSpeed = 120; // initial speed of car >=0 to <=255
+unsigned char carSpeed2 = 180; // initial speed of car >=0 to <=255
 int servoAngle = 90;
 char currentInput;
 int state = 0;
@@ -153,7 +153,7 @@ void back(){
   digitalWrite(IN2,HIGH);
   digitalWrite(IN3,HIGH);
   digitalWrite(IN4,LOW);
-  state = 3;
+  state = 4;
 }
 
 void left(){
@@ -183,7 +183,7 @@ void right(){
 void stop() {
   digitalWrite(ENA,LOW);
   digitalWrite(ENB,LOW);
-  state = 4;
+  state = 3;
 }
 
 void rotateServoLeft() {
@@ -374,37 +374,28 @@ void setup() {
 }
 
 void loop() {
-////Teaching car to turn left when it gets close to object
-    // If Middle sensor isn't close to object
-//    if (Distance_test3() > 20) {
-//      // If Upper-right sensor is close to object
-//      if (Distance_test4() <= 20) {
-//        left();
-//      }
-//      else {
-//        forward();
-//      }
-//    }
-//    // If Middle sensor is close to object
-//    else if (Distance_test3() <= 20) {
-//      left();
-//    }
-
-//// Teaching car to turn right when it gets to close to object
-//    // If Middle sensor isn't close to object
-//    if (Distance_test3() > 20) {
-//      // If Upper-left sensor is close to object
-//      if (Distance_test2() <= 20) {
-//        right();
-//      }
-//      else {
-//        forward();
-//      }
-//    }
-//    // If Middle sensor is close to object
-//    else if (Distance_test3() <= 20) {
-//      right();
-//    }
+//Teaching car to turn appropriately when it gets close to object using Upper-Left, Middle, Upper-Right sensors
+  if (Distance_test3() > 25) {
+     //If Upper-right sensor is close to object (this is when the middle sensor can't see something upclose)
+      if (Distance_test4() <= 25) {
+        left();
+      }
+      else if (Distance_test2() <= 25){
+        right();
+      }
+       else {
+        forward();
+      }
+    }
+    // If Middle sensor is close to object
+    else if (Distance_test3() <= 25) {
+      if (Distance_test2() > Distance_test4()) {
+        left();
+      }
+      else {
+        right();
+      }
+    }
 
 //    if(millis() - preMillis > 500){
 //      stop();
@@ -463,6 +454,6 @@ void loop() {
     DataPacket packet(distance1, distance2, distance3, distance4, distance5, ax, ay, az, gx, gy, gz, mx, my, mz, carSpeed, servoAngle, state);
     packet.print();
     
-    delay(100);
+    delay(200);
 }
 

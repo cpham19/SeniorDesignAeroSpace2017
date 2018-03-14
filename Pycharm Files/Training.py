@@ -23,9 +23,9 @@ feature_cols = list(dataset.columns.values)
 #feature_cols.remove('middleUltrasonic')
 #feature_cols.remove('upperRightUltrasonic')
 #feature_cols.remove('rightUltrasonic')
-feature_cols.remove('L0')
-feature_cols.remove('L1')
-feature_cols.remove('L2')
+feature_cols.remove('db1')
+feature_cols.remove('db2')
+feature_cols.remove('db3')
 feature_cols.remove('xAccel')
 feature_cols.remove('yAccel')
 feature_cols.remove('zAccel')
@@ -51,7 +51,7 @@ print(Y)
 model = Sequential()
 # Input layer
 model.add(Dense(len(feature_cols), input_dim=len(feature_cols), activation='sigmoid'))
-# Hidden Layer
+# Hidden Lay er
 model.add(Dense(math.ceil((len(feature_cols) + len(labels))/ 2), activation='sigmoid'))
 # Output layer
 model.add(Dense(len(labels), activation='softmax'))

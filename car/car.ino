@@ -10,12 +10,19 @@
 #define IN2 8 // Left wheel reverse
 #define IN3 9 // Right wheel reverse
 #define IN4 11 // Right wheel foward
-#define LED 13 // LED
 
 //Line Tracking IO define
-#define LT_R digitalRead(10)
-#define LT_M digitalRead(4)
-#define LT_L digitalRead(2)
+//#define LT_R digitalRead(10)
+//#define LT_M digitalRead(4)
+//#define LT_L digitalRead(2)
+
+// Sound Detector define
+#define PIN_ANALOG_IN_LEFT A10
+#define PIN_GATE_IN_LEFT 22
+#define PIN_ANALOG_IN_MIDDLE A11
+#define PIN_GATE_IN_MIDDLE 23
+#define PIN_ANALOG_IN_RIGHT A12
+#define PIN_GATE_IN_RIGHT 24 
 
 // 9 degrees of freedom define
 #define    MPU9250_ADDRESS            0x68
@@ -47,8 +54,8 @@ int Trig5 = A9;     // Ultrasonic on the Right
 // For carspeed
 // 100 is enough to move the car forward and backward (BUT NOT LEFT AND RIGHT)
 // 180 is enough to move the car forward, backward, left, and right
-unsigned char carSpeed = 90; // initial speed of car >=0 to <=255
-unsigned char carSpeed2 = 150; // initial speed of car >=0 to <=255
+unsigned char carSpeed = 120; // initial speed of car >=0 to <=255
+unsigned char carSpeed2 = 180; // initial speed of car >=0 to <=255
 int servoAngle = 90;
 char currentInput;
 int state = 0;
@@ -63,9 +70,9 @@ class DataPacket {
     int middleDistance;
     int upperRightDistance;
     int rightDistance;
-    String left;
-    String middle;
-    String right;
+    int dbLeft;
+    int dbMiddle;
+    int dbRight;
     double ax;
     double ay;
     double az;
@@ -80,16 +87,16 @@ class DataPacket {
     int servoAngle;
 
   public:
-    DataPacket(int distance1, int distance2, int distance3, int distance4, int distance5, int left1, int middle1, int right1, double ax1, double ay1, double az1, double gx1, double gy1, double gz1, double mx1, double my1, double mz1, unsigned char carSpeed1, int servoAngle1, int state1)
+    DataPacket(int distance1, int distance2, int distance3, int distance4, int distance5, int db1, int db2, int db3, double ax1, double ay1, double az1, double gx1, double gy1, double gz1, double mx1, double my1, double mz1, unsigned char carSpeed1, int servoAngle1, int state1)
     {
         leftDistance = distance1;
         upperLeftDistance = distance2;
         middleDistance = distance3;
         upperRightDistance = distance4;
         rightDistance = distance5;
-        left = left1;
-        middle = middle1;
-        right = right1;
+        dbLeft = db1;
+        dbMiddle = db2;
+        dbRight = db3;
         ax = ax1;
         ay = ay1;
         az = az1;
@@ -116,11 +123,11 @@ class DataPacket {
       Serial.print(",");
       Serial.print(rightDistance);
       Serial.print(",");
-      Serial.print(left);
+      Serial.print(dbLeft);
       Serial.print(",");
-      Serial.print(middle);
+      Serial.print(dbMiddle);
       Serial.print(",");
-      Serial.print(right);
+      Serial.print(dbRight);
       Serial.print(",");
       Serial.print(ax,DEC);
       Serial.print(",");
@@ -170,7 +177,7 @@ void back(){
   digitalWrite(IN2,HIGH);
   digitalWrite(IN3,HIGH);
   digitalWrite(IN4,LOW);
-  state = 3;
+  state = 4;
 }
 
 void right(){
@@ -200,7 +207,7 @@ void left(){
 void stop() {
   digitalWrite(ENA,LOW);
   digitalWrite(ENB,LOW);
-  state = 4;
+  state = 3;
 }
 
 void rotateServoLeft() {
@@ -337,7 +344,6 @@ void I2CwriteByte(uint8_t Address, uint8_t Register, uint8_t Data)
 }
 
 void setup() { 
-  pinMode(LED, OUTPUT);
   // Arduino initializations
   Wire.begin();
 
@@ -368,9 +374,14 @@ void setup() {
   pinMode(ENB,OUTPUT);
 
   // These are for linetracking
-  pinMode(LT_R,INPUT);
-  pinMode(LT_M,INPUT);
-  pinMode(LT_L,INPUT);
+//  pinMode(LT_R,INPUT);
+//  pinMode(LT_M,INPUT);
+//  pinMode(LT_L,INPUT);
+
+  // These are for Sound Detector
+  pinMode(PIN_GATE_IN_LEFT, INPUT);
+  pinMode(PIN_GATE_IN_MIDDLE, INPUT);
+  pinMode(PIN_GATE_IN_RIGHT, INPUT);
 
   // Set accelerometers low pass filter at 5Hz
   I2CwriteByte(MPU9250_ADDRESS,29,0x06);
@@ -394,27 +405,35 @@ void setup() {
 
 void loop() {
 
-//Teaching car to turn left when it gets close to object
-    // If Middle sensor isn't close to object
-//    if (Distance_test3() > 20) {
-//      // If Upper-right sensor is close to object
-//      if (Distance_test4() <= 20) {
+//Teaching car to turn left when it gets close to object using Upper-Left and Middle sensors
+     //If Middle sensor isn't close to object
+//    if (Distance_test3() > 25) {
+//     //If Upper-right sensor is close to object (this is when the middle sensor can't see something upclose)
+//      if (Distance_test4() <= 25) {
 //        left();
 //      }
-//      else {
+//      else if (Distance_test2() <= 25){
+//        right();
+//      }
+//       else {
 //        forward();
 //      }
 //    }
 //    // If Middle sensor is close to object
-//    else if (Distance_test3() <= 20) {
-//      left();
+//    else if (Distance_test3() <= 25) {
+//      if (Distance_test2() > Distance_test4()) {
+//        left();
+//      }
+//      else {
+//        right();
+//      }
 //    }
 
-//// Teaching car to turn right when it gets to close to object
+//// Teaching car to turn right when it gets to close to object Upper-Right and Middle sensors
 //    // If Middle sensor isn't close to object
-//    if (Distance_test3() > 20) {
-//      // If Upper-left sensor is close to object
-//      if (Distance_test2() <= 20) {
+//    if (Distance_test3() > 30) {
+//      // If Upper-left sensor is close to object (this is when the middle sensor can't see something upclose)
+//      if (Distance_test2() <= 30) {
 //        right();
 //      }
 //      else {
@@ -422,7 +441,7 @@ void loop() {
 //      }
 //    }
 //    // If Middle sensor is close to object
-//    else if (Distance_test3() <= 20) {
+//    else if (Distance_test3() <= 30) {
 //      right();
 //    }
 
@@ -442,9 +461,23 @@ void loop() {
     int distance5 = Distance_test5();
   
     // Line-tracking data returns 0's and 1's so we need to convert it to String
-    int left = LT_L;
-    int middle = LT_M;
-    int right = LT_R;
+//    int left = LT_L;
+//    int middle = LT_M;
+//    int right = LT_R;
+
+    int db1 = analogRead(PIN_ANALOG_IN_LEFT);
+    int db2 = analogRead(PIN_ANALOG_IN_MIDDLE);
+    int db3 = analogRead(PIN_ANALOG_IN_RIGHT);
+
+    if (db1 > 100) {
+      left();
+    }
+    else if (db2 > 100) {
+      forward();
+    }
+    else if (db3 > 100) {
+      right();
+    }
     
     // 9 degrees of freedom data
     
@@ -485,9 +518,9 @@ void loop() {
     int16_t mz=-(Mag[5]<<8 | Mag[4]);
 
     // Create a DataPacket object and print its data to the DAM
-    DataPacket packet(distance1, distance2, distance3, distance4, distance5, left, middle, right, ax, ay, az, gx, gy, gz, mx, my, mz, carSpeed, servoAngle, state);
+    DataPacket packet(distance1, distance2, distance3, distance4, distance5, db1, db2, db3, ax, ay, az, gx, gy, gz, mx, my, mz, carSpeed, servoAngle, state);
     packet.print();
     
-    delay(200);
+    delay(100);
 }
 

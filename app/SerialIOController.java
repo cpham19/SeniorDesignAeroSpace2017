@@ -51,9 +51,9 @@ public class SerialIOController implements SerialPortEventListener {
 				double middleUltrasonic = Double.parseDouble(inputLine[2]);
 				double upperRightUltrasonic = Double.parseDouble(inputLine[3]);
 				double rightUltrasonic = Double.parseDouble(inputLine[4]);
-				Integer L0 = Integer.parseInt(inputLine[5]);
-				Integer L1 = Integer.parseInt(inputLine[6]);
-				Integer L2 = Integer.parseInt(inputLine[7]);
+				Integer db1 = Integer.parseInt(inputLine[5]);
+				Integer db2 = Integer.parseInt(inputLine[6]);
+				Integer db3 = Integer.parseInt(inputLine[7]);
 				double xAccel = Double.parseDouble(inputLine[8]);
 				double yAccel = Double.parseDouble(inputLine[9]);
 				double zAccel = Double.parseDouble(inputLine[10]);
@@ -68,16 +68,16 @@ public class SerialIOController implements SerialPortEventListener {
 				int state = Integer.parseInt(inputLine[19]);
 
 				DataPacket packet = new DataPacket(leftUltrasonic, upperLeftUltrasonic, middleUltrasonic, upperRightUltrasonic, rightUltrasonic,
-						L0, L1, L2, xAccel, yAccel, zAccel, xGyro, yGyro, zGyro, xMag, yMag, zMag, servoAngle, state);
+						db1, db2, db3, xAccel, yAccel, zAccel, xGyro, yGyro, zGyro, xMag, yMag, zMag, servoAngle, state);
 
 				GUIController.leftUltrasonicTF.setText("L UltSonic:" + leftUltrasonic);
 				GUIController.upperLeftUltrasonicTF.setText("UpL UltSonic:" + upperLeftUltrasonic);
 				GUIController.middleUltrasonicTF.setText("M UltSonic:" + middleUltrasonic);
 				GUIController.upperRightUltrasonicTF.setText("UpR UltSonic:" + upperRightUltrasonic);
 				GUIController.rightUltrasonicTF.setText("R UltSonic:" + rightUltrasonic);
-				GUIController.L0TF.setText("L0: " + L0);
-				GUIController.L1TF.setText("L1: " + L1);
-				GUIController.L2TF.setText("L2: " + L2);
+				GUIController.db1TF.setText("DB #1: " + db1);
+				GUIController.db2TF.setText("DB #2: " + db2);
+				GUIController.db3TF.setText("DB #3: " + db3);
 				GUIController.xAccelTF.setText("xAccel: " + xAccel);
 				GUIController.yAccelTF.setText("yAccel: " + yAccel);
 				GUIController.zAccelTF.setText("zAccel: " + zAccel);

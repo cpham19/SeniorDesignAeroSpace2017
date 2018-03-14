@@ -49,9 +49,9 @@ public class GUIController extends JFrame
 	public static JTextField middleUltrasonicTF = new JTextField("M UltSonic:" + 0);
 	public static JTextField upperRightUltrasonicTF = new JTextField("UpR UltSonic:" + 0);
 	public static JTextField rightUltrasonicTF = new JTextField("R UltSonic:" + 0);
-	public static JTextField L0TF = new JTextField("L0: " + 0);
-	public static JTextField L1TF = new JTextField("L1: " + 0);
-	public static JTextField L2TF = new JTextField("L2: " + 0);
+	public static JTextField db1TF = new JTextField("DB #1: " + 0);
+	public static JTextField db2TF = new JTextField("DB #2: " + 0);
+	public static JTextField db3TF = new JTextField("DB #3: " + 0);
 	public static JTextField xAccelTF = new JTextField("xAccel: " + 0);
 	public static JTextField yAccelTF = new JTextField("yAccel: " + 0);
 	public static JTextField zAccelTF = new JTextField("zAccel: " + 0);
@@ -170,9 +170,9 @@ public class GUIController extends JFrame
 		upperLeftUltrasonicTF.setBounds(decreaseCarSpeed.getX() + 800, decreaseCarSpeed.getY(), 100, 50);
 
 		// Second Row
-		L0TF.setBounds(decreaseCarSpeed.getX() + 400, decreaseCarSpeed.getY() + 50, 100, 50);
-		L1TF.setBounds(decreaseCarSpeed.getX() + 500, decreaseCarSpeed.getY() + 50, 100, 50);
-		L2TF.setBounds(decreaseCarSpeed.getX() + 600, decreaseCarSpeed.getY() + 50, 100, 50);
+		db1TF.setBounds(decreaseCarSpeed.getX() + 400, decreaseCarSpeed.getY() + 50, 100, 50);
+		db2TF.setBounds(decreaseCarSpeed.getX() + 500, decreaseCarSpeed.getY() + 50, 100, 50);
+		db3TF.setBounds(decreaseCarSpeed.getX() + 600, decreaseCarSpeed.getY() + 50, 100, 50);
 		xAccelTF.setBounds(decreaseCarSpeed.getX() + 700, decreaseCarSpeed.getY() + 50, 100, 50);
 		middleUltrasonicTF.setBounds(decreaseCarSpeed.getX() + 800, decreaseCarSpeed.getY() + 50, 100, 50);
 
@@ -200,9 +200,9 @@ public class GUIController extends JFrame
 		middleUltrasonicTF.setEditable(false);
 		upperRightUltrasonicTF.setEditable(false);
 		rightUltrasonicTF.setEditable(false);
-		L0TF.setEditable(false);
-		L1TF.setEditable(false);
-		L2TF.setEditable(false);
+		db1TF.setEditable(false);
+		db2TF.setEditable(false);
+		db3TF.setEditable(false);
 		xAccelTF.setEditable(false);
 		yAccelTF.setEditable(false);
 		zAccelTF.setEditable(false);
@@ -222,9 +222,9 @@ public class GUIController extends JFrame
 		middleUltrasonicTF.setFont(new Font("Serif", Font.PLAIN, 12));
 		upperRightUltrasonicTF.setFont(new Font("Serif", Font.PLAIN, 12));
 		rightUltrasonicTF.setFont(new Font("Serif", Font.PLAIN, 12));
-		L0TF.setFont(new Font("Serif", Font.PLAIN, 12));
-		L1TF.setFont(new Font("Serif", Font.PLAIN, 12));
-		L2TF.setFont(new Font("Serif", Font.PLAIN, 12));
+		db1TF.setFont(new Font("Serif", Font.PLAIN, 12));
+		db2TF.setFont(new Font("Serif", Font.PLAIN, 12));
+		db3TF.setFont(new Font("Serif", Font.PLAIN, 12));
 		xAccelTF.setFont(new Font("Serif", Font.PLAIN, 12));
 		yAccelTF.setFont(new Font("Serif", Font.PLAIN, 12));
 		zAccelTF.setFont(new Font("Serif", Font.PLAIN, 12));
@@ -249,9 +249,9 @@ public class GUIController extends JFrame
 		this.add(middleUltrasonicTF);
 		this.add(upperRightUltrasonicTF);
 		this.add(rightUltrasonicTF);
-		this.add(L0TF);
-		this.add(L1TF);
-		this.add(L2TF);
+		this.add(db1TF);
+		this.add(db2TF);
+		this.add(db3TF);
 		this.add(xAccelTF);
 		this.add(yAccelTF);
 		this.add(zAccelTF);

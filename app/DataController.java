@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 public class DataController
 {
-	public static String columns = "leftUltrasonic,upperLeftUltrasonic, middleUltrasonic, upperRightUltrasonic,rightUltrasonic,L0,L1,L2,xAccel,yAccel,zAccel,xGyro,yGyro,zGyro,xMag,yMag,zMag,servoAngle,state";
+	public static String columns = "leftUltrasonic,upperLeftUltrasonic, middleUltrasonic, upperRightUltrasonic,rightUltrasonic,db1,db2,db3,xAccel,yAccel,zAccel,xGyro,yGyro,zGyro,xMag,yMag,zMag,servoAngle,state";
 
 	public DataController()
 	{
@@ -47,9 +47,9 @@ public class DataController
 				double middleUltrasonic = Double.parseDouble(element[2]);
 				double upperRightUltrasonic = Double.parseDouble(element[3]);
 				double rightUltrasonic = Double.parseDouble(element[4]);
-				int L0 = Integer.parseInt(element[5]);
-				int L1 = Integer.parseInt(element[6]);
-				int L2 = Integer.parseInt(element[7]);
+				int db1 = Integer.parseInt(element[5]);
+				int db2 = Integer.parseInt(element[6]);
+				int db3 = Integer.parseInt(element[7]);
 				double xAccel = Double.parseDouble(element[8]);
 				double yAccel = Double.parseDouble(element[9]);
 				double zAccel = Double.parseDouble(element[10]);
@@ -63,7 +63,7 @@ public class DataController
 				int state = Integer.parseInt(element[18]);
 
 				DataPacket packet = new DataPacket(leftUltrasonic, upperLeftUltrasonic, middleUltrasonic, upperRightUltrasonic, rightUltrasonic,
-						L0, L1, L2, xAccel, yAccel, zAccel, xGyro, yGyro, zGyro, xMag, yMag, zMag, servoAngle, state);
+						db1, db2, db3, xAccel, yAccel, zAccel, xGyro, yGyro, zGyro, xMag, yMag, zMag, servoAngle, state);
 
 				data.add(packet);
 			}
@@ -159,7 +159,7 @@ public class DataController
 		{
 			c = DriverManager.getConnection(url, username, password);
 
-			String sql = "insert into " + tableName + " (leftUltrasonic, upperLeftUltrasonic, middleUltrasonic, upperRightUltrasonic, rightUltrasonic, L0, L1, L2, xAccel, yAccel, zAccel, xGyro, yGyro, zGyro, xMag, yMag, zMag, servoAngle, state) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			String sql = "insert into " + tableName + " (leftUltrasonic, upperLeftUltrasonic, middleUltrasonic, upperRightUltrasonic, rightUltrasonic, db1, db2, db3, xAccel, yAccel, zAccel, xGyro, yGyro, zGyro, xMag, yMag, zMag, servoAngle, state) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 			PreparedStatement pstmt = c.prepareStatement(sql);
 
@@ -168,9 +168,9 @@ public class DataController
 			pstmt.setDouble(3, packet.getMiddleUltrasonic());
 			pstmt.setDouble(4, packet.getUpperRightUltrasonic());
 			pstmt.setDouble(5, packet.getRightUltrasonic());
-			pstmt.setInt(6, packet.getL0());
-			pstmt.setInt(7, packet.getL1());
-			pstmt.setInt(8, packet.getL2());
+			pstmt.setInt(6, packet.getDb1());
+			pstmt.setInt(7, packet.getDb2());
+			pstmt.setInt(8, packet.getDb3());
 			pstmt.setDouble(9, packet.getxAccel());
 			pstmt.setDouble(10, packet.getyAccel());
 			pstmt.setDouble(11, packet.getzAccel());
@@ -226,7 +226,7 @@ public class DataController
 
 			while (rs.next())
 			{
-				DataPacket packet = new DataPacket(rs.getDouble("leftUltrasonic"), rs.getDouble("upperLeftUltrasonic"), rs.getDouble("middleUltrasonic"), rs.getDouble("upperRightUltrasonic"), rs.getDouble("rightUltrasonic"), rs.getInt("L0"), rs.getInt("L1"), rs.getInt("L2"),
+				DataPacket packet = new DataPacket(rs.getDouble("leftUltrasonic"), rs.getDouble("upperLeftUltrasonic"), rs.getDouble("middleUltrasonic"), rs.getDouble("upperRightUltrasonic"), rs.getDouble("rightUltrasonic"), rs.getInt("db1"), rs.getInt("db2"), rs.getInt("db3"),
 						rs.getDouble("xAccel"), rs.getDouble("yAccel"), rs.getDouble("zAccel"), rs.getDouble("xGyro"), rs.getDouble("yGyro"), rs.getDouble("zGyro"),
 						rs.getDouble("xMag"), rs.getDouble("yMag"), rs.getDouble("zMag"), rs.getInt("servoAngle"), rs.getInt("state"));
 
