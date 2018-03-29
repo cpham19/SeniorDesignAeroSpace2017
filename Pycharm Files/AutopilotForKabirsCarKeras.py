@@ -22,7 +22,7 @@ ser = serial.Serial(
     parity=serial.PARITY_NONE,
     stopbits=serial.STOPBITS_ONE,
     bytesize=serial.EIGHTBITS,
-    write_timeout=0.15,
+    write_timeout=None,
     timeout=None
 )
 
@@ -38,7 +38,7 @@ while (True):
         # a = datetime.datetime.now()
         modifiedInputLine = ser.readline().decode("utf-8").strip().split(",")
         if len(modifiedInputLine) == 18:
-            # del modifiedInputLine[17]  # previousState
+            del modifiedInputLine[17]  # previousState
             del modifiedInputLine[16] # state
             del modifiedInputLine[15] # servoAngle
             del modifiedInputLine[14] # carSpeed
@@ -87,14 +87,14 @@ while (True):
                 print("Stop")
                 ser.write(bytes(b's'))
 
-            # # Flush of file like objects. In this case, wait until all data is written.
-            # ser.flush()
-            # # Discard contents of input buffer
-            # ser.flushInput()
-            # # Discard contents of output buffer
-            # ser.flushOutput()
+            # Flush of file like objects. In this case, wait until all data is written.
+            ser.flush()
+            # Discard contents of input buffer
+            ser.flushInput()
+            # Discard contents of output buffer
+            ser.flushOutput()
 
-            time.sleep(0.100)
+            # time.sleep(0.100)
 
             # b = datetime.datetime.now()
             # delta = b - a

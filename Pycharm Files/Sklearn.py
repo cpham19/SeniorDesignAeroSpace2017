@@ -1,11 +1,12 @@
 # Importing machine learning algorithms and libraries for creating dataframes
-from sklearn.linear_model import LogisticRegression
-from sklearn.linear_model import LinearRegression
+#from sklearn.linear_model import LogisticRegression
+#from sklearn.linear_model import LinearRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.svm import LinearSVC
+from sklearn import svm
 from sklearn.datasets import make_classification
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
@@ -82,19 +83,6 @@ dt_accuracy = accuracy_score(y_test, y_predict_dt)
 # Print accuracy
 print("Accuracy for Decision Tree Classifier: " + str(dt_accuracy))
 
-# Create our Logistic Regression machine learning algorithm
-lr = LogisticRegression()
-
-# Fit method is used for creating a trained model on the training sets for logisticregression
-lr.fit(X_train, y_train)
-
-# Predict method is used for creating a prediction on testing data
-y_predict_lr = lr.predict(X_test)
-
-# Accuracy of testing data on predictive model
-lr_accuracy = accuracy_score(y_test, y_predict_lr)
-print("Accuracy for Logistic Regression Classifier: " + str(lr_accuracy))
-
 # Instantiating RandomForestClassifier object
 my_RandomForest = RandomForestClassifier(n_estimators = 19, bootstrap = True, random_state=2)
 
@@ -123,6 +111,20 @@ svc_accuracy = accuracy_score(y_test, y_predict_SVC)
 
 # Print accuracy
 print("Accuracy for SVC Classfier: " + str(svc_accuracy))
+
+# Different SVC classifier
+my_SVC2 = svm.SVC()
+
+my_SVC2.fit(X_train, y_train)
+
+# Predict method is used for creating a prediction on testing data
+y_predict_SVC2 = my_SVC2.predict(X_test)
+
+# Accuracy of testing data on predictive model
+svc2_accuracy = accuracy_score(y_test, y_predict_SVC2)
+
+# Print accuracy
+print("Accuracy for SVC Classfier #2: " + str(svc2_accuracy))
 
 # scale/normalize data to help model converge faster and prevent feature bias (MLP sensitive to feature scaling)
 # a feature with a broad range of values could skew results
@@ -153,15 +155,16 @@ print("Accuracy for MLP Classifier: " + str(mlp_accuracy))
 # Add 10-fold Cross Validation with Supervised Learning
 accuracy_list_knn = cross_val_score(knn, X, y, cv=10, scoring='accuracy')
 accuracy_list_dt = cross_val_score(my_DecisionTree, X, y, cv=10, scoring='accuracy')
-accuracy_list_lr = cross_val_score(lr, X, y, cv=10, scoring='accuracy')
 accuracy_list_rf = cross_val_score(my_RandomForest, X, y, cv=10, scoring='accuracy')
 accuracy_list_SVC = cross_val_score(my_SVC, X, y, cv=10, scoring='accuracy')
+accuracy_list_SVC2 = cross_val_score(my_SVC2, X, y, cv=10, scoring='accuracy')
 accuracy_list_mlp = cross_val_score(my_MLP, X, y, cv=10, scoring='accuracy')
 
 print("Cross Validation for KNN: " + str(accuracy_list_knn.mean()))
 print("Cross Validation for Decision Tree: " + str(accuracy_list_dt.mean()))
 print("Cross Validation for RandomForest: " + str(accuracy_list_rf.mean()))
 print("Cross Validation for LinearSVC: " + str(accuracy_list_SVC.mean()))
+print("Cross Validation for SVC #2: " + str(accuracy_list_SVC2.mean()))
 print("Cross Validation for MLP: " + str(accuracy_list_mlp.mean()))
 
 

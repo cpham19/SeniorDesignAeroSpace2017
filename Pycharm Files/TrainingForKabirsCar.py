@@ -28,7 +28,7 @@ feature_cols.remove('yMag')
 feature_cols.remove('zMag')
 feature_cols.remove('servoAngle')
 feature_cols.remove('state')
-#feature_cols.remove('previousState')
+feature_cols.remove('previousState')
 print(feature_cols)
 # 0 is Forward, 1 is Left, 2 is Right, 3 is Backward, 4 is Stop
 labels = ['0','1','2']

@@ -1,18 +1,15 @@
 # Importing machine learning algorithms and libraries for creating dataframes
-#from sklearn.linear_model import LogisticRegression
-#from sklearn.linear_model import LinearRegression
 from sklearn.ensemble import RandomForestClassifier
-#from sklearn.tree import DecisionTreeClassifier
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.neural_network import MLPClassifier
-#from sklearn.neighbors import KNeighborsClassifier
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
-#from sklearn.metrics import accuracy_score
-#from sklearn.cross_validation import cross_val_score
 import numpy
 import pandas as pd
 import serial
 import datetime
 import time
+from sklearn.preprocessing import scale
 
 dataset = pd.read_csv('Sample.csv')
 dataset.head()
@@ -50,11 +47,20 @@ y = dataset['state'];
 # Split the dataframe dataset. 70% of the data is training data and 30% is testing data using random_state 2
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=2)
 
-# Instantiating RandomForestClassifier object
-my_RandomForest = RandomForestClassifier(n_estimators = 19, bootstrap = True, random_state=2)
+# k = 5
+# knn = KNeighborsClassifier(n_neighbors=k)
+# knn.fit(X_train, y_train)
 
-# Fit method is used for creating a trained model on the training sets for RandomForestClassifier
+# my_DecisionTree = DecisionTreeClassifier(random_state=2)
+# my_DecisionTree.fit(X_train, y_train)
+
+my_RandomForest = RandomForestClassifier(n_estimators = 19, bootstrap = True, random_state=2)
 my_RandomForest.fit(X_train, y_train)
+
+# X = scale(X, axis=0, with_mean=True, with_std=True, copy=True)
+# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=0)
+#my_MLP = MLPClassifier(max_iter=1000, alpha = 0.5,hidden_layer_sizes = ((int((len(feature_cols)+ len(labels))/2)),),random_state=42)
+#my_MLP.fit(X_train, y_train)
 
 # Opening serial port communcation for Arduino
 ser = serial.Serial(
@@ -108,7 +114,10 @@ while (True):
             print(modifiedInputLine)
 
             # Plug the car sensor reading to predictive model
+            # prediction = knn.predict(modifiedInputLine)
+            # prediction = my_DecisionTree.predict(modifiedInputLine)
             prediction = my_RandomForest.predict(modifiedInputLine)
+            # prediction = my_MLP.predict(modifiedInputLine)
 
             # 0 is Forward, 1 is Left, 2 is Right, 3 is Backward, 4 is Stop
             if prediction == 0:
@@ -136,9 +145,9 @@ while (True):
 
             #time.sleep(0.100)
 
-            b = datetime.datetime.now()
-            delta = b - a
-            print(int(delta.total_seconds() * 1000))  # time elasped in miliseconds
+            # b = datetime.datetime.now()
+            # delta = b - a
+            # print(int(delta.total_seconds() * 1000))  # time elasped in miliseconds
 
 
 ser.write(bytes(b's'))
