@@ -11,6 +11,8 @@ import gnu.io.SerialPortEventListener;
 
 import java.util.Enumeration;
 
+import app.DataPacket;
+
 public class SerialIOController implements SerialPortEventListener {
 	SerialPort serialPort;
 	public static String csvName = "Sample";
@@ -46,23 +48,23 @@ public class SerialIOController implements SerialPortEventListener {
 				String[] inputLine = input.readLine().split(",");
 
 				// Parsing String messages (Sensor data) to double and Booleans
-				double leftUltrasonic = Double.parseDouble(inputLine[0]);
-				double upperLeftUltrasonic = Double.parseDouble(inputLine[1]);
-				double middleUltrasonic = Double.parseDouble(inputLine[2]);
-				double upperRightUltrasonic = Double.parseDouble(inputLine[3]);
-				double rightUltrasonic = Double.parseDouble(inputLine[4]);
-				Integer db1 = Integer.parseInt(inputLine[5]);
-				Integer db2 = Integer.parseInt(inputLine[6]);
-				Integer db3 = Integer.parseInt(inputLine[7]);
-				double xAccel = Double.parseDouble(inputLine[8]);
-				double yAccel = Double.parseDouble(inputLine[9]);
-				double zAccel = Double.parseDouble(inputLine[10]);
-				double xGyro = Double.parseDouble(inputLine[11]);
-				double yGyro = Double.parseDouble(inputLine[12]);
-				double zGyro = Double.parseDouble(inputLine[13]);
-				double xMag = Double.parseDouble(inputLine[14]);
-				double yMag = Double.parseDouble(inputLine[15]);
-				double zMag = Double.parseDouble(inputLine[16]);
+				int leftUltrasonic = Integer.parseInt(inputLine[0]);
+				int upperLeftUltrasonic = Integer.parseInt(inputLine[1]);
+				int middleUltrasonic = Integer.parseInt(inputLine[2]);
+				int upperRightUltrasonic = Integer.parseInt(inputLine[3]);
+				int rightUltrasonic = Integer.parseInt(inputLine[4]);
+				int db1 = Integer.parseInt(inputLine[5]);
+				int db2 = Integer.parseInt(inputLine[6]);
+				int db3 = Integer.parseInt(inputLine[7]);
+				int xAccel = Integer.parseInt(inputLine[8]);
+				int yAccel = Integer.parseInt(inputLine[9]);
+				int zAccel = Integer.parseInt(inputLine[10]);
+				int xGyro = Integer.parseInt(inputLine[11]);
+				int yGyro = Integer.parseInt(inputLine[12]);
+				int zGyro = Integer.parseInt(inputLine[13]);
+				int xMag = Integer.parseInt(inputLine[14]);
+				int yMag = Integer.parseInt(inputLine[15]);
+				int zMag = Integer.parseInt(inputLine[16]);
 				int carSpeed = Integer.parseInt(inputLine[17]);
 				int servoAngle = Integer.parseInt(inputLine[18]);
 				int state = Integer.parseInt(inputLine[19]);

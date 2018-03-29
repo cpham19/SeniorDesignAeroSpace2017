@@ -34,10 +34,8 @@ public class GUIController extends JFrame
 	static SerialIOController sioc;
 	PyScriptRunner runner;
 
-	// Area Map for value recording
-	AreaMap grid = new AreaMap(AreaMapwidth, AreaMapheight, stepValue, drawLength);
 	// Map Panel ( The printing of the grid )
-	MapPanel explorationMap = new MapPanel(grid, this.getWidth(), this.getHeight());
+	MapPanel explorationMap = new MapPanel(this.getWidth(), this.getHeight());
 	//Buttons
 	private JButton up = new JButton("Forward");
 	private JButton left = new JButton("Left");
@@ -510,24 +508,6 @@ public class GUIController extends JFrame
 		// initialize Panels
 		initializePanels();
 	}
-
-	/*
-	 * Taking in a car vector ( Which holds REAL data information regarding position
-	 */
-	public void updateGrid(CarVector currentPosition)
-	{
-
-	}
-	public void setGrid(AreaMap map)
-	{
-		this.grid = map;
-	}
-	// To be called by the MAIN controller
-	/*
-	 *  -This method will return the current message that needs to be received by the Arduino
-	 *  -This method should be invoked by the main controller to accordingly send out information
-	 * regarding the current button that has been chosen
-	 */
 
 	public static String getCurrentLocalDateTimeStamp() {
 		String hour = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH"));

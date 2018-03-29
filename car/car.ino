@@ -1,4 +1,4 @@
-//www.elegoo.com
+ //www.elegoo.com
 
 #include <Servo.h>  //servo library
 #include <Wire.h>
@@ -54,14 +54,14 @@ int Trig5 = A9;     // Ultrasonic on the Right
 // For carspeed
 // 100 is enough to move the car forward and backward (BUT NOT LEFT AND RIGHT)
 // 180 is enough to move the car forward, backward, left, and right
-unsigned char carSpeed = 120; // initial speed of car >=0 to <=255
-unsigned char carSpeed2 = 180; // initial speed of car >=0 to <=255
+unsigned char carSpeed = 150; // initial speed of car >=0 to <=255
+unsigned char carSpeed2 = 150; // initial speed of car >=0 to <=255
 int servoAngle = 90;
 char currentInput;
-int state = 0;
+int state = 3;
 long randNumber;
-
-unsigned long preMillis;
+int previousState;
+boolean firstRecord = true;
 
 class DataPacket {
   private:
@@ -70,33 +70,28 @@ class DataPacket {
     int middleDistance;
     int upperRightDistance;
     int rightDistance;
-    int dbLeft;
-    int dbMiddle;
-    int dbRight;
-    double ax;
-    double ay;
-    double az;
-    double gx;
-    double gy;
-    double gz;
-    double mx;
-    double my;
-    double mz;
+    int ax;
+    int ay;
+    int az;
+    int gx;
+    int gy;
+    int gz;
+    int mx;
+    int my;
+    int mz;
     int state;
+    int previousState;
     unsigned char carSpeed;
     int servoAngle;
 
   public:
-    DataPacket(int distance1, int distance2, int distance3, int distance4, int distance5, int db1, int db2, int db3, double ax1, double ay1, double az1, double gx1, double gy1, double gz1, double mx1, double my1, double mz1, unsigned char carSpeed1, int servoAngle1, int state1)
+    DataPacket(int distance1, int distance2, int distance3, int distance4, int distance5, int ax1, int ay1, int az1, int gx1, int gy1, int gz1, int mx1, int my1, int mz1, unsigned char carSpeed1, int servoAngle1, int state1, int previousState1)
     {
         leftDistance = distance1;
         upperLeftDistance = distance2;
         middleDistance = distance3;
         upperRightDistance = distance4;
         rightDistance = distance5;
-        dbLeft = db1;
-        dbMiddle = db2;
-        dbRight = db3;
         ax = ax1;
         ay = ay1;
         az = az1;
@@ -109,6 +104,7 @@ class DataPacket {
         carSpeed = carSpeed1;
         servoAngle = servoAngle1;
         state = state1;
+        previousState = previousState1;
     }
     
     void print() {
@@ -122,12 +118,6 @@ class DataPacket {
       Serial.print(upperRightDistance);
       Serial.print(",");
       Serial.print(rightDistance);
-      Serial.print(",");
-      Serial.print(dbLeft);
-      Serial.print(",");
-      Serial.print(dbMiddle);
-      Serial.print(",");
-      Serial.print(dbRight);
       Serial.print(",");
       Serial.print(ax,DEC);
       Serial.print(",");
@@ -152,6 +142,8 @@ class DataPacket {
       Serial.print(servoAngle);
       Serial.print(",");
       Serial.print(state);
+      Serial.print(",");
+      Serial.print(previousState);
       Serial.println();
     }
 };
@@ -177,7 +169,7 @@ void back(){
   digitalWrite(IN2,HIGH);
   digitalWrite(IN3,HIGH);
   digitalWrite(IN4,LOW);
-  state = 4;
+  state = 3;
 }
 
 void right(){
@@ -207,7 +199,7 @@ void left(){
 void stop() {
   digitalWrite(ENA,LOW);
   digitalWrite(ENB,LOW);
-  state = 3;
+  state = 4;
 }
 
 void rotateServoLeft() {
@@ -249,7 +241,7 @@ int Distance_test1() {
 }
 
 //Ultrasonic distance measurement for Ultrasonic on Upper-Left
-int Distance_test2() {
+int distance_left() {
   digitalWrite(Trig2, LOW);   
   delayMicroseconds(2);
   digitalWrite(Trig2, HIGH);  
@@ -261,7 +253,7 @@ int Distance_test2() {
 }
 
 //Ultrasonic distance measurement for Ultrasonic on Middle
-int Distance_test3() {
+int distance_middle() {
   digitalWrite(Trig3, LOW);   
   delayMicroseconds(2);
   digitalWrite(Trig3, HIGH);  
@@ -273,7 +265,7 @@ int Distance_test3() {
 }
 
 //Ultrasonic distance measurement for Ultrasonic on Upper-Right
-int Distance_test4() {
+int distance_right() {
   digitalWrite(Trig4, LOW);   
   delayMicroseconds(2);
   digitalWrite(Trig4, HIGH);  
@@ -403,81 +395,57 @@ void setup() {
   stop();
 }
 
-void loop() {
+void command() {
+  // If close to a wall. turn away from the wall.
+  if (distance_middle() < 20) {
+      // Turn left if there is more space on the left
+      if (Distance_test1() > Distance_test5()) {
+        while (distance_middle() < 40) {
+          left();
+          sendData();
+        }
+        return;
+      }
+      // Turn right if there is more space on the right
+      else if (Distance_test5() > Distance_test1()) {
+        while (distance_middle() < 40) {
+          right();
+          sendData();
+        }
+        return;
+      }
+  }
+  // Turn left if the upper left sensor is detecting something
+  else if (distance_left() < 20) {
+      while (distance_left() < 20) {
+        right();
+        sendData();
+      }
+      return;
+  }
+  // Turn right if the upper right sensor is detecting something
+  else if (distance_right() < 20) {
+      while (distance_right() < 20) {
+        left();
+        sendData();
+      }
+      return;
+  }
+  
+  // If none of the above, go forward.
+  forward();
+  sendData();
+  return;
+}
 
-//Teaching car to turn left when it gets close to object using Upper-Left and Middle sensors
-     //If Middle sensor isn't close to object
-//    if (Distance_test3() > 25) {
-//     //If Upper-right sensor is close to object (this is when the middle sensor can't see something upclose)
-//      if (Distance_test4() <= 25) {
-//        left();
-//      }
-//      else if (Distance_test2() <= 25){
-//        right();
-//      }
-//       else {
-//        forward();
-//      }
-//    }
-//    // If Middle sensor is close to object
-//    else if (Distance_test3() <= 25) {
-//      if (Distance_test2() > Distance_test4()) {
-//        left();
-//      }
-//      else {
-//        right();
-//      }
-//    }
 
-//// Teaching car to turn right when it gets to close to object Upper-Right and Middle sensors
-//    // If Middle sensor isn't close to object
-//    if (Distance_test3() > 30) {
-//      // If Upper-left sensor is close to object (this is when the middle sensor can't see something upclose)
-//      if (Distance_test2() <= 30) {
-//        right();
-//      }
-//      else {
-//        forward();
-//      }
-//    }
-//    // If Middle sensor is close to object
-//    else if (Distance_test3() <= 30) {
-//      right();
-//    }
-
-//    if(millis() - preMillis > 500){
-//      stop();
-//      preMillis = millis();
-//    }
-    
-    // Method to read input from user from DAM for controlling car
-    readIncomingSerial();
-
+void sendData() {
     // Method that returns ultrasonic data in centimeters
     int distance1 = Distance_test1();
-    int distance2 = Distance_test2();
-    int distance3 = Distance_test3();
-    int distance4 = Distance_test4();
+    int distance2 = distance_left();
+    int distance3 = distance_middle();
+    int distance4 = distance_right();
     int distance5 = Distance_test5();
-  
-    // Line-tracking data returns 0's and 1's so we need to convert it to String
-//    int left = LT_L;
-//    int middle = LT_M;
-//    int right = LT_R;
-
-    int db1 = analogRead(PIN_ANALOG_IN_LEFT);
-    int db2 = analogRead(PIN_ANALOG_IN_MIDDLE);
-    int db3 = analogRead(PIN_ANALOG_IN_RIGHT);
-
-    if (db1 > 100) {
-      left();
-    }
-    else if (db2 > 100) {
-      forward();
-    }
-    else if (db3 > 100) {
-      right();
-    }
     
     // 9 degrees of freedom data
     
@@ -518,9 +486,23 @@ void loop() {
     int16_t mz=-(Mag[5]<<8 | Mag[4]);
 
     // Create a DataPacket object and print its data to the DAM
-    DataPacket packet(distance1, distance2, distance3, distance4, distance5, db1, db2, db3, ax, ay, az, gx, gy, gz, mx, my, mz, carSpeed, servoAngle, state);
+    DataPacket packet(distance1, distance2, distance3, distance4, distance5, ax, ay, az, gx, gy, gz, mx, my, mz, carSpeed, servoAngle, state, previousState);
     packet.print();
-    
+
     delay(100);
+}
+
+
+void loop() {
+    if (firstRecord) {
+      previousState = state;
+      firstRecord = false;
+    }
+    
+    //command();
+  
+    readIncomingSerial();
+
+    sendData();
 }
 

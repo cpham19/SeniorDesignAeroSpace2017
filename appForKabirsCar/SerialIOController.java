@@ -28,7 +28,7 @@ public class SerialIOController implements SerialPortEventListener {
 			"/dev/tty.usbserial-A9007UX1", // Mac
 			"/dev/ttyACM0", // Raspberry Pi
 			"/dev/ttyUSB0", // Linux
-			"COM3", // Windows
+			"COM5", // Windows
 	};
 
 	public SerialIOController() {
@@ -39,6 +39,7 @@ public class SerialIOController implements SerialPortEventListener {
 	// with
 	// whatever thread is currently running the port.
 	public synchronized void serialEvent(SerialPortEvent oEvent) {
+		//long startTime = System.currentTimeMillis();
 		// We have receieved information
 		if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
 			try {
@@ -47,27 +48,28 @@ public class SerialIOController implements SerialPortEventListener {
 				// Ultrasonic, L0, L1, L2
 				String[] inputLine = input.readLine().split(",");
 
-				// Parsing String messages (Sensor data) to double and Booleans
-				double leftUltrasonic = Double.parseDouble(inputLine[0]);
-				double upperLeftUltrasonic = Double.parseDouble(inputLine[1]);
-				double middleUltrasonic = Double.parseDouble(inputLine[2]);
-				double upperRightUltrasonic = Double.parseDouble(inputLine[3]);
-				double rightUltrasonic = Double.parseDouble(inputLine[4]);
-				double xAccel = Double.parseDouble(inputLine[5]);
-				double yAccel = Double.parseDouble(inputLine[6]);
-				double zAccel = Double.parseDouble(inputLine[7]);
-				double xGyro = Double.parseDouble(inputLine[8]);
-				double yGyro = Double.parseDouble(inputLine[9]);
-				double zGyro = Double.parseDouble(inputLine[10]);
-				double xMag = Double.parseDouble(inputLine[11]);
-				double yMag = Double.parseDouble(inputLine[12]);
-				double zMag = Double.parseDouble(inputLine[13]);
+				// Parsing String messages (Sensor data) to int and Booleans
+				int leftUltrasonic = Integer.parseInt(inputLine[0]);
+				int upperLeftUltrasonic = Integer.parseInt(inputLine[1]);
+				int middleUltrasonic = Integer.parseInt(inputLine[2]);
+				int upperRightUltrasonic = Integer.parseInt(inputLine[3]);
+				int rightUltrasonic = Integer.parseInt(inputLine[4]);
+				int xAccel = Integer.parseInt(inputLine[5]);
+				int yAccel = Integer.parseInt(inputLine[6]);
+				int zAccel = Integer.parseInt(inputLine[7]);
+				int xGyro = Integer.parseInt(inputLine[8]);
+				int yGyro = Integer.parseInt(inputLine[9]);
+				int zGyro = Integer.parseInt(inputLine[10]);
+				int xMag = Integer.parseInt(inputLine[11]);
+				int yMag = Integer.parseInt(inputLine[12]);
+				int zMag = Integer.parseInt(inputLine[13]);
 				int carSpeed = Integer.parseInt(inputLine[14]);
 				int servoAngle = Integer.parseInt(inputLine[15]);
 				int state = Integer.parseInt(inputLine[16]);
+				int previousState = Integer.parseInt(inputLine[17]);
 
 				DataPacket packet = new DataPacket(leftUltrasonic, upperLeftUltrasonic, middleUltrasonic, upperRightUltrasonic, rightUltrasonic,
-						xAccel, yAccel, zAccel, xGyro, yGyro, zGyro, xMag, yMag, zMag, servoAngle, state);
+						xAccel, yAccel, zAccel, xGyro, yGyro, zGyro, xMag, yMag, zMag, servoAngle, state, previousState);
 
 				GUIController.leftUltrasonicTF.setText("L UltSonic:" + leftUltrasonic);
 				GUIController.upperLeftUltrasonicTF.setText("UpL UltSonic:" + upperLeftUltrasonic);
@@ -89,12 +91,13 @@ public class SerialIOController implements SerialPortEventListener {
 
 				// Add DataPacket to CSV file
 
-				if (collectData == true && (state != 3)) {
+				if (collectData == true && (state != 3 && state != 4)) {
 					dc.writeToCSV(csvName, packet);
 					// dc.writeToDatabase("aria_data", packet);
 					GUIController.outputTextArea.append(count + ") " + packet.toString() + "\n");
 					count++;
 				}
+				//System.out.println(System.currentTimeMillis() - startTime);
 			} catch (Exception e) {
 				// System.err.println("The Byte was empty ( let's ignore this
 				// false data )");

@@ -1,4 +1,4 @@
-//www.elegoo.com
+ //www.elegoo.com
 
 #include <Servo.h>  //servo library
 #include <Wire.h>
@@ -39,17 +39,20 @@ int Trig4 = A7;     // Ultrasonic on the Upper-Right
 int Echo5 = A8;     // Ultrasonic on the Right
 int Trig5 = A9;     // Ultrasonic on the Right
 
+#define microphone analogRead(10)
+const int sampleWindow = 50; // Sample window width in mS (50 mS = 20Hz)
+
 // For carspeed
 // 100 is enough to move the car forward and backward (BUT NOT LEFT AND RIGHT)
 // 180 is enough to move the car forward, backward, left, and right
-unsigned char carSpeed = 120; // initial speed of car >=0 to <=255
-unsigned char carSpeed2 = 180; // initial speed of car >=0 to <=255
+unsigned char carSpeed = 100; // initial speed of car >=0 to <=255
+unsigned char carSpeed2 = 150; // initial speed of car >=0 to <=255
 int servoAngle = 90;
 char currentInput;
-int state = 0;
-long randNumber;
-
-unsigned long preMillis;
+int state = 3;
+boolean trainingWheelOn = false;
+int previousState;
+boolean firstRecord = true;
 
 class DataPacket {
   private:
@@ -58,21 +61,22 @@ class DataPacket {
     int middleDistance;
     int upperRightDistance;
     int rightDistance;
-    double ax;
-    double ay;
-    double az;
-    double gx;
-    double gy;
-    double gz;
-    double mx;
-    double my;
-    double mz;
+    int ax;
+    int ay;
+    int az;
+    int gx;
+    int gy;
+    int gz;
+    int mx;
+    int my;
+    int mz;
     int state;
+    int previousState;
     unsigned char carSpeed;
     int servoAngle;
 
   public:
-    DataPacket(int distance1, int distance2, int distance3, int distance4, int distance5, double ax1, double ay1, double az1, double gx1, double gy1, double gz1, double mx1, double my1, double mz1, unsigned char carSpeed1, int servoAngle1, int state1)
+    DataPacket(int distance1, int distance2, int distance3, int distance4, int distance5, int ax1, int ay1, int az1, int gx1, int gy1, int gz1, int mx1, int my1, int mz1, unsigned char carSpeed1, int servoAngle1, int state1, int previousState1)
     {
         leftDistance = distance1;
         upperLeftDistance = distance2;
@@ -91,6 +95,7 @@ class DataPacket {
         carSpeed = carSpeed1;
         servoAngle = servoAngle1;
         state = state1;
+        previousState = previousState1;
     }
     
     void print() {
@@ -128,6 +133,8 @@ class DataPacket {
       Serial.print(servoAngle);
       Serial.print(",");
       Serial.print(state);
+      Serial.print(",");
+      Serial.print(previousState);
       Serial.println();
     }
 };
@@ -141,6 +148,7 @@ void forward(){
   digitalWrite(IN2,LOW);
   digitalWrite(IN3,LOW);
   digitalWrite(IN4,HIGH);
+  previousState = state;
   state = 0;
 }
 
@@ -153,10 +161,11 @@ void back(){
   digitalWrite(IN2,HIGH);
   digitalWrite(IN3,HIGH);
   digitalWrite(IN4,LOW);
-  state = 4;
+  previousState = state;
+  state = 3;
 }
 
-void left(){
+void right(){
   analogWrite(ENA,carSpeed2);
   analogWrite(ENB,carSpeed2);
   //digitalWrite(ENA, HIGH);
@@ -165,10 +174,11 @@ void left(){
   digitalWrite(IN2,LOW);
   digitalWrite(IN3,HIGH);
   digitalWrite(IN4,LOW);
-  state = 1;
+  previousState = state;
+  state = 2;
 }
 
-void right(){
+void left(){
   analogWrite(ENA,carSpeed2);
   analogWrite(ENB,carSpeed2);
   //digitalWrite(ENA,HIGH);
@@ -177,13 +187,15 @@ void right(){
   digitalWrite(IN2,HIGH);
   digitalWrite(IN3,LOW);
   digitalWrite(IN4,HIGH);
-  state = 2;
+  previousState = state;
+  state = 1;
 }
 
 void stop() {
   digitalWrite(ENA,LOW);
   digitalWrite(ENB,LOW);
-  state = 3;
+  previousState = state;
+  state = 4;
 }
 
 void rotateServoLeft() {
@@ -223,7 +235,7 @@ int Distance_test1() {
 }
 
 //Ultrasonic distance measurement for Ultrasonic on Upper-Left
-int Distance_test2() {
+int distance_left() {
   digitalWrite(Trig2, LOW);   
   delayMicroseconds(2);
   digitalWrite(Trig2, HIGH);  
@@ -235,7 +247,7 @@ int Distance_test2() {
 }
 
 //Ultrasonic distance measurement for Ultrasonic on Middle
-int Distance_test3() {
+int distance_middle() {
   digitalWrite(Trig3, LOW);   
   delayMicroseconds(2);
   digitalWrite(Trig3, HIGH);  
@@ -247,7 +259,7 @@ int Distance_test3() {
 }
 
 //Ultrasonic distance measurement for Ultrasonic on Upper-Right
-int Distance_test4() {
+int distance_right() {
   digitalWrite(Trig4, LOW);   
   delayMicroseconds(2);
   digitalWrite(Trig4, HIGH);  
@@ -353,6 +365,9 @@ void setup() {
   // pinMode(LT_M,INPUT);
   // pinMode(LT_L,INPUT);
 
+  // These are for sound detectors
+  // pinMode(microphone, INPUT);
+
   // Set accelerometers low pass filter at 5Hz
   I2CwriteByte(MPU9250_ADDRESS,29,0x06);
   // Set gyroscope low pass filter at 5Hz
@@ -373,43 +388,131 @@ void setup() {
   stop();
 }
 
-void loop() {
-//Teaching car to turn appropriately when it gets close to object using Upper-Left, Middle, Upper-Right sensors
-  if (Distance_test3() > 25) {
-     //If Upper-right sensor is close to object (this is when the middle sensor can't see something upclose)
-      if (Distance_test4() <= 25) {
-        left();
+void command() {
+  // If close to a wall. turn away from the wall.
+  if (distance_middle() < 20) {
+      // Turn left if there is more space on the left
+      if (Distance_test1() > Distance_test5()) {
+        while (distance_middle() < 40) {
+          left();
+          sendData();
+        }
+        return;
       }
-      else if (Distance_test2() <= 25){
+      // Turn right if there is more space on the right
+      else if (Distance_test5() > Distance_test1()) {
+        while (distance_middle() < 40) {
+          right();
+          sendData();
+        }
+        return;
+      }
+  }
+  // Turn left if the upper left sensor is detecting something
+  else if (distance_left() < 20) {
+      while (distance_left() < 20) {
         right();
+        sendData();
       }
-       else {
-        forward();
-      }
-    }
-    // If Middle sensor is close to object
-    else if (Distance_test3() <= 25) {
-      if (Distance_test2() > Distance_test4()) {
+      return;
+  }
+  // Turn right if the upper right sensor is detecting something
+  else if (distance_right() < 20) {
+      while (distance_right() < 20) {
         left();
+        sendData();
       }
-      else {
-        right();
-      }
-    }
+      return;
+  }
+  
+  // If none of the above, go forward.
+  forward();
+  sendData();
+  return;
+}
 
-//    if(millis() - preMillis > 500){
-//      stop();
-//      preMillis = millis();
+// Kabir's "Neueral Network"
+//void command() {
+//  if (previous_command == "left"){
+//    if (previous_command2 == "right"){
+//      left();
 //    }
+//  }
+//  else if (previous_command == "right"){
+//    if (previous_command2 == "left"){
+//      right();
+//    }
+//  }
+//  else if (distance_middle() < 25) {
+//    if (distance_left() < distance_right()) {
+//      right();
+//      return;
+//   } 
+//    else {
+//      left();
+//      return;
+//    }
+//  }
+//  else if (distance_left() < 25 || distance_right() < 25) {
+//    if (distance_left() < distance_right()) {
+//      right();
+//      return;
+//    }
+//    else {
+//      left();
+//      return;
+//     }
+//  }
+//  
+//  forward(); 
+//  return;
+//}     
 
-    // Method to read input from user from DAM for controlling car
-    readIncomingSerial();
+double microphone_volt() {
+   unsigned long startMillis= millis();  // Start of sample window
+   unsigned int peakToPeak = 0;   // peak-to-peak level
 
+   unsigned int signalMax = 0;
+   unsigned int signalMin = 1024;
+
+   // collect data for 50 mS
+   while (millis() - startMillis < sampleWindow)
+   {
+      unsigned int sample = microphone;
+      if (sample < 1024)  // toss out spurious readings
+      {
+         if (sample > signalMax)
+         {
+            signalMax = sample;  // save just the max levels
+         }
+         else if (microphone < signalMin)
+         {
+            signalMin = sample;  // save just the min levels
+         }
+      }
+   }
+   peakToPeak = signalMax - signalMin;  // max - min = peak-peak amplitude
+
+   double volts = (peakToPeak * 5.0) / 1024;  // convert to volts
+
+   if (volts > 1.6) {
+    if (trainingWheelOn == true) {
+      trainingWheelOn = false;
+    }
+    else {
+      trainingWheelOn = true;
+    }
+   }
+
+   return volts;
+}
+
+void sendData() {
     // Method that returns ultrasonic data in centimeters
     int distance1 = Distance_test1();
-    int distance2 = Distance_test2();
-    int distance3 = Distance_test3();
-    int distance4 = Distance_test4();
+    int distance2 = distance_left();
+    int distance3 = distance_middle();
+    int distance4 = distance_right();
     int distance5 = Distance_test5();
     
     // 9 degrees of freedom data
@@ -451,9 +554,23 @@ void loop() {
     int16_t mz=-(Mag[5]<<8 | Mag[4]);
 
     // Create a DataPacket object and print its data to the DAM
-    DataPacket packet(distance1, distance2, distance3, distance4, distance5, ax, ay, az, gx, gy, gz, mx, my, mz, carSpeed, servoAngle, state);
+    DataPacket packet(distance1, distance2, distance3, distance4, distance5, ax, ay, az, gx, gy, gz, mx, my, mz, carSpeed, servoAngle, state, previousState);
     packet.print();
+
+    delay(100);
+}
+
+
+void loop() {
+    if (firstRecord) {
+      previousState = state;
+      firstRecord = false;
+    }
     
-    delay(200);
+    //command();
+  
+    readIncomingSerial();
+
+    sendData();
 }
 

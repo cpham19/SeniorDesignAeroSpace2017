@@ -5,46 +5,48 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 public class DataPacket {
-	public double leftUltrasonic;
-	public double upperLeftUltrasonic;
-	public double middleUltrasonic;
-	public double upperRightUltrasonic;
-	public double rightUltrasonic;
-	public double xAccel;
-	public double yAccel;
-	public double zAccel;
-	public double xGyro;
-	public double yGyro;
-	public double zGyro;
-	public double xMag;
-	public double yMag;
-	public double zMag;
+	public int leftUltrasonic;
+	public int upperLeftUltrasonic;
+	public int middleUltrasonic;
+	public int upperRightUltrasonic;
+	public int rightUltrasonic;
+	public int xAccel;
+	public int yAccel;
+	public int zAccel;
+	public int xGyro;
+	public int yGyro;
+	public int zGyro;
+	public int xMag;
+	public int yMag;
+	public int zMag;
 	public int servoAngle;
 	public int state;
+	public int previousState;
 
 	public String[] toStringArray() {
-		return (leftUltrasonic + "," + upperLeftUltrasonic + "," + middleUltrasonic + "," + upperRightUltrasonic + "," + rightUltrasonic
-				+ "," + xAccel + "," + yAccel + "," + zAccel + ","
-				+ xGyro + "," + yGyro + "," + zGyro + ","
-				+ xMag + "," + yMag + "," + zMag + ","
-				+ servoAngle + "," + state).split(",");
+		return (leftUltrasonic + "," + upperLeftUltrasonic + "," + middleUltrasonic + "," + upperRightUltrasonic + ","
+				+ rightUltrasonic + "," + xAccel + "," + yAccel + "," + zAccel + ","
+				+ xGyro + "," + yGyro + "," + zGyro + "," + xMag + "," + yMag + "," + zMag + "," + servoAngle + ","
+				+ state + "," + previousState).split(",");
 	}
 
 	public String toString() {
-		return "Left Ultrasonic: " + leftUltrasonic + ", Up. Left Ultrasonic: " + upperLeftUltrasonic + ", Middle Ultrasonic: " + middleUltrasonic + ", Up. Right Ultrasonic: " + upperRightUltrasonic + ", Right Ultrasonic: " + rightUltrasonic
+		return "Left Ultrasonic: " + leftUltrasonic + ", Up. Left Ultrasonic: " + upperLeftUltrasonic
+				+ ", Midle Ultrasonic: " + middleUltrasonic + ", Up. Right Ultrasonic: " + upperRightUltrasonic
+				+ ", Right Ultrasonic: " + rightUltrasonic
 				+ ", xAccel: " + xAccel + ", yAccel: " + yAccel + ", zAccel: " + zAccel + ", xGyro: " + xGyro
 				+ ", yGyro: " + yGyro + ", zGyro: " + zGyro + ", xMag: " + xMag + ", yMag: " + yMag + ", zMag: " + zMag
-				+ ", Servo Angle: " + servoAngle + ", State: " + state;
+				+ ", Servo Angle: " + servoAngle + ", State: " + state + ", Previous State: " + previousState;
 	}
 
 	public DataPacket() {
 
 	}
 
-	public DataPacket(double leftUltrasonic, double upperLeftUltrasonic, double middleUltrasonic,
-			double upperRightUltrasonic, double rightUltrasonic, double xAccel, double yAccel,
-			double zAccel, double xGyro, double yGyro, double zGyro, double xMag, double yMag, double zMag,
-			int servoAngle, int state) {
+	public DataPacket(int leftUltrasonic, int upperLeftUltrasonic, int middleUltrasonic,
+			int upperRightUltrasonic, int rightUltrasonic, int xAccel, int yAccel,
+			int zAccel, int xGyro, int yGyro, int zGyro, int xMag, int yMag, int zMag,
+			int servoAngle, int state, int previousState) {
 		this.leftUltrasonic = leftUltrasonic;
 		this.upperLeftUltrasonic = upperLeftUltrasonic;
 		this.middleUltrasonic = middleUltrasonic;
@@ -61,117 +63,118 @@ public class DataPacket {
 		this.zMag = zMag;
 		this.servoAngle = servoAngle;
 		this.state = state;
+		this.previousState = previousState;
 	}
 
-	public double getLeftUltrasonic() {
+	public int getLeftUltrasonic() {
 		return leftUltrasonic;
 	}
 
-	public void setLeftUltrasonic(double leftUltrasonic) {
+	public void setLeftUltrasonic(int leftUltrasonic) {
 		this.leftUltrasonic = leftUltrasonic;
 	}
 
-	public double getUpperLeftUltrasonic() {
+	public int getUpperLeftUltrasonic() {
 		return upperLeftUltrasonic;
 	}
 
-	public void setUpperLeftUltrasonic(double upperLeftUltrasonic) {
+	public void setUpperLeftUltrasonic(int upperLeftUltrasonic) {
 		this.upperLeftUltrasonic = upperLeftUltrasonic;
 	}
 
-	public double getMiddleUltrasonic() {
+	public int getMiddleUltrasonic() {
 		return middleUltrasonic;
 	}
 
-	public void setMiddleUltrasonic(double middleUltrasonic) {
+	public void setMiddleUltrasonic(int middleUltrasonic) {
 		this.middleUltrasonic = middleUltrasonic;
 	}
 
-	public double getUpperRightUltrasonic() {
+	public int getUpperRightUltrasonic() {
 		return upperRightUltrasonic;
 	}
 
-	public void setUpperRightUltrasonic(double upperRightUltrasonic) {
+	public void setUpperRightUltrasonic(int upperRightUltrasonic) {
 		this.upperRightUltrasonic = upperRightUltrasonic;
 	}
 
-	public double getRightUltrasonic() {
+	public int getRightUltrasonic() {
 		return rightUltrasonic;
 	}
 
-	public void setRightUltrasonic(double rightUltrasonic) {
+	public void setRightUltrasonic(int rightUltrasonic) {
 		this.rightUltrasonic = rightUltrasonic;
 	}
 
-	public double getxAccel() {
+	public int getxAccel() {
 		return xAccel;
 	}
 
-	public void setxAccel(double xAccel) {
+	public void setxAccel(int xAccel) {
 		this.xAccel = xAccel;
 	}
 
-	public double getyAccel() {
+	public int getyAccel() {
 		return yAccel;
 	}
 
-	public void setyAccel(double yAccel) {
+	public void setyAccel(int yAccel) {
 		this.yAccel = yAccel;
 	}
 
-	public double getzAccel() {
+	public int getzAccel() {
 		return zAccel;
 	}
 
-	public void setzAccel(double zAccel) {
+	public void setzAccel(int zAccel) {
 		this.zAccel = zAccel;
 	}
 
-	public double getxGyro() {
+	public int getxGyro() {
 		return xGyro;
 	}
 
-	public void setxGyro(double xGyro) {
+	public void setxGyro(int xGyro) {
 		this.xGyro = xGyro;
 	}
 
-	public double getyGyro() {
+	public int getyGyro() {
 		return yGyro;
 	}
 
-	public void setyGyro(double yGyro) {
+	public void setyGyro(int yGyro) {
 		this.yGyro = yGyro;
 	}
 
-	public double getzGyro() {
+	public int getzGyro() {
 		return zGyro;
 	}
 
-	public void setzGyro(double zGyro) {
+	public void setzGyro(int zGyro) {
 		this.zGyro = zGyro;
 	}
 
-	public double getxMag() {
+	public int getxMag() {
 		return xMag;
 	}
 
-	public void setxMag(double xMag) {
+	public void setxMag(int xMag) {
 		this.xMag = xMag;
 	}
 
-	public double getyMag() {
+	public int getyMag() {
 		return yMag;
 	}
 
-	public void setyMag(double yMag) {
+	public void setyMag(int yMag) {
 		this.yMag = yMag;
 	}
 
-	public double getzMag() {
+	public int getzMag() {
 		return zMag;
 	}
 
-	public void setzMag(double zMag) {
+	public void setzMag(int zMag) {
 		this.zMag = zMag;
 	}
 
@@ -189,6 +192,14 @@ public class DataPacket {
 
 	public void setState(int state) {
 		this.state = state;
+	}
+
+	public int getPreviousState() {
+		return previousState;
+	}
+
+	public void setPreviousState(int previousState) {
+		this.previousState = previousState;
 	}
 
 	// https://stackoverflow.com/questions/16309189/java-use-decimalformat-to-format-doubles-and-integers-but-keep-integers-without

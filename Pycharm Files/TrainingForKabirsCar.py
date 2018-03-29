@@ -9,17 +9,14 @@ import math
 numpy.random.seed(10)
 
 # load ARIA training data
-dataset = pd.read_csv('training.csv')
+dataset = pd.read_csv('Sample.csv')
 numberOfRows = len(dataset.index)
 feature_cols = list(dataset.columns.values)
-feature_cols.remove('leftUltrasonic')
+#feature_cols.remove('leftUltrasonic')
 #feature_cols.remove('upperLeftUltrasonic')
 #feature_cols.remove('middleUltrasonic')
 #feature_cols.remove('upperRightUltrasonic')
-feature_cols.remove('rightUltrasonic')
-feature_cols.remove('db1')
-feature_cols.remove('db2')
-feature_cols.remove('db3')
+#feature_cols.remove('rightUltrasonic')
 feature_cols.remove('xAccel')
 feature_cols.remove('yAccel')
 feature_cols.remove('zAccel')
@@ -31,14 +28,26 @@ feature_cols.remove('yMag')
 feature_cols.remove('zMag')
 feature_cols.remove('servoAngle')
 feature_cols.remove('state')
+#feature_cols.remove('previousState')
 print(feature_cols)
 # 0 is Forward, 1 is Left, 2 is Right, 3 is Backward, 4 is Stop
 labels = ['0','1','2']
+
+def indicateNearObjects(x):
+    if int(x) < 20:
+        return 1
+    else:
+        return 0
+
+# for feature in feature_cols:
+#     dataset[feature] = dataset[feature].apply(indicateNearObjects)
+
 
 # split into input (X) and output (Y) variables
 X = numpy.array(dataset[feature_cols])
 Y = numpy.array(dataset['state'])
 Y = to_categorical(Y)
+print(X)
 print(Y)
 
 # create model
@@ -59,16 +68,8 @@ history = model.fit(X, Y, epochs=500, batch_size=int(numberOfRows * 0.10), valid
 
 print("Accuracy: " + str(numpy.mean(history['acc'])))
 print("Cross Validation Accuracy: " + str(numpy.mean(history['val_acc'])))
-print()
+#score = model.evaluate(X_test, Y_test, batch_size=int(len(testing_dataset.index * 0.10)))
+#print("Accuracy using evaluate model: " + str(score))
 
 # Save the model
 model.save('mlp_model.h5')
-
-# string = "20,250,105"
-# modifiedInputLine = numpy.array(string.split(","))
-# modifiedInputLine = modifiedInputLine.astype(float)
-# modifiedInputLine = modifiedInputLine.reshape(1, -1)
-#
-# prediction = model.predict(modifiedInputLine)
-# prediction = numpy.argmax(prediction[0])
-# print(prediction)

@@ -23,14 +23,12 @@ public class MapPanel extends JPanel
 
 	AreaMap grid;
 
-	public MapPanel(AreaMap grid, int width, int height)
+	public MapPanel(int width, int height)
 	{
 		this.setLayout(null);
 		this.setVisible(true);
-		this.grid = grid;
 		this.width = width;
 		this.height = height;
-		grid.setPositionValueToColorValue(5, 5, 1);
 	}
 
 	// this is where the panel will  be drawn (this is ran automatically)
@@ -38,18 +36,6 @@ public class MapPanel extends JPanel
 	{
 		super.paintComponent(g);
 		paintBackground(g);
-
-		// paint Grid
-		paintGridArea(g);
-	}
-
-	public void paintGridArea(Graphics g)
-	{
-		//draw the black grid background
-		g.setColor(Color.black);
-		g.fillRect(gridMinX,gridMinY, 500, 390);
-		//draw the mapped grid points
-		paintGridPoints(g,grid);
 	}
 
 	public void paintBackground(Graphics g)
@@ -60,31 +46,5 @@ public class MapPanel extends JPanel
 		// paint paint rightSide Background
 		g.setColor(Color.gray);
 		g.fillRect(400, 0, this.getWidth()-400,this.getHeight());
-	}
-
-
-	public void paintGridPoints(Graphics g, AreaMap m)
-	{
-		for(int x=0; x<(gridMaxX-gridMinX);x+=grid.getStep())
-		{
-			for(int y=0; y<(gridMaxY-gridMinY);y+=grid.getStep())
-			{
-				if(m.getGrid()[x][y] == AreaMap.White)
-				{
-					g.setColor(Color.white);
-					g.fillRect(gridMinX+x, gridMinY+y, grid.getDrawSize(), grid.getDrawSize());
-				}
-				if(m.getGrid()[x][y] == AreaMap.Red)
-				{
-					g.setColor(Color.red);
-					g.fillRect(gridMinX+x, gridMinY+y, grid.getDrawSize(), grid.getDrawSize());
-				}
-				if(m.getGrid()[x][y] == AreaMap.Green)
-				{
-					g.setColor(Color.green);
-					g.fillRect(gridMinX+x, gridMinY+y, grid.getDrawSize(), grid.getDrawSize());
-				}
-			}
-		}
 	}
 }// end class

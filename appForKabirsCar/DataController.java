@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 public class DataController
 {
-	public static String columns = "leftUltrasonic,upperLeftUltrasonic, middleUltrasonic, upperRightUltrasonic,rightUltrasonic,xAccel,yAccel,zAccel,xGyro,yGyro,zGyro,xMag,yMag,zMag,servoAngle,state";
+	public static String columns = "leftUltrasonic,upperLeftUltrasonic, middleUltrasonic, upperRightUltrasonic,rightUltrasonic,xAccel,yAccel,zAccel,xGyro,yGyro,zGyro,xMag,yMag,zMag,servoAngle,state,previousState";
 
 	public DataController()
 	{
@@ -42,25 +42,26 @@ public class DataController
 
 			while ((element = reader.readNext()) != null)
 			{
-				double leftUltrasonic = Double.parseDouble(element[0]);
-				double upperLeftUltrasonic = Double.parseDouble(element[1]);
-				double middleUltrasonic = Double.parseDouble(element[2]);
-				double upperRightUltrasonic = Double.parseDouble(element[3]);
-				double rightUltrasonic = Double.parseDouble(element[4]);
-				double xAccel = Double.parseDouble(element[5]);
-				double yAccel = Double.parseDouble(element[6]);
-				double zAccel = Double.parseDouble(element[7]);
-				double xGyro = Double.parseDouble(element[8]);
-				double yGyro = Double.parseDouble(element[9]);
-				double zGyro = Double.parseDouble(element[10]);
-				double xMag = Double.parseDouble(element[11]);
-				double yMag = Double.parseDouble(element[12]);
-				double zMag = Double.parseDouble(element[13]);
+				int leftUltrasonic = Integer.parseInt(element[0]);
+				int upperLeftUltrasonic = Integer.parseInt(element[1]);
+				int middleUltrasonic = Integer.parseInt(element[2]);
+				int upperRightUltrasonic = Integer.parseInt(element[3]);
+				int rightUltrasonic = Integer.parseInt(element[4]);
+				int xAccel = Integer.parseInt(element[5]);
+				int yAccel = Integer.parseInt(element[6]);
+				int zAccel = Integer.parseInt(element[7]);
+				int xGyro = Integer.parseInt(element[8]);
+				int yGyro = Integer.parseInt(element[9]);
+				int zGyro = Integer.parseInt(element[10]);
+				int xMag = Integer.parseInt(element[11]);
+				int yMag = Integer.parseInt(element[12]);
+				int zMag = Integer.parseInt(element[13]);
 				int servoAngle = Integer.parseInt(element[14]);
 				int state = Integer.parseInt(element[15]);
+				int previousState = Integer.parseInt(element[16]);
 
 				DataPacket packet = new DataPacket(leftUltrasonic, upperLeftUltrasonic, middleUltrasonic, upperRightUltrasonic, rightUltrasonic,
-						xAccel, yAccel, zAccel, xGyro, yGyro, zGyro, xMag, yMag, zMag, servoAngle, state);
+						xAccel, yAccel, zAccel, xGyro, yGyro, zGyro, xMag, yMag, zMag, servoAngle, state, previousState);
 
 				data.add(packet);
 			}
@@ -160,20 +161,20 @@ public class DataController
 
 			PreparedStatement pstmt = c.prepareStatement(sql);
 
-			pstmt.setDouble(1, packet.getLeftUltrasonic());
-			pstmt.setDouble(2, packet.getUpperLeftUltrasonic());
-			pstmt.setDouble(3, packet.getMiddleUltrasonic());
-			pstmt.setDouble(4, packet.getUpperRightUltrasonic());
-			pstmt.setDouble(5, packet.getRightUltrasonic());
-			pstmt.setDouble(6, packet.getxAccel());
-			pstmt.setDouble(7, packet.getyAccel());
-			pstmt.setDouble(8, packet.getzAccel());
-			pstmt.setDouble(9, packet.getxGyro());
-			pstmt.setDouble(10, packet.getyGyro());
-			pstmt.setDouble(11, packet.getzGyro());
-			pstmt.setDouble(12, packet.getxMag());
-			pstmt.setDouble(13, packet.getyMag());
-			pstmt.setDouble(14, packet.getzMag());
+			pstmt.setInt(1, packet.getLeftUltrasonic());
+			pstmt.setInt(2, packet.getUpperLeftUltrasonic());
+			pstmt.setInt(3, packet.getMiddleUltrasonic());
+			pstmt.setInt(4, packet.getUpperRightUltrasonic());
+			pstmt.setInt(5, packet.getRightUltrasonic());
+			pstmt.setInt(6, packet.getxAccel());
+			pstmt.setInt(7, packet.getyAccel());
+			pstmt.setInt(8, packet.getzAccel());
+			pstmt.setInt(9, packet.getxGyro());
+			pstmt.setInt(10, packet.getyGyro());
+			pstmt.setInt(11, packet.getzGyro());
+			pstmt.setInt(12, packet.getxMag());
+			pstmt.setInt(13, packet.getyMag());
+			pstmt.setInt(14, packet.getzMag());
 			pstmt.setInt(15,  packet.getServoAngle());
 			pstmt.setInt(16, packet.getState());
 			pstmt.executeUpdate();
@@ -220,9 +221,9 @@ public class DataController
 
 			while (rs.next())
 			{
-				DataPacket packet = new DataPacket(rs.getDouble("leftUltrasonic"), rs.getDouble("upperLeftUltrasonic"), rs.getDouble("middleUltrasonic"), rs.getDouble("upperRightUltrasonic"), rs.getDouble("rightUltrasonic"),
-						rs.getDouble("xAccel"), rs.getDouble("yAccel"), rs.getDouble("zAccel"), rs.getDouble("xGyro"), rs.getDouble("yGyro"), rs.getDouble("zGyro"),
-						rs.getDouble("xMag"), rs.getDouble("yMag"), rs.getDouble("zMag"), rs.getInt("servoAngle"), rs.getInt("state"));
+				DataPacket packet = new DataPacket(rs.getInt("leftUltrasonic"), rs.getInt("upperLeftUltrasonic"), rs.getInt("middleUltrasonic"), rs.getInt("upperRightUltrasonic"), rs.getInt("rightUltrasonic"),
+						rs.getInt("xAccel"), rs.getInt("yAccel"), rs.getInt("zAccel"), rs.getInt("xGyro"), rs.getInt("yGyro"), rs.getInt("zGyro"),
+						rs.getInt("xMag"), rs.getInt("yMag"), rs.getInt("zMag"), rs.getInt("servoAngle"), rs.getInt("state"), rs.getInt("previousState"));
 
 				data.add(packet);
 			}
