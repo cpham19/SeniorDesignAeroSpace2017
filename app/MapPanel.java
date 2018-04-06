@@ -16,6 +16,11 @@ public class MapPanel extends JPanel
 	private int height;
 	private int bufferSize = 10;
 
+	private int gridMinX = 410;
+	private int gridMinY = 10;
+	private int gridMaxX = 910;
+	private int gridMaxY = 510;
+
 	public MapPanel(int width, int height)
 	{
 		this.setLayout(null);

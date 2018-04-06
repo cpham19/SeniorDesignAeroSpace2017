@@ -11,7 +11,7 @@ import gnu.io.SerialPortEventListener;
 
 import java.util.Enumeration;
 
-import app.DataPacket;
+import app.GUIController;
 
 public class SerialIOController implements SerialPortEventListener {
 	SerialPort serialPort;
@@ -39,6 +39,7 @@ public class SerialIOController implements SerialPortEventListener {
 	// with
 	// whatever thread is currently running the port.
 	public synchronized void serialEvent(SerialPortEvent oEvent) {
+		//long startTime = System.currentTimeMillis();
 		// We have receieved information
 		if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
 			try {
@@ -47,39 +48,36 @@ public class SerialIOController implements SerialPortEventListener {
 				// Ultrasonic, L0, L1, L2
 				String[] inputLine = input.readLine().split(",");
 
-				// Parsing String messages (Sensor data) to double and Booleans
+				// Parsing String messages (Sensor data) to int and Booleans
 				int leftUltrasonic = Integer.parseInt(inputLine[0]);
 				int upperLeftUltrasonic = Integer.parseInt(inputLine[1]);
 				int middleUltrasonic = Integer.parseInt(inputLine[2]);
 				int upperRightUltrasonic = Integer.parseInt(inputLine[3]);
 				int rightUltrasonic = Integer.parseInt(inputLine[4]);
-				int db1 = Integer.parseInt(inputLine[5]);
-				int db2 = Integer.parseInt(inputLine[6]);
-				int db3 = Integer.parseInt(inputLine[7]);
-				int xAccel = Integer.parseInt(inputLine[8]);
-				int yAccel = Integer.parseInt(inputLine[9]);
-				int zAccel = Integer.parseInt(inputLine[10]);
-				int xGyro = Integer.parseInt(inputLine[11]);
-				int yGyro = Integer.parseInt(inputLine[12]);
-				int zGyro = Integer.parseInt(inputLine[13]);
-				int xMag = Integer.parseInt(inputLine[14]);
-				int yMag = Integer.parseInt(inputLine[15]);
-				int zMag = Integer.parseInt(inputLine[16]);
-				int carSpeed = Integer.parseInt(inputLine[17]);
-				int servoAngle = Integer.parseInt(inputLine[18]);
-				int state = Integer.parseInt(inputLine[19]);
+				int xAccel = Integer.parseInt(inputLine[5]);
+				int yAccel = Integer.parseInt(inputLine[6]);
+				int zAccel = Integer.parseInt(inputLine[7]);
+				int xGyro = Integer.parseInt(inputLine[8]);
+				int yGyro = Integer.parseInt(inputLine[9]);
+				int zGyro = Integer.parseInt(inputLine[10]);
+				int xMag = Integer.parseInt(inputLine[11]);
+				int yMag = Integer.parseInt(inputLine[12]);
+				int zMag = Integer.parseInt(inputLine[13]);
+				int carSpeed = Integer.parseInt(inputLine[14]);
+				int servoAngle = Integer.parseInt(inputLine[15]);
+				int state = Integer.parseInt(inputLine[16]);
+				int previousState = Integer.parseInt(inputLine[17]);
+				int previousState2 = Integer.parseInt(inputLine[18]);
+				int previousState3 = Integer.parseInt(inputLine[19]);
 
 				DataPacket packet = new DataPacket(leftUltrasonic, upperLeftUltrasonic, middleUltrasonic, upperRightUltrasonic, rightUltrasonic,
-						db1, db2, db3, xAccel, yAccel, zAccel, xGyro, yGyro, zGyro, xMag, yMag, zMag, servoAngle, state);
+						xAccel, yAccel, zAccel, xGyro, yGyro, zGyro, xMag, yMag, zMag, servoAngle, state, previousState, previousState2, previousState3);
 
 				GUIController.leftUltrasonicTF.setText("L UltSonic:" + leftUltrasonic);
 				GUIController.upperLeftUltrasonicTF.setText("UpL UltSonic:" + upperLeftUltrasonic);
 				GUIController.middleUltrasonicTF.setText("M UltSonic:" + middleUltrasonic);
 				GUIController.upperRightUltrasonicTF.setText("UpR UltSonic:" + upperRightUltrasonic);
 				GUIController.rightUltrasonicTF.setText("R UltSonic:" + rightUltrasonic);
-				GUIController.db1TF.setText("DB #1: " + db1);
-				GUIController.db2TF.setText("DB #2: " + db2);
-				GUIController.db3TF.setText("DB #3: " + db3);
 				GUIController.xAccelTF.setText("xAccel: " + xAccel);
 				GUIController.yAccelTF.setText("yAccel: " + yAccel);
 				GUIController.zAccelTF.setText("zAccel: " + zAccel);
@@ -101,6 +99,7 @@ public class SerialIOController implements SerialPortEventListener {
 					GUIController.outputTextArea.append(count + ") " + packet.toString() + "\n");
 					count++;
 				}
+				//System.out.println(System.currentTimeMillis() - startTime);
 			} catch (Exception e) {
 				// System.err.println("The Byte was empty ( let's ignore this
 				// false data )");

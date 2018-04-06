@@ -4,7 +4,7 @@ import numpy
 # Load trained model
 model = load_model('mlp_model.h5')
 
-string = "1,1,0,0,0"
+string = "18,1,1,1,73,0"
 modifiedInputLine = numpy.array(string.split(","))
 modifiedInputLine = modifiedInputLine.astype(float)
 modifiedInputLine = modifiedInputLine.reshape(1, -1)

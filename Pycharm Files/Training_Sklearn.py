@@ -3,8 +3,11 @@
 #from sklearn.linear_model import LinearRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
+from sklearn import tree
+import graphviz
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
+from sklearn.metrics import classification_report
 from sklearn.svm import LinearSVC
 from sklearn import svm
 from sklearn.datasets import make_classification
@@ -16,7 +19,7 @@ import numpy as np
 import pandas as pd
 
 dataset = pd.read_csv('Sample.csv')
-dataset.head()
+# print(dataset)
 
 # Feature columns that are numerical
 feature_cols = list(dataset.columns.values)
@@ -36,16 +39,18 @@ feature_cols.remove('yMag')
 feature_cols.remove('zMag')
 feature_cols.remove('servoAngle')
 feature_cols.remove('state')
-feature_cols.remove('previousState')
+# feature_cols.remove('previousState')
+# feature_cols.remove('previousState2')
+# feature_cols.remove('previousState3')
 labels = ['0','1','2']
 
 # Filter the dataframe to show data from these feature columns
 X = dataset[feature_cols];
-print(X)
+#print(X)
 
 # Create a label vector on label "AHD" and displaying every 50th data from the vector
 y = dataset['state'];
-print(y)
+#print(y)
 
 
 # Split the dataframe dataset. 70% of the data is training data and 30% is testing data using random_state 2
@@ -67,6 +72,8 @@ knn_accuracy = accuracy_score(y_test, y_predict_knn)
 
 # Print accuracy
 print("Accuracy for KNeighbors Classifier: " + str(knn_accuracy))
+# print(classification_report(y_test, y_predict_knn, target_names=labels))
+# print()
 
 # Instantiating DecisionTreeClassifier object
 my_DecisionTree = DecisionTreeClassifier(random_state=2)
@@ -82,6 +89,15 @@ dt_accuracy = accuracy_score(y_test, y_predict_dt)
 
 # Print accuracy
 print("Accuracy for Decision Tree Classifier: " + str(dt_accuracy))
+# print(classification_report(y_test, y_predict_dt, target_names=labels))
+dot_data = tree.export_graphviz(my_DecisionTree, out_file=None,
+                         feature_names=feature_cols,
+                         class_names=labels,
+                         filled=True, rounded=True,
+                         special_characters=True)
+graph = graphviz.Source(dot_data)
+graph.render("Sample")
+# print()
 
 # Instantiating RandomForestClassifier object
 my_RandomForest = RandomForestClassifier(n_estimators = 19, bootstrap = True, random_state=2)
@@ -92,11 +108,13 @@ my_RandomForest.fit(X_train, y_train)
 # Predict method is used for creating a prediction on testing data
 y_predict_rf = my_RandomForest.predict(X_test)
 
-# Accuracy of testing data on predictive model
+# Accuracy of testing data on pr    edictive model
 rf_accuracy = accuracy_score(y_test, y_predict_rf)
 
 # Print accuracy
 print("Accuracy for RandomForest Classfier: " + str(rf_accuracy))
+#print(classification_report(y_test, y_predict_rf, target_names=labels))
+#print()
 
 # LinearSVC classifier
 my_SVC = LinearSVC(random_state=0)
@@ -111,6 +129,8 @@ svc_accuracy = accuracy_score(y_test, y_predict_SVC)
 
 # Print accuracy
 print("Accuracy for SVC Classfier: " + str(svc_accuracy))
+# print(classification_report(y_test, y_predict_SVC, target_names=labels))
+# print()
 
 # Different SVC classifier
 my_SVC2 = svm.SVC()
@@ -125,20 +145,14 @@ svc2_accuracy = accuracy_score(y_test, y_predict_SVC2)
 
 # Print accuracy
 print("Accuracy for SVC Classfier #2: " + str(svc2_accuracy))
-
-# scale/normalize data to help model converge faster and prevent feature bias (MLP sensitive to feature scaling)
-# a feature with a broad range of values could skew results
-X = scale(X, axis=0, with_mean=True, with_std=True, copy=True)
-
-# split X and y into training and testing sets (40% goes to testing; 60% goes to training)
-from sklearn.model_selection import train_test_split
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=0)
+# print(classification_report(y_test, y_predict_SVC2, target_names=labels))
+# print()
 
 # instantiate model using:
 # a maximum of 1000 iterations (default = 200)
-# an alpha of 0.5 (default = 0.001)
+# an alpha of 1e-5 (default = 0.001)
 # and a random state of 42 (for reproducibility)
-my_MLP = MLPClassifier(max_iter=1000, alpha = 0.5,hidden_layer_sizes = ((int((len(feature_cols)+ len(labels))/2)),),random_state=42)
+my_MLP = MLPClassifier(max_iter=1000, alpha = 1e-5,hidden_layer_sizes = ((int((len(feature_cols)+ len(labels))/2)),),random_state=42)
 
 # fit the model with the training set
 my_MLP.fit(X_train, y_train)
@@ -151,20 +165,22 @@ mlp_accuracy = accuracy_score(y_test, y_predict_mlp)
 
 # Print accuracy
 print("Accuracy for MLP Classifier: " + str(mlp_accuracy))
+# print(classification_report(y_test, y_predict_mlp, target_names=labels))
+# print()
 
 # Add 10-fold Cross Validation with Supervised Learning
-accuracy_list_knn = cross_val_score(knn, X, y, cv=10, scoring='accuracy')
-accuracy_list_dt = cross_val_score(my_DecisionTree, X, y, cv=10, scoring='accuracy')
-accuracy_list_rf = cross_val_score(my_RandomForest, X, y, cv=10, scoring='accuracy')
-accuracy_list_SVC = cross_val_score(my_SVC, X, y, cv=10, scoring='accuracy')
-accuracy_list_SVC2 = cross_val_score(my_SVC2, X, y, cv=10, scoring='accuracy')
-accuracy_list_mlp = cross_val_score(my_MLP, X, y, cv=10, scoring='accuracy')
+# accuracy_list_knn = cross_val_score(knn, X, y, cv=10, scoring='accuracy')
+# accuracy_list_dt = cross_val_score(my_DecisionTree, X, y, cv=10, scoring='accuracy')
+# accuracy_list_rf = cross_val_score(my_RandomForest, X, y, cv=10, scoring='accuracy')
+# accuracy_list_SVC = cross_val_score(my_SVC, X, y, cv=10, scoring='accuracy')
+# accuracy_list_SVC2 = cross_val_score(my_SVC2, X, y, cv=10, scoring='accuracy')
+# accuracy_list_mlp = cross_val_score(my_MLP, X, y, cv=10, scoring='accuracy')
 
-print("Cross Validation for KNN: " + str(accuracy_list_knn.mean()))
-print("Cross Validation for Decision Tree: " + str(accuracy_list_dt.mean()))
-print("Cross Validation for RandomForest: " + str(accuracy_list_rf.mean()))
-print("Cross Validation for LinearSVC: " + str(accuracy_list_SVC.mean()))
-print("Cross Validation for SVC #2: " + str(accuracy_list_SVC2.mean()))
-print("Cross Validation for MLP: " + str(accuracy_list_mlp.mean()))
+# print("Cross Validation for KNN: " + str(accuracy_list_knn.mean()))
+# print("Cross Validation for Decision Tree: " + str(accuracy_list_dt.mean()))
+# print("Cross Validation for RandomForest: " + str(accuracy_list_rf.mean()))
+# print("Cross Validation for LinearSVC: " + str(accuracy_list_SVC.mean()))
+# print("Cross Validation for SVC #2: " + str(accuracy_list_SVC2.mean()))
+# print("Cross Validation for MLP: " + str(accuracy_list_mlp.mean()))
 
 

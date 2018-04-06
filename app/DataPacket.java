@@ -10,9 +10,6 @@ public class DataPacket {
 	public int middleUltrasonic;
 	public int upperRightUltrasonic;
 	public int rightUltrasonic;
-	public int db1;
-	public int db2;
-	public int db3;
 	public int xAccel;
 	public int yAccel;
 	public int zAccel;
@@ -24,21 +21,25 @@ public class DataPacket {
 	public int zMag;
 	public int servoAngle;
 	public int state;
+	public int previousState;
+	public int previousState2;
+	public int previousState3;
 
 	public String[] toStringArray() {
 		return (leftUltrasonic + "," + upperLeftUltrasonic + "," + middleUltrasonic + "," + upperRightUltrasonic + ","
-				+ rightUltrasonic + "," + db1 + "," + db2 + "," + db3 + "," + xAccel + "," + yAccel + "," + zAccel + ","
+				+ rightUltrasonic + "," + xAccel + "," + yAccel + "," + zAccel + ","
 				+ xGyro + "," + yGyro + "," + zGyro + "," + xMag + "," + yMag + "," + zMag + "," + servoAngle + ","
-				+ state).split(",");
+				+ state + "," + previousState + "," + previousState2 + "," + previousState3).split(",");
 	}
 
 	public String toString() {
 		return "Left Ultrasonic: " + leftUltrasonic + ", Up. Left Ultrasonic: " + upperLeftUltrasonic
 				+ ", Midle Ultrasonic: " + middleUltrasonic + ", Up. Right Ultrasonic: " + upperRightUltrasonic
-				+ ", Right Ultrasonic: " + rightUltrasonic + ", DB #1: " + db1 + ", DB #2: " + db2 + ", DB #3: " + db3
+				+ ", Right Ultrasonic: " + rightUltrasonic
 				+ ", xAccel: " + xAccel + ", yAccel: " + yAccel + ", zAccel: " + zAccel + ", xGyro: " + xGyro
 				+ ", yGyro: " + yGyro + ", zGyro: " + zGyro + ", xMag: " + xMag + ", yMag: " + yMag + ", zMag: " + zMag
-				+ ", Servo Angle: " + servoAngle + ", State: " + state;
+				+ ", Servo Angle: " + servoAngle
+				+ ", State: " + state + ", Previous State: " + previousState + ", Previous State #2: " + previousState2 + ", Previous State #3: " + previousState3;
 	}
 
 	public DataPacket() {
@@ -46,17 +47,14 @@ public class DataPacket {
 	}
 
 	public DataPacket(int leftUltrasonic, int upperLeftUltrasonic, int middleUltrasonic,
-			int upperRightUltrasonic, int rightUltrasonic, int db1, int db2, int db3, int xAccel, int yAccel,
+			int upperRightUltrasonic, int rightUltrasonic, int xAccel, int yAccel,
 			int zAccel, int xGyro, int yGyro, int zGyro, int xMag, int yMag, int zMag,
-			int servoAngle, int state) {
+			int servoAngle, int state, int previousState, int previousState2, int previousState3) {
 		this.leftUltrasonic = leftUltrasonic;
 		this.upperLeftUltrasonic = upperLeftUltrasonic;
 		this.middleUltrasonic = middleUltrasonic;
 		this.upperRightUltrasonic = upperRightUltrasonic;
 		this.rightUltrasonic = rightUltrasonic;
-		this.db1 = db1;
-		this.db2 = db2;
-		this.db3 = db3;
 		this.xAccel = xAccel;
 		this.yAccel = yAccel;
 		this.zAccel = zAccel;
@@ -68,6 +66,9 @@ public class DataPacket {
 		this.zMag = zMag;
 		this.servoAngle = servoAngle;
 		this.state = state;
+		this.previousState = previousState;
+		this.previousState2 = previousState2;
+		this.previousState3 = previousState3;
 	}
 
 	public int getLeftUltrasonic() {
@@ -108,30 +109,6 @@ public class DataPacket {
 
 	public void setRightUltrasonic(int rightUltrasonic) {
 		this.rightUltrasonic = rightUltrasonic;
-	}
-
-	public int getDb1() {
-		return db1;
-	}
-
-	public void setDb1(int db1) {
-		this.db1 = db1;
-	}
-
-	public int getDb2() {
-		return db2;
-	}
-
-	public void setDb2(int db2) {
-		this.db2 = db2;
-	}
-
-	public int getDb3() {
-		return db3;
-	}
-
-	public void setDb3(int db3) {
-		this.db3 = db3;
 	}
 
 	public int getxAccel() {
@@ -220,6 +197,30 @@ public class DataPacket {
 
 	public void setState(int state) {
 		this.state = state;
+	}
+
+	public int getPreviousState() {
+		return previousState;
+	}
+
+	public void setPreviousState(int previousState) {
+		this.previousState = previousState;
+	}
+
+	public int getPreviousState2() {
+		return previousState2;
+	}
+
+	public void setPreviousState2(int previousState2) {
+		this.previousState2 = previousState2;
+	}
+
+	public int getPreviousState3() {
+		return previousState3;
+	}
+
+	public void setPreviousState3(int previousState3) {
+		this.previousState3 = previousState3;
 	}
 
 	// https://stackoverflow.com/questions/16309189/java-use-decimalformat-to-format-doubles-and-integers-but-keep-integers-without

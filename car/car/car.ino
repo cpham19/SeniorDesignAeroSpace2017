@@ -1,4 +1,4 @@
- //www.elegoo.com
+//www.elegoo.com
 
 #include <Servo.h>  //servo library
 #include <Wire.h>
@@ -45,13 +45,15 @@ const int sampleWindow = 50; // Sample window width in mS (50 mS = 20Hz)
 // For carspeed
 // 100 is enough to move the car forward and backward (BUT NOT LEFT AND RIGHT)
 // 180 is enough to move the car forward, backward, left, and right
-unsigned char carSpeed = 100; // initial speed of car >=0 to <=255
+unsigned char carSpeed = 120; // initial speed of car >=0 to <=255
 unsigned char carSpeed2 = 150; // initial speed of car >=0 to <=255
 int servoAngle = 90;
 char currentInput;
-int state = 3;
+int state = 4;
 boolean trainingWheelOn = false;
-int previousState;
+int previousState = 0;
+int previousState2 = 0;
+int previousState3 = 0;
 boolean firstRecord = true;
 
 class DataPacket {
@@ -72,11 +74,13 @@ class DataPacket {
     int mz;
     int state;
     int previousState;
+    int previousState2;
+    int previousState3;
     unsigned char carSpeed;
     int servoAngle;
 
   public:
-    DataPacket(int distance1, int distance2, int distance3, int distance4, int distance5, int ax1, int ay1, int az1, int gx1, int gy1, int gz1, int mx1, int my1, int mz1, unsigned char carSpeed1, int servoAngle1, int state1, int previousState1)
+    DataPacket(int distance1, int distance2, int distance3, int distance4, int distance5, int ax1, int ay1, int az1, int gx1, int gy1, int gz1, int mx1, int my1, int mz1, unsigned char carSpeed1, int servoAngle1, int state1, int previousState1, int previousStateTwo, int previousStateThree)
     {
         leftDistance = distance1;
         upperLeftDistance = distance2;
@@ -96,6 +100,8 @@ class DataPacket {
         servoAngle = servoAngle1;
         state = state1;
         previousState = previousState1;
+        previousState2 = previousStateTwo;
+        previousState3 = previousStateThree;
     }
     
     void print() {
@@ -135,6 +141,10 @@ class DataPacket {
       Serial.print(state);
       Serial.print(",");
       Serial.print(previousState);
+      Serial.print(",");
+      Serial.print(previousState2);
+      Serial.print(",");
+      Serial.print(previousState3);
       Serial.println();
     }
 };
@@ -148,6 +158,8 @@ void forward(){
   digitalWrite(IN2,LOW);
   digitalWrite(IN3,LOW);
   digitalWrite(IN4,HIGH);
+  previousState3 = previousState2;
+  previousState2 = previousState;
   previousState = state;
   state = 0;
 }
@@ -161,6 +173,8 @@ void back(){
   digitalWrite(IN2,HIGH);
   digitalWrite(IN3,HIGH);
   digitalWrite(IN4,LOW);
+  previousState3 = previousState2;
+  previousState2 = previousState;
   previousState = state;
   state = 3;
 }
@@ -174,6 +188,8 @@ void right(){
   digitalWrite(IN2,LOW);
   digitalWrite(IN3,HIGH);
   digitalWrite(IN4,LOW);
+  previousState3 = previousState2;
+  previousState2 = previousState;
   previousState = state;
   state = 2;
 }
@@ -187,6 +203,8 @@ void left(){
   digitalWrite(IN2,HIGH);
   digitalWrite(IN3,LOW);
   digitalWrite(IN4,HIGH);
+  previousState3 = previousState2;
+  previousState2 = previousState;
   previousState = state;
   state = 1;
 }
@@ -194,6 +212,8 @@ void left(){
 void stop() {
   digitalWrite(ENA,LOW);
   digitalWrite(ENB,LOW);
+  previousState3 = previousState2;
+  previousState2 = previousState;
   previousState = state;
   state = 4;
 }
@@ -388,6 +408,26 @@ void setup() {
   stop();
 }
 
+int encode(int distance) {
+  if (distance < 20) {
+    return 1;
+  }
+  else {
+    return 0;
+  }
+}
+
+//void compareSides() {
+//  //Turn left if there is more space on the left
+//  if (Distance_test1() > Distance_test5()) {
+//    left();
+//  }
+//  // Turn right if there is more space on the right
+//  else if (Distance_test5() > Distance_test1()) {
+//    right();
+//  }
+//}
+
 void command() {
   // If close to a wall. turn away from the wall.
   if (distance_middle() < 20) {
@@ -431,42 +471,359 @@ void command() {
   return;
 }
 
-// Kabir's "Neueral Network"
+// Robin's Training wheel (somewhat working?)
 //void command() {
-//  if (previous_command == "left"){
-//    if (previous_command2 == "right"){
-//      left();
+//  int m = encode(distance_middle());
+//  int l = encode(distance_left());
+//  int r = encode(distance_right());
+//  if (previousState == 0) {
+//    if (m == 1 && l == 1 && r == 1) {
+//      back();
+//      sendData();
+//      return;
 //    }
-//  }
-//  else if (previous_command == "right"){
-//    if (previous_command2 == "left"){
+//    else if (m == 1 && l == 1 && r == 0) {
 //      right();
-//    }
-//  }
-//  else if (distance_middle() < 25) {
-//    if (distance_left() < distance_right()) {
-//      right();
+//      sendData();
 //      return;
-//   } 
-//    else {
+//      
+//    }
+//    else if (m == 1 && l == 0 && r == 1) {
 //      left();
+//      sendData();
+//      return;
+//      
+//    }
+//    else if (m == 1 && l == 0 && r == 0) {
+//      if (Distance_test1() > Distance_test5()) {
+//        left();
+//        sendData();
+//        return;
+//      }
+//      else if (Distance_test5() > Distance_test1()) {
+//        right();
+//        sendData();
+//        return;
+//      }
+//    }
+//    else if (m == 0 && l == 1 && r == 1) {
+//      back();
+//      sendData();
 //      return;
 //    }
-//  }
-//  else if (distance_left() < 25 || distance_right() < 25) {
-//    if (distance_left() < distance_right()) {
+//    else if (m == 0 && l == 1 && r == 0) {
 //      right();
+//      sendData();
 //      return;
 //    }
-//    else {
+//    else if (m == 0 && l == 0 && r == 1) {
 //      left();
+//      sendData();
+//      return;     
+//    }
+//    else if (m == 0 && l == 0 && r == 0) {
+//      forward();
+//      sendData();
 //      return;
-//     }
+//    }
 //  }
-//  
-//  forward(); 
+//  if (previousState == 1) {
+//    if (m == 1 && l == 1 && r == 1) {
+//      back();
+//      sendData();
+//      return;
+//    }
+//    else if (m == 1 && l == 1 && r == 0) {
+//      forward();
+//      sendData();
+//      return;    
+//    }
+//    else if (m == 1 && l == 0 && r == 1) {
+//      left();
+//      sendData();
+//      return;    
+//    }
+//    else if (m == 1 && l == 0 && r == 0) {
+//      left();
+//      sendData();
+//      return;     
+//    }
+//    else if (m == 0 && l == 1 && r == 1) {
+//      back();
+//      sendData();
+//      return;    
+//    }
+//    else if (m == 0 && l == 1 && r == 0) {
+//      back();
+//      sendData();
+//      return;    
+//    }
+//    else if (m == 0 && l == 0 && r == 1) {
+//      forward();
+//      sendData();
+//      return;
+//    }
+//    else if (m == 0 && l == 0 && r == 0) {
+//      back();
+//      sendData();
+//      return;
+//    }
+//  }
+//  if (previousState == 2) {
+//    if (m == 1 && l == 1 && r == 1) {
+//      back();
+//      sendData();
+//      return;    
+//    }
+//    else if (m == 1 && l == 1 && r == 0) {
+//      right();
+//      sendData();
+//      return;
+//    }
+//    else if (m == 1 && l == 0 && r == 1) {
+//      back();
+//      sendData();
+//      return;
+//    }
+//    else if (m == 1 && l == 0 && r == 0) {
+//      right();
+//      sendData();
+//      return;
+//    }
+//    else if (m == 0 && l == 1 && r == 1) {
+//      back();
+//      sendData();
+//      return;
+//    }
+//    else if (m == 0 && l == 1 && r == 0) {
+//      right();
+//      sendData();
+//      return;    
+//    }
+//    else if (m == 0 && l == 0 && r == 1) {
+//      back();
+//      sendData();
+//      return;
+//    }
+//    else if (m == 0 && l == 0 && r == 0) {
+//      forward();
+//      sendData();
+//      return;
+//    }
+//  }
+//  if (previousState == 3) {
+//    if (m == 1 && l == 1 && r == 1) {
+//      back();
+//      sendData();
+//      return;
+//    }
+//    else if (m == 1 && l == 1 && r == 0) {
+//      back();
+//      sendData();
+//      return;
+//    }
+//    else if (m == 1 && l == 0 && r == 1) {
+//      back();
+//      sendData();
+//      return;
+//    }
+//    else if (m == 1 && l == 0 && r == 0) {
+//      if (Distance_test1() > Distance_test5()) {
+//        left();
+//        sendData();
+//        return;
+//      }
+//      else if (Distance_test5() > Distance_test1()) {
+//        right();
+//        sendData();
+//        return;
+//      }
+//    }
+//    else if (m == 0 && l == 1 && r == 1) {
+//      back();
+//      sendData();
+//      return;
+//    }
+//    else if (m == 0 && l == 1 && r == 0) {
+//      forward();
+//      sendData();
+//      return;
+//    }
+//    else if (m == 0 && l == 0 && r == 1) {
+//      left();
+//      sendData();
+//      return;
+//    }
+//    else if (m == 0 && l == 0 && r == 0) {
+//       if (Distance_test1() > Distance_test5()) {
+//        left();
+//        sendData();
+//        return;
+//      }
+//      else if (Distance_test5() > Distance_test1()) {
+//        right();
+//        sendData();
+//        return;
+//      }
+//    }
+//  }
+//
+//  forward();
+//  sendData();
 //  return;
-//}     
+//}
+
+// Kabir's training wheel (NOT WORKING)
+//void command() {
+//  int m = encode(distance_middle());
+//  int l = encode(distance_left());
+//  int r = encode(distance_right());
+//  
+//  if ((previousState == 0 && previousState2 == 0) || (previousState == 0 && previousState2 == 1) || (previousState == 0 && previousState2 == 2)) {
+//    if (m == 0 && l == 0 && r == 0) {
+//      forward();
+//      sendData();
+//      return;
+//    }
+//    else if (m == 0 && l == 1 && r == 1) {
+//      // compare sides
+//      compareSides();
+//      sendData();
+//      return;
+//    }
+//    else if (m == 0 && l == 1 && r == 0) {
+//      right();
+//      sendData();
+//      return;
+//    }
+//    else if (m == 0 && l == 0 && r == 1) {
+//      left();
+//      sendData();
+//      return;
+//    }
+//    else if (m == 1 && l == 1 && r == 1) {
+//      // compare sides
+//      compareSides();
+//      sendData();
+//      return;
+//    }
+//    else if (m == 1 && l == 0 && r == 1) {
+//      left();
+//      sendData();
+//      return;
+//    }
+//    else if (m == 1 && l == 1 && r == 0) {
+//      right();
+//      sendData();
+//      return;
+//    }
+//    else if (m == 1 && left == 0 && r == 0) {
+//      // compare sides
+//      compareSides();
+//      sendData();
+//      return;
+//    }
+//  }
+//  if ((previousState == 2 && previousState2 == 0) || (previousState == 2 && previousState2 == 1) || (previousState == 2 && previousState2 == 2)) {
+//    if (m == 0 && l == 0 && r == 0) {
+//      forward();
+//      sendData();
+//      return;
+//    }
+//    else if (m == 0 && l == 1 && r == 1) {
+//      // compare sides
+//      right();
+//      sendData();
+//      return;
+//    }
+//    else if (m == 0 && l == 1 && r == 0) {
+//      right();
+//      sendData();
+//      return;
+//    }
+//    else if (m == 0 && l == 0 && r == 1) {
+//      // Not Left
+//      right();
+//      sendData();
+//      return;
+//    }
+//    else if (m == 1 && l == 1 && r == 1) {
+//      // compare sides
+//      right();
+//      sendData();
+//      return;
+//    }
+//    else if (m == 1 && l == 0 && r == 1) {
+//      // ?
+//      left();
+//      sendData();
+//      return;
+//    }
+//    else if (m == 1 && l == 1 && r == 0) {
+//      right();
+//      sendData();
+//      return;
+//    }
+//    else if (m == 1 && l == 0 && r == 0) {
+//      // compare sides
+//      right();
+//      sendData();
+//      return;
+//    }
+//  }
+//  if ((previousState == 1 && previousState2 == 0) || (previousState == 1 && previousState2 == 1) || (previousState == 1 && previousState2 == 2)) {
+//    if (m == 0 && l == 0 && r == 0) {
+//      forward();
+//      sendData();
+//      return;
+//    }
+//    else if (m == 0 && l == 1 && r == 1) {
+//      // compare sides
+//      left();
+//      sendData();
+//      return;
+//    }
+//    else if (m == 0 && l == 1 && r == 0) {
+//      // Not Right
+//      left();
+//      sendData();
+//      return;
+//    }
+//    else if (m == 0 && l == 0 && r == 1) {
+//      left();
+//      sendData();
+//      return;
+//    }
+//    else if (m == 1 && l == 1 && r == 1) {
+//      // compare sides
+//      left();
+//      sendData();
+//      return;
+//    }
+//    else if (m == 1 && l == 0 && r == 1) {
+//      left();
+//      sendData();
+//      return;
+//    }
+//    else if (m == 1 && l == 1 && r == 0) {
+//      // ?
+//      right();
+//      sendData();
+//      return;
+//    }
+//    else if (m == 1 && l == 0 && r == 0) {
+//      // compare sides
+//      left();
+//      sendData();
+//      return;
+//    }
+//  }
+//
+//  forward();
+//  sendData();
+//  return;
+//}
+
 
 double microphone_volt() {
    unsigned long startMillis= millis();  // Start of sample window
@@ -509,11 +866,16 @@ double microphone_volt() {
 
 void sendData() {
     // Method that returns ultrasonic data in centimeters
-    int distance1 = Distance_test1();
-    int distance2 = distance_left();
-    int distance3 = distance_middle();
-    int distance4 = distance_right();
-    int distance5 = Distance_test5();
+    int distance1 = Distance_test1()/10;
+    int distance2 = encode(distance_left());
+    int distance3 = encode(distance_middle());
+    int distance4 = encode(distance_right());
+    int distance5 = Distance_test5()/10;
+
+    // For Encoding
+    // int l = encode(distance_left());
+    // int m = encode(distance_middle());
+    // int r = encode(distance_right());
     
     // 9 degrees of freedom data
     
@@ -554,7 +916,7 @@ void sendData() {
     int16_t mz=-(Mag[5]<<8 | Mag[4]);
 
     // Create a DataPacket object and print its data to the DAM
-    DataPacket packet(distance1, distance2, distance3, distance4, distance5, ax, ay, az, gx, gy, gz, mx, my, mz, carSpeed, servoAngle, state, previousState);
+    DataPacket packet(distance1, distance2, distance3, distance4, distance5, ax, ay, az, gx, gy, gz, mx, my, mz, carSpeed, servoAngle, state, previousState, previousState2, previousState3);
     packet.print();
 
     delay(100);
@@ -562,15 +924,13 @@ void sendData() {
 
 
 void loop() {
-    if (firstRecord) {
-      previousState = state;
-      firstRecord = false;
-    }
-    
+    // Training wheel
     //command();
-  
+
+    // Receive user input from DAM
     readIncomingSerial();
 
+    // Send data
     sendData();
 }
 
