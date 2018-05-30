@@ -222,13 +222,4 @@ public class DataPacket {
 	public void setPreviousState3(int previousState3) {
 		this.previousState3 = previousState3;
 	}
-
-	// https://stackoverflow.com/questions/16309189/java-use-decimalformat-to-format-doubles-and-integers-but-keep-integers-without
-	public String format(Number n) {
-		NumberFormat format = DecimalFormat.getInstance();
-		format.setRoundingMode(RoundingMode.FLOOR);
-		format.setMinimumFractionDigits(0);
-		format.setMaximumFractionDigits(2);
-		return format.format(n);
-	}
 }

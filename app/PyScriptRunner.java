@@ -21,26 +21,40 @@ import javax.script.SimpleScriptContext;
 public class PyScriptRunner
 {
 	// Name of script to train
-	private String nameOfTrainingScript = "MLP.py";
-	// Path of training script
-	private String pathToTrainingScript= "cd src/Files & " + nameOfTrainingScript;
+	private String nameOfTrainingScript = "Training_Sklearn.py";
+
+	// Path to Files folder in your project folder
+	private String pathToFilesFolder = "C:/Users/Calvin/Desktop/project/project/src/Files";
+
+	// Path to Anaconda Prompt
+	private String pathToAnacondaPrompt = "cd C:/Users/Calvin/Anaconda3/Scripts/ & activate.bat";
+
+	// Path to training script
+	private String pathToTrainingScript = pathToAnacondaPrompt
+										+ "& cd " + pathToFilesFolder
+										+ "& python " + nameOfTrainingScript;
+
 	// Name of autopilot script
-	private String nameOfAutopilotScript = "Autopilot2.py";
-	// Path of training script
-	private String pathToAutopilotScript= "cd src/Files & " + nameOfAutopilotScript;
+	private String nameOfAutopilotScript = "AutopilotSklearn.py";
+
+	// Path of autopilot script
+	private String pathToAutopilotScript = pathToAnacondaPrompt
+										 + "& cd " + pathToFilesFolder
+										 + "& python " + nameOfAutopilotScript;
 
 	public PyScriptRunner()
 	{
 
 	}
 
+	// Creates a folder called "Files" in src folder (this is used for storing CSV files)
 	public void makeDirectory() {
 		try {
 			Path path = Paths.get("src/Files");
 
 			if (Files.exists(path)) {
-			    GUIController.outputTextArea.append("Please put your Python scripts in \"Files\" in your project's src folder.\n");
-			    GUIController.outputTextArea.append("This is where CSV files and Python scripts should be located.\n");
+			    //GUIController.outputTextArea.append("Please put your Python scripts in \"Files\" in your project's src folder.\n");
+			    GUIController.outputTextArea.append("CSV files are located in the folder \"Files\".\n");
 			    return;
 			}
 
@@ -57,13 +71,14 @@ public class PyScriptRunner
 			Process p = pb.start();
 
 			 GUIController.outputTextArea.append("Created a folder called \"Files\" in your project folder.\n");
-			 GUIController.outputTextArea.append("This is where CSV files and Python scripts should be located.\n");
+			 GUIController.outputTextArea.append("This is where CSV files are located.\n");
 		}
 		catch (Exception e) {
 			 GUIController.outputTextArea.append("CMD commands didn't run.\n");
 		}
 	}
 
+	// This runs training script (not functional as of now)
 	public void runTrainingScript()
 	{
 		try
@@ -90,6 +105,7 @@ public class PyScriptRunner
 		}
 	}
 
+	// This runs autopilot script (not functional as of now)
 	public void runAutomaticScript()
 	{
 		try

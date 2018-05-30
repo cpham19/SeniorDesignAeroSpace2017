@@ -36,16 +36,13 @@ public class SerialIOController implements SerialPortEventListener {
 	}
 
 	// Basically if there is Serial activity, this is run in Synchronization
-	// with
-	// whatever thread is currently running the port.
+	// with whatever thread is currently running the port.
 	public synchronized void serialEvent(SerialPortEvent oEvent) {
 		//long startTime = System.currentTimeMillis();
 		// We have receieved information
 		if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
 			try {
-				// This contains the String messages from the Arduino Board
-				// (Ultrasonic, L0, L1, and L2 readings as of now)
-				// Ultrasonic, L0, L1, L2
+				// This contains the String messages sent from the Arduino Board
 				String[] inputLine = input.readLine().split(",");
 
 				// Parsing String messages (Sensor data) to int and Booleans
@@ -70,9 +67,11 @@ public class SerialIOController implements SerialPortEventListener {
 				int previousState2 = Integer.parseInt(inputLine[18]);
 				int previousState3 = Integer.parseInt(inputLine[19]);
 
+				// Create object containing sensor readings
 				DataPacket packet = new DataPacket(leftUltrasonic, upperLeftUltrasonic, middleUltrasonic, upperRightUltrasonic, rightUltrasonic,
 						xAccel, yAccel, zAccel, xGyro, yGyro, zGyro, xMag, yMag, zMag, servoAngle, state, previousState, previousState2, previousState3);
 
+				// Set the textfields to current sensor readings
 				GUIController.leftUltrasonicTF.setText("L UltSonic:" + leftUltrasonic);
 				GUIController.upperLeftUltrasonicTF.setText("UpL UltSonic:" + upperLeftUltrasonic);
 				GUIController.middleUltrasonicTF.setText("M UltSonic:" + middleUltrasonic);
@@ -91,14 +90,14 @@ public class SerialIOController implements SerialPortEventListener {
 				GUIController.servoAngleTF.setText("Servo Angle: " + servoAngle);
 				GUIController.stateTF.setText("State: " + state);
 
-				// Add DataPacket to CSV file
-
+				// Add DataPacket to CSV file (ignore Backward and Stop)
 				if (collectData == true && (state != 3 && state != 4)) {
 					dc.writeToCSV(csvName, packet);
 					// dc.writeToDatabase("aria_data", packet);
 					GUIController.outputTextArea.append(count + ") " + packet.toString() + "\n");
 					count++;
 				}
+
 				//System.out.println(System.currentTimeMillis() - startTime);
 			} catch (Exception e) {
 				// System.err.println("The Byte was empty ( let's ignore this
@@ -146,6 +145,7 @@ public class SerialIOController implements SerialPortEventListener {
 		}
 	}
 
+	// Close serial port
 	public synchronized void close() {
 		if (serialPort != null) {
 			serialPort.removeEventListener();
@@ -153,10 +153,13 @@ public class SerialIOController implements SerialPortEventListener {
 		}
 	}
 
+	// Write to Arduino Mega
 	public synchronized void SerialWrite(char c) {
 		try {
-			output.write(c);// push the value through the stream
-		} catch (Exception e) {
+			// push the value through the stream
+			output.write(c);
+		}
+		catch (Exception e) {
 			GUIController.outputTextArea.append(e.getMessage());
 		}
 	}

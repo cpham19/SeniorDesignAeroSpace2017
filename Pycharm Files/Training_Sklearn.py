@@ -8,8 +8,7 @@ import graphviz
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import classification_report
-from sklearn.svm import LinearSVC
-from sklearn import svm
+from sklearn.svm import LinearSVC, SVC
 from sklearn.datasets import make_classification
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
@@ -43,6 +42,9 @@ feature_cols.remove('state')
 # feature_cols.remove('previousState2')
 # feature_cols.remove('previousState3')
 labels = ['0','1','2']
+
+numberOfFeatures = len(feature_cols)
+numberOfLabels = len(labels)
 
 # Filter the dataframe to show data from these feature columns
 X = dataset[feature_cols];
@@ -133,7 +135,7 @@ print("Accuracy for SVC Classfier: " + str(svc_accuracy))
 # print()
 
 # Different SVC classifier
-my_SVC2 = svm.SVC()
+my_SVC2 = SVC()
 
 my_SVC2.fit(X_train, y_train)
 
@@ -152,7 +154,7 @@ print("Accuracy for SVC Classfier #2: " + str(svc2_accuracy))
 # a maximum of 1000 iterations (default = 200)
 # an alpha of 1e-5 (default = 0.001)
 # and a random state of 42 (for reproducibility)
-my_MLP = MLPClassifier(max_iter=1000, alpha = 1e-5,hidden_layer_sizes = ((int((len(feature_cols)+ len(labels))/2)),),random_state=42)
+my_MLP = MLPClassifier(max_iter=1000, alpha = 1e-5,hidden_layer_sizes = ((int((numberOfFeatures + numberOfLabels)/2)),),random_state=42)
 
 # fit the model with the training set
 my_MLP.fit(X_train, y_train)

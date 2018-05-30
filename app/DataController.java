@@ -18,6 +18,7 @@ import java.util.ArrayList;
 
 public class DataController
 {
+	// Edit this string depending on the sensor readings that are sent from the Arduino Mega
 	public static String columns = "leftUltrasonic,upperLeftUltrasonic, middleUltrasonic, upperRightUltrasonic,rightUltrasonic,xAccel,yAccel,zAccel,xGyro,yGyro,zGyro,xMag,yMag,zMag,servoAngle,state,previousState,previousState2,previousState3";
 
 	public DataController()

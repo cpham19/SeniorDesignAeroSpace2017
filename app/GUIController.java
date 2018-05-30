@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -18,11 +20,6 @@ import javax.swing.JTextField;
 
 public class GUIController extends JFrame
 {
-	// this is for future lookup so that we can identify Anomaly zones,
-	private int AreaMapwidth = 500;
-	private int AreaMapheight = 500;
-	private int stepValue = 8;
-	private int drawLength = 15;
 	private int buttonWidth = 100;
 	private int buttonHeight = 100;
 	private int directionButtonLeftXLoc = 60;
@@ -35,7 +32,7 @@ public class GUIController extends JFrame
 	PyScriptRunner runner;
 
 	// Map Panel ( The printing of the grid )
-	MapPanel explorationMap = new MapPanel(this.getWidth(), this.getHeight());
+	Panel panel = new Panel(this.getWidth(), this.getHeight());
 	//Buttons
 	private JButton up = new JButton("Forward");
 	private JButton left = new JButton("Left");
@@ -59,13 +56,16 @@ public class GUIController extends JFrame
 	public static JTextField carSpeedTF = new JTextField("CarSpeed: " + 0);
 	public static JTextField servoAngleTF = new JTextField("Servo Angle: " + 0);
 	public static JTextField stateTF = new JTextField("State: None");
+	public static JTextField blankTF = new JTextField();
+	public static JTextField blank2TF = new JTextField();
+	public static JTextField blank3TF = new JTextField();
 	private JButton clearCSVButton = new JButton("Clear CSV");
 	private JButton decreaseCarSpeed = new JButton();
 	private JButton increaseCarSpeed = new JButton();
 	private JButton rotateServoLeft = new JButton();
 	private JButton rotateServoRight = new JButton();
-	private JButton autoPilotMode = new JButton("Autopilot");
-	private JButton manualMode = new JButton("Manual");
+	private JButton disconnect = new JButton("Disconnect");
+	private JButton connect = new JButton("Connect");
 	private JButton collectMode = new JButton("Collect Data");
 	private JButton trainingMode = new JButton();
 	public static JTextArea outputTextArea = new JTextArea();
@@ -77,6 +77,7 @@ public class GUIController extends JFrame
 		// set size of self
 		this.setSize(width,height);
 		this.setLayout(null);
+
 		// INITIALIZE ANYTHING THAT NEEDS TO BE INTIALIZED
 		initialize();
 
@@ -98,11 +99,10 @@ public class GUIController extends JFrame
 		up.setBackground(Color.WHITE);
 		down.setBackground(Color.WHITE);
 		stop.setBackground(Color.RED);
-		autoPilotMode.setBackground(Color.WHITE);
-		manualMode.setBackground(Color.WHITE);
+		disconnect.setBackground(Color.WHITE);
+		connect.setBackground(Color.WHITE);
 		collectMode.setFont(new Font("Dialog", Font.PLAIN, 10));
 		collectMode.setBackground(Color.WHITE);
-		trainingMode.setBackground(Color.WHITE);
 		clearCSVButton.setBackground(Color.WHITE);
 
 		decreaseCarSpeed.setLayout(new BorderLayout());
@@ -118,7 +118,7 @@ public class GUIController extends JFrame
 
 		trainingMode.setLayout(new BorderLayout());
 		trainingMode.add(BorderLayout.NORTH, new JLabel("Training"));
-		trainingMode.add(BorderLayout.CENTER, new JLabel("Testing"));
+		trainingMode.add(BorderLayout.CENTER, new JLabel("Mode"));
 		trainingMode.setBackground(Color.WHITE);
 
 		rotateServoLeft.setLayout(new BorderLayout());
@@ -142,48 +142,50 @@ public class GUIController extends JFrame
 		down.setBounds(UDx, UpY + 200, buttonWidth + 10, buttonHeight);
 		stop.setBounds(directionButtonLeftXLoc + 100, directionButtonLeftYLoc, buttonWidth, buttonHeight);
 
-		// First row
+		// First row of buttons
 		decreaseCarSpeed.setBounds(manualButtonX, manualButtonY - 100, buttonWidth, buttonHeight);
 		increaseCarSpeed.setBounds(manualButtonX + 100, manualButtonY - 100, buttonWidth, buttonHeight);
 		rotateServoLeft.setBounds(manualButtonX + 200, manualButtonY - 100, buttonWidth, buttonHeight);
 		rotateServoRight.setBounds(manualButtonX + 300, manualButtonY - 100, buttonWidth, buttonHeight);
 		clearCSVButton.setBounds(manualButtonX + 300, manualButtonY - 150, buttonWidth, buttonHeight - 50);
 
-		// Second row
-		manualMode.setBounds(manualButtonX, manualButtonY, buttonWidth, buttonHeight);
-		manualMode.setVisible(false);
-		autoPilotMode.setBounds(manualButtonX + 100, manualButtonY, buttonWidth, buttonHeight);
+		// Second row of buttons
+		connect.setBounds(manualButtonX, manualButtonY, buttonWidth, buttonHeight);
+		connect.setVisible(false);
+		disconnect.setBounds(manualButtonX + 100, manualButtonY, buttonWidth, buttonHeight);
 		collectMode.setBounds(manualButtonX + 200, manualButtonY, buttonWidth, buttonHeight);
-		trainingMode.setBounds(manualButtonX + 300, manualButtonY, buttonWidth, buttonHeight);
+		//trainingMode.setBounds(manualButtonX + 300, manualButtonY, buttonWidth, buttonHeight);
 
-		// set bound of all textfields
-		// First row
+		// Set bound of all textfields
+		// First row of textfields
 		stateTF.setBounds(decreaseCarSpeed.getX() + 400, decreaseCarSpeed.getY(), 100, 50);
 		carSpeedTF.setBounds(decreaseCarSpeed.getX() + 500, decreaseCarSpeed.getY(), 100, 50);
 		servoAngleTF.setBounds(decreaseCarSpeed.getX() + 600, decreaseCarSpeed.getY(), 100, 50);
 		leftUltrasonicTF.setBounds(decreaseCarSpeed.getX() + 700, decreaseCarSpeed.getY(), 100, 50);
 		upperLeftUltrasonicTF.setBounds(decreaseCarSpeed.getX() + 800, decreaseCarSpeed.getY(), 100, 50);
 
-		// Second row
+		// Second row of textfields
 		middleUltrasonicTF.setBounds(decreaseCarSpeed.getX() + 400, decreaseCarSpeed.getY() + 50, 100, 50);
 		upperRightUltrasonicTF.setBounds(decreaseCarSpeed.getX() + 500, decreaseCarSpeed.getY() + 50, 100, 50);
 		rightUltrasonicTF.setBounds(decreaseCarSpeed.getX() + 600, decreaseCarSpeed.getY() + 50, 100, 50);
 		xAccelTF.setBounds(decreaseCarSpeed.getX() + 700, decreaseCarSpeed.getY() + 50, 100, 50);
+		blankTF.setBounds(decreaseCarSpeed.getX() + 800, decreaseCarSpeed.getY() + 50, 100, 50);
 
-		// Third row
+		// Third row of textfields
 		yAccelTF.setBounds(decreaseCarSpeed.getX() + 400, decreaseCarSpeed.getY() + 100, 100, 50);
 		zAccelTF.setBounds(decreaseCarSpeed.getX() + 500, decreaseCarSpeed.getY() + 100, 100, 50);
 		xGyroTF.setBounds(decreaseCarSpeed.getX() + 600, decreaseCarSpeed.getY() + 100, 100, 50);
 		yGyroTF.setBounds(decreaseCarSpeed.getX() + 700, decreaseCarSpeed.getY() + 100, 100, 50);
+		blank2TF.setBounds(decreaseCarSpeed.getX() + 800, decreaseCarSpeed.getY() + 100, 100, 50);
 
-		// Fourth row
+		// Fourth row of textfields
 		zGyroTF.setBounds(decreaseCarSpeed.getX() + 400, decreaseCarSpeed.getY() + 150, 100, 50);
 		xMagTF.setBounds(decreaseCarSpeed.getX() + 500, decreaseCarSpeed.getY() + 150, 100, 50);
 		yMagTF.setBounds(decreaseCarSpeed.getX() + 600, decreaseCarSpeed.getY() + 150, 100, 50);
 		zMagTF.setBounds(decreaseCarSpeed.getX() + 700, decreaseCarSpeed.getY() + 150, 100, 50);
+		blank3TF.setBounds(decreaseCarSpeed.getX() + 800, decreaseCarSpeed.getY() + 150, 100, 50);
 
-
-		// set editables of all textfields
+		// Set editables of all textfields
 		carSpeedTF.setEditable(false);
 		servoAngleTF.setEditable(false);
 		stateTF.setEditable(false);
@@ -201,8 +203,11 @@ public class GUIController extends JFrame
 		xMagTF.setEditable(false);
 		yMagTF.setEditable(false);
 		zMagTF.setEditable(false);
+		blankTF.setEditable(false);
+		blank2TF.setEditable(false);
+		blank3TF.setEditable(false);
 
-		// set font size of textfields
+		// Set font size of textfields
 		carSpeedTF.setFont(new Font("Serif", Font.PLAIN, 12));
 		servoAngleTF.setFont(new Font("Serif", Font.PLAIN, 12));
 		stateTF.setFont(new Font("Serif", Font.PLAIN, 12));
@@ -221,7 +226,7 @@ public class GUIController extends JFrame
 		yMagTF.setFont(new Font("Serif", Font.PLAIN, 12));
 		zMagTF.setFont(new Font("Serif", Font.PLAIN, 12));
 
-		// and add them to the Frame
+		// Add the buttons and textfields to the Frame
 		this.add(left);
 		this.add(right);
 		this.add(up);
@@ -244,17 +249,20 @@ public class GUIController extends JFrame
 		this.add(xMagTF);
 		this.add(yMagTF);
 		this.add(zMagTF);
+		this.add(blankTF);
+		this.add(blank2TF);
+		this.add(blank3TF);
 		this.add(decreaseCarSpeed);
 		this.add(increaseCarSpeed);
 		this.add(rotateServoLeft);
 		this.add(rotateServoRight);
 		this.add(clearCSVButton);
-		this.add(manualMode);
-		this.add(autoPilotMode);
+		this.add(connect);
+		this.add(disconnect);
 		this.add(collectMode);
 		//this.add(trainingMode);
 
-		// add action listeners to the buttons
+		// Add action listeners to the buttons
 		left.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent arg0)
@@ -305,7 +313,7 @@ public class GUIController extends JFrame
 			}
 		});
 
-		manualMode.addActionListener(new ActionListener()
+		connect.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent arg0)
 			{
@@ -327,33 +335,32 @@ public class GUIController extends JFrame
 				rotateServoLeft.setEnabled(true);
 				rotateServoRight.setVisible(true);
 				rotateServoRight.setEnabled(true);
-				autoPilotMode.setVisible(true);
-				autoPilotMode.setEnabled(true);
+				disconnect.setVisible(true);
+				disconnect.setEnabled(true);
 				collectMode.setVisible(true);
 				collectMode.setEnabled(true);
-				//trainingMode.setVisible(true);
-				//trainingMode.setEnabled(true);
+				trainingMode.setVisible(true);
+				trainingMode.setEnabled(true);
 				clearCSVButton.setVisible(true);
 				clearCSVButton.setEnabled(true);
-				manualMode.setVisible(false);
+				connect.setVisible(false);
 				sioc.initialize();
 				sioc.SerialWrite('s');
-				outputTextArea.append(getCurrentLocalDateTimeStamp() + "User pressed Manual button.\n");
+				outputTextArea.append(getCurrentLocalDateTimeStamp() + "User pressed Connect button.\n");
 				JOptionPane.showMessageDialog(null, "Serial Port connected. Please wait a few seconds.");
 			}
 		});
 
-		autoPilotMode.addActionListener(new ActionListener()
+		disconnect.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent arg0)
 			{
 				if (collectMode.getText().equals("Stop")) {
-					JOptionPane.showMessageDialog(null, "Stop collecting data if you want to use Autopilot mode.");
+					JOptionPane.showMessageDialog(null, "Stop collecting data if you want to Disconnect.");
 				}
 				else {
 					sioc.close();
-					//runner.runAutomaticScript();
-					manualMode.setVisible(true);
+					connect.setVisible(true);
 					up.setVisible(false);
 					up.setEnabled(false);
 					down.setVisible(false);
@@ -372,16 +379,17 @@ public class GUIController extends JFrame
 					rotateServoLeft.setEnabled(false);
 					rotateServoRight.setVisible(false);
 					rotateServoRight.setEnabled(false);
-					autoPilotMode.setVisible(false);
-					autoPilotMode.setEnabled(false);
+					disconnect.setVisible(false);
+					disconnect.setEnabled(false);
 					collectMode.setVisible(false);
 					collectMode.setEnabled(false);
-					//trainingMode.setVisible(false);
-					//trainingMode.setEnabled(false);
+					trainingMode.setVisible(false);
+					trainingMode.setEnabled(false);
 					clearCSVButton.setVisible(false);
 					clearCSVButton.setEnabled(false);
-					outputTextArea.append(getCurrentLocalDateTimeStamp() + "User pressed Autopilot button.\n");
+					outputTextArea.append(getCurrentLocalDateTimeStamp() + "User pressed Disconnect button.\n");
 					JOptionPane.showMessageDialog(null, "Serial Port disconnected. Run Keras on Pycharm.");
+					//runner.runAutomaticScript();
 				}
 			}
 		});
@@ -447,7 +455,7 @@ public class GUIController extends JFrame
 					sioc.collectData = true;
 				}
 				else {
-					outputTextArea.append(getCurrentLocalDateTimeStamp() + "User pressed Stop button.\n");
+					outputTextArea.append(getCurrentLocalDateTimeStamp() + "User pressed Stop for Collect Data button.\n");
 					collectMode.setText("Collect Data");
 					collectMode.setBackground(Color.WHITE);
 					sioc.collectData = false;
@@ -477,11 +485,11 @@ public class GUIController extends JFrame
 		outputTextArea.setVisible(true);
 		outputTextArea.setEditable(false);
 		scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-//		scroll.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
-//            public void adjustmentValueChanged(AdjustmentEvent e) {
-//                e.getAdjustable().setValue(e.getAdjustable().getMaximum());
-//            }
-//        });
+		scroll.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
+            public void adjustmentValueChanged(AdjustmentEvent e) {
+                e.getAdjustable().setValue(e.getAdjustable().getMaximum());
+            }
+        });
 
 
 		scroll.setBounds(0, 600, 910, 180);
@@ -493,8 +501,8 @@ public class GUIController extends JFrame
 	{
 		// When adding things to the JFrame, you must set the bounds of it beforehand. ( Further
 		// detail why would be nice, but not necessary.
-		explorationMap.setBounds(0, 0, this.getWidth(),this.getHeight());
-		this.add(explorationMap);
+		panel.setBounds(0, 0, this.getWidth(),this.getHeight());
+		this.add(panel);
 	}
 
 	public void initialize()
